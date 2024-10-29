@@ -1,4 +1,5 @@
 import RowHighlight from '@/components/nullComponent/RowHighlight';
+import { FaBeer } from 'react-icons/fa';
 
 export default function Home() {
   return (
@@ -251,6 +252,7 @@ export default function Home() {
           </tr>
         </tbody>
       </table>
+      <FaBeer />
 
       <div className="container">
         <table className="table table-responsive table-hover">
