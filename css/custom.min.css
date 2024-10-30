@@ -12049,18 +12049,27 @@ textarea.form-control-lg {
   --bs-btn-color: #333333;
   --bs-btn-bg: #a1c4a6;
   --bs-btn-border-color: #5b744b;
-  --bs-btn-hover-color: #ffffff;
-  --bs-btn-hover-bg: #e57373;
-  --bs-btn-hover-border-color: #e57373;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #afcdb3;
+  --bs-btn-hover-border-color: #6b825d;
   --bs-btn-focus-shadow-rgb: 85, 106, 71;
-  --bs-btn-active-color: #ffffff;
-  --bs-btn-active-bg: #e57373;
-  --bs-btn-active-border-color: #e57373;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #b4d0b8;
+  --bs-btn-active-border-color: #6b825d;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #000;
   --bs-btn-disabled-bg: #a1c4a6;
   --bs-btn-disabled-border-color: #5b744b;
   border: 0px !important;
+}
+
+.btn-icon.active {
+  background-color: #e57373;
+  color: #ffffff;
+}
+
+.btn-icon.active:hover {
+  background-color: #fadadd;
 }
 
 input:-webkit-autofill,
@@ -12132,7 +12141,7 @@ table * * * {
   transition: width 0.3s;
 }
 
-text {
+text, p {
   padding-top: 0.375rem;
 }
 
@@ -12142,7 +12151,14 @@ li.active a {
 }
 
 #avatar {
-  border-radius: 100%;
+  border-radius: 50%;
   height: 2.75rem;
   width: 2.75rem;
+  background-color: #fadadd;
+  color: #e57373;
+  border: solid 2px #e57373;
+}
+
+.input-group {
+  gap: 1rem;
 }/*# sourceMappingURL=custom.min.css.map */

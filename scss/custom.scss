@@ -94,15 +94,17 @@ $accordion-button-focus-box-shadow: $body-bg;
     $secondaryContainer,
     $secondary,
     $body-color,
-    $primary,
-    $primary,
-    $onPrimary,
-    $primary,
-    $primary,
-    $onPrimary,
   );
   border: 0px !important;
+}
 
+.btn-icon.active {
+  background-color: $primary;
+  color: $onPrimary;
+}
+
+.btn-icon.active:hover {
+  background-color: $primaryContainer;
 }
 
 //Ẩn bg xanh của autofill
@@ -174,7 +176,7 @@ table * * * {
   transition: width 0.3s;
 }
 
-text {
+text, p {
   padding-top: 0.375rem;
 }
 
@@ -184,7 +186,14 @@ li.active a {
 }
 
 #avatar {
-  border-radius: 100%;
+  border-radius: 50%;
   height: 2.75rem;
   width: 2.75rem;
+  background-color: $primaryContainer;
+  color: $primary;
+  border: solid 2px $primary;
+}
+
+.input-group {
+  gap: 1rem;
 }
