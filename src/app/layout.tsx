@@ -1,18 +1,17 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-import {Josefin_Sans} from 'next/font/google';
-import  "bootstrap/dist/css/bootstrap.min.css"
+import type { Metadata } from 'next';
+import './globals.css';
+import { Josefin_Sans } from 'next/font/google';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../css/custom.min.css';
-import ImportBsJS from "../components/nullComponent/importBsJS";
+import ImportBsJS from '../components/nullComponent/importBsJS';
 
 const josefin = Josefin_Sans({
   subsets: ['vietnamese'],
-})
+});
 
 export const metadata: Metadata = {
-  title: "BMart",
-  description: "",
+  title: 'BMart',
+  description: '',
 };
 
 export default function RootLayout({
@@ -23,9 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ImportBsJS />
-      <body className={josefin.className}>
-        {children}
-      </body>
+      <body className={josefin.className}>{children}</body>
     </html>
   );
 }

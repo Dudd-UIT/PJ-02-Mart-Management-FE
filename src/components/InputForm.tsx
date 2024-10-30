@@ -23,16 +23,15 @@ export function Input({
     setIsActive(!isActive);
   };
 
-  const handleInputChange = (e: any) => {
-    const value = e.target.value;
-    onChange(value);
-    console.log(value);
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    onChange(e.target.value);
   };
 
-  const handleOnClickIcon = (e: any) => {
+  const handleOnClickIcon = () => {
     toggleIcon();
-    const value = e.target.value;
-    onClickIcon(value);
+    onClickIcon(isActive ? 'inactive' : 'active');
   };
 
   const borderClass =
@@ -67,10 +66,12 @@ export function Input({
             required={required}
             value={value}
           >
-            <option selected>{placeholder}</option>
-            {options.map((value, index) => (
-              <option key={index} value={value[keyObj]}>
-                {value[showObj]}
+            <option value="" disabled selected>
+              {placeholder}
+            </option>
+            {options.map((optionValue, index) => (
+              <option key={index} value={optionValue[keyObj]}>
+                {optionValue[showObj]}
               </option>
             ))}
           </select>

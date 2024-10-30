@@ -32,7 +32,6 @@ export default function Sidebar() {
     setIsRuleOpen(!isRuleOpen);
   };
 
-
   return (
     <div
       className={`sidebar col-md-2 col-sm-4 ${isPinned ? 'pinned' : ''}`}
@@ -169,7 +168,9 @@ export default function Sidebar() {
                   {isPinned && <text className="small">Dòng sản phẩm</text>}
                 </Link>
               </li>
-              <li className={pathname == '/rule/product-sample' ? 'active' : ''}>
+              <li
+                className={pathname == '/rule/product-sample' ? 'active' : ''}
+              >
                 <Link href="/rule/product-sample" className="btn btn-sc">
                   {isPinned && <text className="small">Mẫu sản phẩm</text>}
                 </Link>
