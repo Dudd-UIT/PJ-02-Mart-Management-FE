@@ -1,7 +1,7 @@
 function SuppliersPage() {
     return ( 
         <>
-        <p>SuppliersPage</p>
+        <p>Suppliers Page</p>
         </>
      );
 }
