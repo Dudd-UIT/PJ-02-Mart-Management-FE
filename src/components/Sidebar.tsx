@@ -37,7 +37,6 @@ export default function Sidebar() {
       className={`sidebar col-md-2 col-sm-4 ${isPinned ? 'pinned' : ''}`}
       id="side_nav"
       style={{
-        height: '100vh',
         width: isPinned ? '230px' : '60px',
         transition: 'width 0.3s',
       }}

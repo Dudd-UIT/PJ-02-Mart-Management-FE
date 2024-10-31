@@ -12136,7 +12136,7 @@ table * * * {
 
 #side_nav {
   background: #5b744b;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   transition: width 0.3s;
 }
