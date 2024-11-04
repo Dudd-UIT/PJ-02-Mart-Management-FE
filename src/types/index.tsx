@@ -14,5 +14,5 @@ export type InputProps = {
   suport?: string;
   onChange: (value: string) => void; // Change to accept string
   icon?: ReactNode | null;
-  onClickIcon?: (value: string) => void; // Change to accept string
+  onClickIcon?: () => void; // Change to accept string
 };
