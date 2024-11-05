@@ -1,12 +1,10 @@
-'use client'
+'use client';
 
-import {Input} from '@/components/InputForm';
+import { Input } from '@/components/commonComponent/InputForm';
 import RowHighlight from '@/components/nullComponent/RowHighlight';
-import { useState } from 'react';
-import { FaBeer, FaFilter, FaSearch } from 'react-icons/fa';
+import { FaFilter } from 'react-icons/fa';
 
 export default function Home() {
-
   return (
     //Trong layout đã bọc sẵn children vào container rồi nên không cần className="container" trong children nữa
     <div className="container">
@@ -385,10 +383,29 @@ export default function Home() {
         </tbody>
       </table>
       {/* Input */}
-      <Input title='Tìm kiếm' size={2} onChange={()=>{}} />
-      <Input title='Readonly' size={3} readOnly={true} required={true} onChange={()=>{}} />
-      <Input title='Tìm kiếm' size={4} onChange={()=>{}} valid='success' options={['1', '2', '3']} placeholder='Select'/>
-      <Input title='Tìm kiếm' size={5} onChange={()=>{}} valid='error' icon={<FaFilter />}/>
+      <Input title="Tìm kiếm" size={2} onChange={() => {}} />
+      <Input
+        title="Readonly"
+        size={3}
+        readOnly={true}
+        required={true}
+        onChange={() => {}}
+      />
+      <Input
+        title="Tìm kiếm"
+        size={4}
+        onChange={() => {}}
+        valid="success"
+        options={['1', '2', '3']}
+        placeholder="Select"
+      />
+      <Input
+        title="Tìm kiếm"
+        size={5}
+        onChange={() => {}}
+        valid="error"
+        icon={<FaFilter />}
+      />
     </div>
   );
 }

@@ -13,15 +13,12 @@ export function Input({
   suport,
   onChange,
   icon,
-  onClickIcon = () => {},
+  onClickIcon, // Accept onClickIcon as an optional function
   options,
   keyObj = 0,
   showObj = 0,
 }: InputProps) {
   const [isActive, setIsActive] = useState(false);
-  const toggleIcon = () => {
-    setIsActive(!isActive);
-  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -30,8 +27,10 @@ export function Input({
   };
 
   const handleOnClickIcon = () => {
-    toggleIcon();
-    onClickIcon(isActive ? 'inactive' : 'active');
+    setIsActive(!isActive);
+    if (onClickIcon) {
+      onClickIcon();
+    }
   };
 
   const borderClass =
@@ -49,8 +48,9 @@ export function Input({
       <div className="d-flex gap-2">
         {icon && (
           <button
+            type="button"
             className={`btn btn-icon ${isActive ? 'active' : ''}`}
-            onClick={handleOnClickIcon}
+            onClick={handleOnClickIcon} // Call without arguments
           >
             {icon}
           </button>
@@ -91,7 +91,7 @@ export function Input({
         )}
         {valid === 'error' && (
           <FaXmark
-            className={`position-absolute end-0 translate-middle m-2 text-danger`}
+            className="position-absolute end-0 translate-middle m-2 text-danger"
             style={options ? { left: '100%', top: '55%' } : { top: '55%' }}
           />
         )}

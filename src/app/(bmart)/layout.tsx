@@ -1,4 +1,4 @@
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/components/commonComponent/Sidebar';
 import { IoPersonOutline } from 'react-icons/io5';
 
 export default function Layout({
