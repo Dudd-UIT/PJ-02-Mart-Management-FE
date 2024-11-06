@@ -97,7 +97,7 @@ const CustomersPage = () => {
     <>
       <h2>Danh sách khách hàng</h2>
       {/* 2 button search */}
-      <div className="row mb-3">
+      <div className="row">
         <div className="col-md-4">
           <Input
             title="Tên khách hàng"
@@ -140,7 +140,7 @@ const CustomersPage = () => {
         onMutate={onMutate}
       />
       {/* Navigate control */}
-      <nav aria-label="Page navigation example" className="mt-3">
+      <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center">
           <li className={`page-item ${current === 1 ? 'disabled' : ''}`}>
             <button className="page-link" onClick={handlePreviousPage}>

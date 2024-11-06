@@ -10,7 +10,6 @@ import { FaSearch } from 'react-icons/fa';
 import { FaPlus } from 'react-icons/fa6';
 import useSWR, { mutate } from 'swr';
 
-
 const columns: Column<ProductType>[] = [
   { title: '#', key: 'id' },
   { title: 'Tên loại sản phẩm', key: 'name' },
@@ -21,21 +20,14 @@ function ProductTypePage() {
   const [pageSize, setPageSize] = useState(5);
 
   const [searchName, setSearchName] = useState('');
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);  
-  const [searchParams, setSearchParams] = useState({ name: ''});
-
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchParams, setSearchParams] = useState({ name: '' });
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`;
 
   const { data, error } = useSWR(
     [url, current, pageSize, searchParams.name],
-    () =>
-      fetchProductTypes(
-        url,
-        current,
-        pageSize,
-        searchParams.name,
-      ),
+    () => fetchProductTypes(url, current, pageSize, searchParams.name),
   );
 
   if (error)
@@ -60,13 +52,13 @@ function ProductTypePage() {
     total: data.meta.total,
   };
 
-    const handlePreviousPage = () => {
-      if (current > 1) setCurrent(current - 1);
-    };
-  
-    const handleNextPage = () => {
-      if (current < meta.pages) setCurrent(current + 1);
-    };
+  const handlePreviousPage = () => {
+    if (current > 1) setCurrent(current - 1);
+  };
+
+  const handleNextPage = () => {
+    if (current < meta.pages) setCurrent(current + 1);
+  };
 
   const handleSearchClick = () => {
     console.log(searchName);
@@ -74,14 +66,13 @@ function ProductTypePage() {
     setCurrent(1);
   };
 
-  const onMutate = () =>
-    mutate([url, current, pageSize, searchParams.name]);
+  const onMutate = () => mutate([url, current, pageSize, searchParams.name]);
 
   return (
     <>
       <h3>Danh sách loại sản phẩm</h3>
       {/* button search */}
-      <div className="row mb-3">
+      <div className="row">
         <Input
           title="Tìm kiếm"
           size={12}
@@ -113,9 +104,8 @@ function ProductTypePage() {
         onMutate={onMutate}
       />
 
-
       {/* Navigate control */}
-      <nav aria-label="Page navigation example" className="mt-3">
+      <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center">
           <li className={`page-item ${current === 1 ? 'disabled' : ''}`}>
             <button className="page-link" onClick={handlePreviousPage}>
