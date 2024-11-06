@@ -42,6 +42,10 @@ declare global {
     key: keyof T;
   };
 
+  export type RenderableColumn<T> = Column<T> & {
+    render?: (record: T) => React.ReactNode;
+  };
+
   export interface MetaData {
     current: number;
     pageSize: number;
