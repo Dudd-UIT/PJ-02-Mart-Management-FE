@@ -100,7 +100,7 @@ function CreateSupplierModal(props: CreateModalProps) {
       toast.success(res.message);
       onMutate();
     } else {
-      toast.error('Lỗi khi tạo mới nhà cung cấp');
+      toast.error(res.message);
     }
   };
 
@@ -212,21 +212,11 @@ function CreateSupplierModal(props: CreateModalProps) {
           {/* Button thêm */}
           <div className="d-flex justify-content-end mx-3">
             <button
-              className="btn d-flex align-items-center"
-              style={{
-                backgroundColor: '#ffe7e7',
-                color: '#333',
-                borderColor: '#f28b82',
-              }}
+              className="btn d-flex align-items-center btn-primary"
               onClick={() => setIsProductSupplierModalOpen(true)}
             >
               <FaPlus className="align-middle" />
-              <span
-                className="ms-1"
-                style={{ position: 'relative', top: '2px' }}
-              >
-                Thêm
-              </span>
+              <text>Thêm</text>
             </button>
           </div>
           {/* Danh sách các sản phẩm được chọn */}
@@ -276,10 +266,10 @@ function CreateSupplierModal(props: CreateModalProps) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
+          <Button variant="danger" onClick={handleCloseCreateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleCreateSupplier}>
+          <Button className="btn-primary" onClick={handleCreateSupplier}>
             Lưu
           </Button>
         </Modal.Footer>

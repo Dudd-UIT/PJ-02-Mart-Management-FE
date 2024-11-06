@@ -109,18 +109,11 @@ const SuppliersPage = () => {
       {/* button Thêm Supplier */}
       <div className="d-flex justify-content-end mx-3">
         <button
-          className="btn d-flex align-items-center"
+          className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
-          style={{
-            backgroundColor: '#ffe7e7',
-            color: '#333',
-            borderColor: '#f28b82',
-          }}
         >
           <FaPlus className="align-middle" />
-          <span className="ms-1" style={{ position: 'relative', top: '2px' }}>
-            Thêm
-          </span>
+          <text>Thêm</text>
         </button>
       </div>
       {/* Danh sách Supplier */}

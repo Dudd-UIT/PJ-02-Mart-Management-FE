@@ -4,6 +4,7 @@ import {
   ProductUnitTransform,
 } from '@/types/productUnit';
 import React from 'react';
+import RowHighlight from '../nullComponent/RowHighlight';
 
 function ProductUnitTableModal(props: ProductUnitTableModalProps) {
   const { columns, productUnits } = props;
@@ -21,11 +22,12 @@ function ProductUnitTableModal(props: ProductUnitTableModalProps) {
 
   return (
     <div className="container">
+      <RowHighlight />
       <table className="table table-hover">
         <thead>
           <tr>
             <th scope="col" className="text-center align-middle">
-              <input type="checkbox" disabled />
+              {/* <input type="checkbox" disabled /> */}
             </th>
             {columns?.map((column, index) => (
               <th key={index} scope="col" className="text-center align-middle">
@@ -39,6 +41,7 @@ function ProductUnitTableModal(props: ProductUnitTableModalProps) {
             <tr key={rowIndex} className="text-center align-middle">
               <td>
                 <input
+                  className="form-check-input"
                   type="checkbox"
                   checked={productUnitIds.includes(row.id)}
                   onChange={() => handleCheckboxChange(row.id)}
