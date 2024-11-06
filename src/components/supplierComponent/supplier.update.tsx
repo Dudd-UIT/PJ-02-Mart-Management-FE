@@ -113,11 +113,10 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     if (res?.data) {
       handleCloseCreateModal();
       setProductUnitIds([]);
-
-      toast.success('Cập nhật nhà cung cấp thành công');
-      onMutate(); // Gọi hàm onMutate để cập nhật danh sách
+      toast.success(res.message);
+      onMutate();
     } else {
-      toast.error('Lỗi cập nhật nhà cung cấp');
+      toast.error(res.message);
     }
   };
 
@@ -228,12 +227,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
           {/* Button Cập nhật danh sách sản phẩm được cung cấp */}
           <div className="d-flex justify-content-end mx-3">
             <button
-              className="btn d-flex align-items-center"
-              style={{
-                backgroundColor: '#ffe7e7',
-                color: '#333',
-                borderColor: '#f28b82',
-              }}
+              className="btn d-flex align-items-center btn-primary"
               onClick={() => setIsProductSupplierModalOpen(true)}
             >
               <FaPlus className="align-middle" />

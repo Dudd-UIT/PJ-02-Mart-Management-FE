@@ -1,21 +1,22 @@
-import { handleDeleteSupplierAction } from '@/services/supplierServices';
-import { Supplier } from '@/types/supplier';
+import { handleDeleteCustomerAction } from '@/services/customerServices';
+import { Customer } from '@/types/customer';
 import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
-const DeleteSupplierModal = (props: DeleteModalProps<Supplier>) => {
+const DeleteCustomerModal = (props: DeleteModalProps<Customer>) => {
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
-    data: supplierData,
+    data: customerData,
     onMutate,
   } = props;
+
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteSupplier = async () => {
-    const res = await handleDeleteSupplierAction(supplierData?.id);
+  const handleDeleteCustomer = async () => {
+    const res = await handleDeleteCustomerAction(customerData?.id);
     if (res?.data) {
       handleCloseDeleteModal();
       onMutate();
@@ -30,19 +31,20 @@ const DeleteSupplierModal = (props: DeleteModalProps<Supplier>) => {
       <Modal
         show={isDeleteModalOpen}
         onHide={handleCloseDeleteModal}
+        size="lg"
         backdrop={'static'}
       >
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <text>Bạn có chắc muốn xóa nhà cung cấp {supplierData?.name}?</text>
+          <div>Bạn có chắc muốn xóa khách hàng {customerData?.name}?</div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDeleteModal}>
             Hủy
           </Button>
-          <Button variant="danger" onClick={handleDeleteSupplier}>
+          <Button variant="danger" onClick={handleDeleteCustomer}>
             Đồng ý
           </Button>
         </Modal.Footer>
@@ -51,4 +53,4 @@ const DeleteSupplierModal = (props: DeleteModalProps<Supplier>) => {
   );
 };
 
-export default DeleteSupplierModal;
+export default DeleteCustomerModal;

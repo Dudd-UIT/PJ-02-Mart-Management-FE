@@ -216,10 +216,10 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
         </nav>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleCloseProductUnitListModal}>
+        <Button variant="danger" onClick={handleCloseProductUnitListModal}>
           Thoát
         </Button>
-        <Button variant="danger" onClick={handleSave}>
+        <Button className="btn-primary" onClick={handleSave}>
           Lưu
         </Button>
       </Modal.Footer>
