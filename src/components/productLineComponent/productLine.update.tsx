@@ -3,10 +3,12 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { ProductLine, ProductType } from '@/types/productLine';
+import { ProductLine } from '@/types/productLine';
 import { handleUpdateProductLineAction } from '@/services/productLineServices';
 import useSWR from 'swr';
 import { fetchProductTypes } from '@/services/productTypeServices';
+import { ProductType } from '@/types/productType';
+import { Input } from '../commonComponent/InputForm';
 
 function UpdateProductLineModal(props: UpdateModalProps<ProductLine>) {
   const {
@@ -80,7 +82,6 @@ function UpdateProductLineModal(props: UpdateModalProps<ProductLine>) {
         backdrop={'static'}
         show={isUpdateModalOpen}
         onHide={handleCloseCreateModal}
-        size="lg"
       >
         <Modal.Header closeButton>
           <Modal.Title>Thông tin dòng sản phẩm</Modal.Title>
@@ -89,7 +90,7 @@ function UpdateProductLineModal(props: UpdateModalProps<ProductLine>) {
           {/* Thông tin loại sản phẩm */}
           <div className="container mb-4">
             <div className="row mb-3">
-              <div className="col-md-6">
+              <div className="col-md-12">
                 <label>Tên dòng sản phẩm</label>
                 <input
                   type="text"
@@ -99,7 +100,7 @@ function UpdateProductLineModal(props: UpdateModalProps<ProductLine>) {
                 />
               </div>
 
-              <div className="col-md-6 pt-4">
+              <div className="col-md-12 pt-4">
                 <label>Tên loại sản phẩm</label>
                 <select
                   className="form-control"

@@ -88,7 +88,6 @@ function CreateProductTypeModal(props: CreateModalProps) {
       <Modal
         show={isCreateModalOpen}
         onHide={handleCloseCreateModal}
-        size="lg"
         backdrop={'static'}
       >
         <Modal.Header closeButton>

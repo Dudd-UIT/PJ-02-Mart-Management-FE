@@ -60,7 +60,6 @@ function CreateProductLineModal(props: CreateModalProps) {
       <Modal
         show={isCreateModalOpen}
         onHide={handleCloseCreateModal}
-        size="lg"
         backdrop={'static'}
       >
         <Modal.Header closeButton>
@@ -70,7 +69,7 @@ function CreateProductLineModal(props: CreateModalProps) {
           {/* Thông tin loại sản phẩm */}
           <div className="container mb-4">
             <div className="row mb-3">
-              <div className="col-md-6">
+              <div className="col-md-12">
                 <label>Tên dòng sản phẩm</label>
                 <input
                   type="text"
@@ -80,7 +79,7 @@ function CreateProductLineModal(props: CreateModalProps) {
                 />
               </div>
 
-              <div className="col-md-6 pt-4">
+              <div className="col-md-12 pt-4">
                 <label>Tên loại sản phẩm</label>
                 <select
                   className="form-control"

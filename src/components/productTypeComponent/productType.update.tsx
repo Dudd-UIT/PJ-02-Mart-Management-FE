@@ -56,7 +56,6 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
         backdrop={'static'}
         show={isUpdateModalOpen}
         onHide={handleCloseCreateModal}
-        size="lg"
       >
         <Modal.Header closeButton>
           <Modal.Title>Thông tin loại sản phẩm</Modal.Title>
@@ -65,7 +64,7 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
           {/* Thông tin loại sản phẩm */}
           <div className="container mb-4">
             <div className="row mb-3">
-              <div className="col-md-6">
+              <div className="col-md-12">
                 <label>Tên loại sản phẩm</label>
                 <input
                   type="text"

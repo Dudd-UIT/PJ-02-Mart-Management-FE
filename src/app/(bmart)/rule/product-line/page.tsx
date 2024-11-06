@@ -80,7 +80,7 @@ function ProductLinePage() {
       <div className="row">
         <Input
           title="Tìm kiếm"
-          size={12}
+          size={4}
           value={searchName}
           placeholder="Nhập tên dòng sản phẩm"
           onChange={(value) => setSearchName(value)}
