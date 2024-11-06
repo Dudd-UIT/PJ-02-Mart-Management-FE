@@ -1,23 +1,24 @@
-'use client'
+'use client';
 
-import { Input } from "@/components/commonComponent/InputForm";
-import CreateProductLineModal from "@/components/productLineComponent/productLine.create";
-import ProductLineTable from "@/components/productLineComponent/productLine.table";
-import { fetchProductLines } from "@/services/productLineServices";
-import { ProductLine } from "@/types/productLine";
-import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
-import useSWR, { mutate } from "swr";
+import { Input } from '@/components/commonComponent/InputForm';
+import CreateProductLineModal from '@/components/productLineComponent/productLine.create';
+import ProductLineTable from '@/components/productLineComponent/productLine.table';
+import { fetchProductLines } from '@/services/productLineServices';
+import { ProductLine } from '@/types/productLine';
+import { useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa6';
+import useSWR, { mutate } from 'swr';
 
 const columns: RenderableColumn<ProductLine>[] = [
-    { title: '#', key: 'id' },
-    { title: 'Tên dòng sản phẩm', key: 'name' },
-    { title: 'Tên loại sản phẩm',
-      key: 'productType',
-      render: (productLine: ProductLine) => productLine.productType.name 
-    },
-  ];
+  { title: '#', key: 'id' },
+  { title: 'Tên dòng sản phẩm', key: 'name' },
+  {
+    title: 'Tên loại sản phẩm',
+    key: 'productType',
+    render: (productLine: ProductLine) => productLine.productType.name,
+  },
+];
 
 function ProductLinePage() {
   const [current, setCurrent] = useState(1);
@@ -76,7 +77,7 @@ function ProductLinePage() {
     <>
       <h3>Danh sách dòng sản phẩm</h3>
       {/* button search */}
-      <div className="row mb-3">
+      <div className="row">
         <Input
           title="Tìm kiếm"
           size={12}
@@ -109,7 +110,7 @@ function ProductLinePage() {
       />
 
       {/* Navigate control */}
-      <nav aria-label="Page navigation example" className="mt-3">
+      <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center">
           <li className={`page-item ${current === 1 ? 'disabled' : ''}`}>
             <button className="page-link" onClick={handlePreviousPage}>
