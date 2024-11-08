@@ -66,7 +66,6 @@ function ProductLinePage() {
   };
 
   const handleSearchClick = () => {
-    console.log(searchName);
     setSearchParams({ name: searchName });
     setCurrent(1);
   };
@@ -96,9 +95,7 @@ function ProductLinePage() {
           onClick={() => setIsCreateModalOpen(true)}
         >
           <FaPlus className="align-middle" />
-          <span className="ms-1" style={{ position: 'relative', top: '2px' }}>
-            Thêm
-          </span>
+          <text>Thêm</text>
         </button>
       </div>
 

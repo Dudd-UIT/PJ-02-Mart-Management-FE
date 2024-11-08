@@ -57,7 +57,6 @@ function UpdateCustomerModal(props: UpdateModalProps<Customer>) {
 
     const res = await handleUpdateCustomerAction(newCustomer);
     if (res?.data) {
-      console.log('res', res);
       handleCloseCreateModal();
       onMutate();
       toast.success(res.message);

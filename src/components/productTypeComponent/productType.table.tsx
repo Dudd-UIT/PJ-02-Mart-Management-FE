@@ -7,12 +7,13 @@ import { ProductType, ProductTypeTableType } from '@/types/productType';
 import DeleteProductTypeModal from './productType.delete';
 import UpdateProductTypeModal from './productType.update';
 
-
 const ProductTypeTable = (props: ProductTypeTableType) => {
   const { productTypes, columns, onMutate } = props;
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [selectedProductType, setSelectedProductType] = useState<ProductType | undefined>();
+  const [selectedProductType, setSelectedProductType] = useState<
+    ProductType | undefined
+  >();
 
   const handleOpenUpdateModal = (productType: ProductType) => {
     setSelectedProductType(productType);
@@ -51,16 +52,10 @@ const ProductTypeTable = (props: ProductTypeTableType) => {
                   <td key={colIndex}>{row[column.key as keyof ProductType]}</td>
                 ))}
                 <td>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() => handleOpenUpdateModal(row)}
-                  >
+                  <button onClick={() => handleOpenUpdateModal(row)}>
                     <FaEye size={18} />
                   </button>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() => handleOpenDeleteModal(row)}
-                  >
+                  <button onClick={() => handleOpenDeleteModal(row)}>
                     <HiOutlineTrash size={18} />
                   </button>
                 </td>

@@ -61,7 +61,6 @@ function ProductTypePage() {
   };
 
   const handleSearchClick = () => {
-    console.log(searchName);
     setSearchParams({ name: searchName });
     setCurrent(1);
   };

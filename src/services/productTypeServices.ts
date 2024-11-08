@@ -1,13 +1,12 @@
-'use server'
+'use server';
 
-import { sendRequest } from "@/utils/api";
-import { revalidateTag } from "next/cache";
-
+import { sendRequest } from '@/utils/api';
+import { revalidateTag } from 'next/cache';
 
 export const fetchProductTypes = async (
   url: string,
-  current: number,
-  pageSize: number,
+  current?: number,
+  pageSize?: number,
   searchName?: string,
 ) => {
   const queryParams: { [key: string]: any } = {
@@ -16,7 +15,8 @@ export const fetchProductTypes = async (
   };
 
   if (searchName) {
-    queryParams.name = searchName;}
+    queryParams.name = searchName;
+  }
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
@@ -29,7 +29,6 @@ export const fetchProductTypes = async (
     });
 
     if (res?.data) {
-      // console.log("res.data:::", res.data);
       return res.data;
     } else {
       throw new Error("Data format error: 'data' field is missing.");
@@ -74,14 +73,14 @@ export const handleUpdateProductTypeAction = async (data: any) => {
 };
 
 export const handleDeleteProductTypeAction = async (id: any) => {
-    // const session = await auth();
-    const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types/${id}`,
-      method: 'DELETE',
-      // headers: {
-      //   Authorization: `Bearer ${session?.user?.access_token}`,
-      // },
-    });
-    revalidateTag('list-product-types');
-    return res;
-  };
+  // const session = await auth();
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types/${id}`,
+    method: 'DELETE',
+    // headers: {
+    //   Authorization: `Bearer ${session?.user?.access_token}`,
+    // },
+  });
+  revalidateTag('list-product-types');
+  return res;
+};

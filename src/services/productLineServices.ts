@@ -15,7 +15,6 @@ export const fetchProductLines = async (
     pageSize,
   };
 
-  console.log("fetch data request:::", { url, current, pageSize, searchName});
 
   if (searchName) {
     queryParams.name = searchName;
@@ -32,7 +31,6 @@ export const fetchProductLines = async (
     });
 
     if (res?.data) {
-      // console.log("res.data:::", res.data);
       return res.data;
     } else {
       throw new Error("Data format error: 'data' field is missing.");

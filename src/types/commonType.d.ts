@@ -63,6 +63,7 @@ declare global {
     isUpdateModalOpen: boolean;
     setIsUpdateModalOpen: (v: boolean) => void;
     data?: T;
+    setData?: (v: T | undefined) => void;
     onMutate: () => void;
   }
 
