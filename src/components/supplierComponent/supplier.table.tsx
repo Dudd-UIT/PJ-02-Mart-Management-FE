@@ -52,16 +52,10 @@ const SupplierTable = (props: SupplierTableType) => {
                   <td key={colIndex}>{row[column.key as keyof Supplier]}</td>
                 ))}
                 <td>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() => handleOpenUpdateModal(row)}
-                  >
+                  <button onClick={() => handleOpenUpdateModal(row)}>
                     <FaEye size={18} />
                   </button>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() => handleOpenDeleteModal(row)}
-                  >
+                  <button onClick={() => handleOpenDeleteModal(row)}>
                     <HiOutlineTrash size={18} />
                   </button>
                 </td>
@@ -75,6 +69,7 @@ const SupplierTable = (props: SupplierTableType) => {
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         data={selectedSupplier} // Pass selected supplier data to modal
+        setData={setSelectedSupplier}
         onMutate={onMutate}
       />
       <DeleteSupplierModal

@@ -59,6 +59,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     isUpdateModalOpen,
     setIsUpdateModalOpen,
     data: supplierData,
+    setData: setSupplierData,
     onMutate,
   } = props;
   const [isProductSupplierModalOpen, setIsProductSupplierModalOpen] =
@@ -94,8 +95,9 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     setProductUnitIds([]);
   };
 
-  const handleCloseCreateModal = () => {
+  const handleCloseUpdateModal = () => {
     setIsUpdateModalOpen(false);
+    setSupplierData?.(undefined);
     resetForm();
   };
 
@@ -111,7 +113,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
 
     const res = await handleUpdateSupplierAction(newSupplier);
     if (res?.data) {
-      handleCloseCreateModal();
+      handleCloseUpdateModal();
       setProductUnitIds([]);
       toast.success(res.message);
       onMutate();
@@ -172,7 +174,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
       <Modal
         backdrop={'static'}
         show={isUpdateModalOpen}
-        onHide={handleCloseCreateModal}
+        onHide={handleCloseUpdateModal}
         size="lg"
       >
         <Modal.Header closeButton>
@@ -286,7 +288,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
+          <Button variant="secondary" onClick={handleCloseUpdateModal}>
             Thoát
           </Button>
           <Button variant="danger" onClick={handleUpdateSupplier}>

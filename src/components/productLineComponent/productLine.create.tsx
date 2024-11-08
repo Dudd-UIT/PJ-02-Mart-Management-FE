@@ -7,16 +7,16 @@ import { handleCreaterProductLineAction } from '@/services/productLineServices';
 import useSWR from 'swr';
 import { ProductType } from '@/types/productType';
 
-
 function CreateProductLineModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
   const [name, setName] = useState('');
   const [productTypeId, setProductTypeId] = useState<number>();
   const [productTypeName, setProductTypeName] = useState('');
 
-
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`;
-  const { data: productTypes, error } = useSWR<{ results: ProductType[] }>(url, fetchProductTypes);
+  const { data: productTypes, error } = useSWR(url, () =>
+    fetchProductTypes(url),
+  );
 
   const clearForm = () => {
     setName('');
@@ -31,9 +31,9 @@ function CreateProductLineModal(props: CreateModalProps) {
 
   const handleCreateProductLine = async () => {
     const newProductLine = {
-        name,
-        productTypeId
-      };
+      name,
+      productTypeId,
+    };
 
     const res = await handleCreaterProductLineAction(newProductLine);
     if (res?.data) {
@@ -46,14 +46,15 @@ function CreateProductLineModal(props: CreateModalProps) {
     }
   };
 
-  const handleSelectedProductType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectedProductType = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     const selectedProductType = productTypes?.results.find(
-      (type) => type.id === parseInt(e.target.value),
+      (type: ProductType) => type.id === parseInt(e.target.value),
     );
     setProductTypeId(selectedProductType?.id);
     setProductTypeName(selectedProductType?.name || '');
   };
-
 
   return (
     <>
@@ -86,7 +87,7 @@ function CreateProductLineModal(props: CreateModalProps) {
                   value={productTypeId}
                   onChange={handleSelectedProductType}
                 >
-                    <option value="">Chọn loại sản phẩm</option>
+                  <option value="">Chọn loại sản phẩm</option>
                   {productTypes?.results?.map((productType: ProductType) => (
                     <option key={productType.id} value={productType.id}>
                       {productType.name}

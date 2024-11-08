@@ -20,7 +20,7 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị', key: 'unitName' },
   { title: 'Khối lượng', key: 'volumne' },
   { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
-  { title: 'Giá bán', key: 'sell_price' },
+  // { title: 'Giá bán', key: 'sell_price' },
 ];
 
 const fetchProductUnits = async (
@@ -158,10 +158,10 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
           <div className="row mb-3">
             <div className="col-md-4">
               <Input
-                title="Tên nhà cung cấp"
+                title="Tên sản phẩm"
                 size={12}
                 value={searchName}
-                placeholder="Nhập tên nhà cung cấp"
+                placeholder="Nhập tên sản phẩm"
                 onChange={(value) => setSearchName(value)}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}

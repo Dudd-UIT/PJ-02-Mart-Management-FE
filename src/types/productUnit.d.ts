@@ -17,9 +17,11 @@ export type ProductUnit = {
   createdAt: string;
   volumne: string;
   productSample?: {
+    id: number;
     name: string;
   };
   unit?: {
+    id: number;
     name: string;
   };
 };

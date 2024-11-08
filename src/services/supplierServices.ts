@@ -4,9 +4,9 @@ import { sendRequest } from '@/utils/api';
 import { revalidateTag } from 'next/cache';
 
 export const fetchSuppliers = async (
-  url: string,
-  current: number,
-  pageSize: number,
+  url: string = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`,
+  current?: number,
+  pageSize?: number,
   searchName?: string,
   searchPhone?: string,
 ) => {

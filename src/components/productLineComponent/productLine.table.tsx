@@ -6,19 +6,18 @@ import { ProductLine, ProductLineTableType } from '@/types/productLine';
 import DeleteProductLineModal from './productLine.delete';
 import UpdateProductLineModal from './productLine.update';
 
-
 const ProductLineTable = (props: ProductLineTableType) => {
   const { productLines, columns, onMutate } = props;
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [selectedProductLine, setSelectedProductLine] = useState<ProductLine | undefined>();
+  const [selectedProductLine, setSelectedProductLine] = useState<
+    ProductLine | undefined
+  >();
 
   const handleOpenUpdateModal = (productLine: ProductLine) => {
     setSelectedProductLine(productLine);
     setIsUpdateModalOpen(true);
-    console.log("Product Line:::", productLine);
   };
-
 
   const handleOpenDeleteModal = (productLine: ProductLine) => {
     setSelectedProductLine(productLine);
@@ -49,19 +48,17 @@ const ProductLineTable = (props: ProductLineTableType) => {
             {productLines?.map((row, rowIndex) => (
               <tr key={rowIndex} className="text-center align-middle">
                 {columns.map((column, colIndex) => (
-                  <td key={colIndex}>{ column.render ? column.render(row) : row[column.key as keyof ProductLine]}</td>
+                  <td key={colIndex}>
+                    {column.render
+                      ? column.render(row)
+                      : row[column.key as keyof ProductLine]}
+                  </td>
                 ))}
                 <td>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() => handleOpenUpdateModal(row)}
-                  >
+                  <button onClick={() => handleOpenUpdateModal(row)}>
                     <FaEye size={18} />
                   </button>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() => handleOpenDeleteModal(row)}
-                  >
+                  <button onClick={() => handleOpenDeleteModal(row)}>
                     <HiOutlineTrash size={18} />
                   </button>
                 </td>

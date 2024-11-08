@@ -54,13 +54,11 @@ const CustomerTable = (props: CustomerTableType) => {
                 ))}
                 <td>
                   <button
-                    className="btn btn-sm"
                     onClick={() => handleOpenUpdateModal(row)}
                   >
                     <FaEye size={18} />
                   </button>
                   <button
-                    className="btn btn-sm"
                     onClick={() => handleOpenDeleteModal(row)}
                   >
                     <HiOutlineTrash size={18} />
