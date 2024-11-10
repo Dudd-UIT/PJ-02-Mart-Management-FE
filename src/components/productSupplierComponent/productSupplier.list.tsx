@@ -4,7 +4,7 @@ import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
-import ProductUnitTableModal from '../productUnitComponent/productUnit.table';
+import ProductUnitTable from '../productUnitComponent/productUnit.table';
 import {
   ProductSupplierModalProps,
   ProductUnit,
@@ -63,6 +63,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const {
     isProductSupplierModalOpen,
     setIsProductSupplierModalOpen,
+    selectedProductUnitIds,
     onSelectedProductUnitsChange,
   } = props;
 
@@ -72,6 +73,12 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const [searchParams, setSearchParams] = useState({ name: '', category: '' });
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+
+  // useEffect(() => {
+  //   if (selectedProductUnitIds) {
+  //     setProductUnitIds(selectedProductUnitIds);
+  //   }
+  // }, [selectedProductUnitIds]);
 
   // Trigger data re-fetch whenever `searchParams` or pagination parameters change
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
@@ -120,12 +127,11 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   };
 
   const handleCloseProductUnitListModal = () => {
-    setProductUnitIds([]);
     setIsProductSupplierModalOpen(false);
   };
 
   const handleSave = () => {
-    onSelectedProductUnitsChange(productUnitIds);
+    onSelectedProductUnitsChange?.(productUnitIds);
     setIsProductSupplierModalOpen(false);
   };
 
@@ -181,7 +187,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
           </div>
         </Form>
         {/* ProductUnit Table */}
-        <ProductUnitTableModal columns={columns} productUnits={productUnits} />
+        <ProductUnitTable columns={columns} productUnits={productUnits} />
         {/* Navigate Control */}
         <nav aria-label="Page navigation example" className="mt-3">
           <ul className="pagination justify-content-center">

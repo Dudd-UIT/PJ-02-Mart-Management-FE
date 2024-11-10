@@ -86,7 +86,6 @@ function UpdateInboundReceiptModal(
   const [isProductSupplierModalOpen, setIsProductSupplierModalOpen] =
     useState(false);
 
-  console.log('inboundReceiptData', inboundReceiptData);
 
   const initialInboundReceipt = {
     createdAt: '',
@@ -314,7 +313,6 @@ function UpdateInboundReceiptModal(
   ) => {
     const id = inboundReceiptInfo.id;
     const payload = { id, ...updatedStatus };
-    console.log('payload', payload);
     const res = await handleUpdatedStatusInboundReceiptAction(payload);
     if (res?.data) {
       toast.success(res.message);

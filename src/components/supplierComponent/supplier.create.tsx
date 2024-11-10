@@ -4,7 +4,7 @@ import { FaPlus } from 'react-icons/fa';
 import { useState } from 'react';
 import { handleCreateSupplierAction } from '@/services/supplierServices';
 import ProductSupplierModal from '../productSupplierComponent/productSupplier.list';
-import SelectedProductUnitTableModal from '../productUnitComponent/selectedProductUnit.table';
+import SelectedProductUnitTable from '../productUnitComponent/selectedProductUnit.table';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
 import { sendRequest } from '@/utils/api';
 import useSWR from 'swr';
@@ -222,7 +222,7 @@ function CreateSupplierModal(props: CreateModalProps) {
           {/* Danh sách các sản phẩm được chọn */}
           {productUnits.length > 0 && (
             <>
-              <SelectedProductUnitTableModal
+              <SelectedProductUnitTable
                 columns={columns}
                 productUnits={productUnits}
               />
