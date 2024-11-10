@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { Supplier } from '@/types/supplier';
-import SelectedProductUnitTableModal from '../productUnitComponent/selectedProductUnit.table';
+import SelectedProductUnitTable from '../productUnitComponent/selectedProductUnit.table';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
 import { sendRequest } from '@/utils/api';
 import { handleUpdateSupplierAction } from '@/services/supplierServices';
@@ -69,7 +69,9 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [country, setCountry] = useState('');
-  // const [productUnitIds, setProductUnitIds] = useState<number[]>([]);
+  const [selectedProductUnitIds, setSelectedProductUnitIds] = useState<
+    number[]
+  >([]);
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
 
   const [current, setCurrent] = useState(1);
@@ -82,6 +84,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
       setPhone(supplierData.phone || '');
       setAddress(supplierData.address || '');
       setCountry(supplierData.country || '');
+      setSelectedProductUnitIds(supplierData.supplierProducts || []);
       setProductUnitIds(supplierData.supplierProducts || []);
     }
   }, [supplierData, setProductUnitIds]);
@@ -92,6 +95,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     setPhone(supplierData?.phone || '');
     setAddress(supplierData?.address || '');
     setCountry(supplierData?.country || '');
+    setSelectedProductUnitIds([]);
     setProductUnitIds([]);
   };
 
@@ -244,7 +248,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
           {/* Danh sách sản phẩm được cung cấp */}
           {productUnits.length > 0 && (
             <>
-              <SelectedProductUnitTableModal
+              <SelectedProductUnitTable
                 columns={columns}
                 productUnits={productUnits}
               />
@@ -299,7 +303,8 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
       <ProductSupplierModal
         isProductSupplierModalOpen={isProductSupplierModalOpen}
         setIsProductSupplierModalOpen={setIsProductSupplierModalOpen}
-        onSelectedProductUnitsChange={setProductUnitIds}
+        // selectedProductUnitIds={selectedProductUnitIds}
+        // onSelectedProductUnitsChange={setSelectedProductUnitIds}
       />
     </>
   );

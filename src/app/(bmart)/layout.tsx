@@ -1,4 +1,5 @@
 import Sidebar from '@/components/commonComponent/Sidebar';
+import { SelectedRolesProvider } from '@/context/selectedRolesContext';
 import { IoPersonOutline } from 'react-icons/io5';
 
 export default function Layout({
@@ -17,7 +18,9 @@ export default function Layout({
             </button>
           </div>
           <hr className="h-color m-2" />
-          <div className="container">{children}</div>
+          <div className="container">
+            <SelectedRolesProvider>{children}</SelectedRolesProvider>
+          </div>
         </div>
       </div>
     </>

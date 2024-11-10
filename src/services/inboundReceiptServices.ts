@@ -60,8 +60,6 @@ export const handleCreatedInboundReceiptAction = async (data: any) => {
 
 export const handleUpdatedInboundReceiptAction = async (data: any) => {
   const { inboundReceiptId, ...rest } = data; // Separate id from the rest of the data
-  console.log('inboundReceiptId', inboundReceiptId);
-  console.log('rest', rest);
 
   // Send the PATCH request to update dInboundReceipt by ID in the URL path
   const res = await sendRequest<IBackendRes<any>>({
@@ -81,8 +79,6 @@ export const handleUpdatedInboundReceiptAction = async (data: any) => {
 
 export const handleUpdatedStatusInboundReceiptAction = async (data: any) => {
   const { id, ...rest } = data; // Separate id from the rest of the data
-  console.log('id', id);
-  console.log('rest', rest);
 
   // Send the PATCH request to update dInboundReceipt by ID in the URL path
   const res = await sendRequest<IBackendRes<any>>({

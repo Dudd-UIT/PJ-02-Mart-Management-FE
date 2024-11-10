@@ -26,7 +26,7 @@ export type ProductUnit = {
   };
 };
 
-export interface ProductUnitTableModalProps {
+export interface ProductUnitTableProps {
   productUnits: ProductUnitTransform[];
   columns: Column<ProductUnitTransform>[];
   // meta: MetaData;
@@ -35,10 +35,11 @@ export interface ProductUnitTableModalProps {
 export interface ProductSupplierModalProps {
   isProductSupplierModalOpen: boolean;
   setIsProductSupplierModalOpen: (v: boolean) => void;
-  onSelectedProductUnitsChange: (v: number[]) => void;
+  onSelectedProductUnitsChange?: (v: number[]) => void;
+  selectedProductUnitIds?: number[];
 }
 
-export interface SelectedProductUnitTableModalProps {
+export interface SelectedProductUnitTableProps {
   productUnits: ProductUnitTransform[];
   columns: Column<ProductUnitTransform>[];
   // meta: MetaData;

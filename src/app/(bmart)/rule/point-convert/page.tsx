@@ -39,7 +39,6 @@ function PointConvertPage() {
   const onMutate = () => mutate([url]);
 
   const handleSave = async () => {
-    console.log('Saving point value:', parameter?.value);
     const res = await handleUpdateParameterAction(parameter);
     if (res?.data) {
       toast.success(res.message);
