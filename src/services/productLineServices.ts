@@ -1,20 +1,18 @@
-'use server'
+'use server';
 
-import { sendRequest } from "@/utils/api";
-import { revalidateTag } from "next/cache";
-
+import { auth } from '@/auth';
+import { sendRequest } from '@/utils/api';
 
 export const fetchProductLines = async (
-  url: string,
   current: number,
   pageSize: number,
   searchName?: string,
 ) => {
+  const session = await auth();
   const queryParams: { [key: string]: any } = {
     current,
     pageSize,
   };
-
 
   if (searchName) {
     queryParams.name = searchName;
@@ -22,18 +20,17 @@ export const fetchProductLines = async (
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
-      url,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`,
       method: 'GET',
       queryParams,
-      nextOption: {
-        next: { tags: ['list-product-lines'] },
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
-
     if (res?.data) {
       return res.data;
     } else {
-      throw new Error("Data format error: 'data' field is missing.");
+      throw new Error(res.message);
     }
   } catch (error) {
     console.error('Fetch product lines failed:', error);
@@ -42,47 +39,44 @@ export const fetchProductLines = async (
 };
 
 export const handleCreaterProductLineAction = async (data: any) => {
-  // const session = await auth();
+  const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`,
     method: 'POST',
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
     body: { ...data },
   });
-  revalidateTag('list-product-lines');
 
   return res;
 };
 
 export const handleUpdateProductLineAction = async (data: any) => {
   const { id, ...rest } = data;
+  const session = await auth();
 
-  // Send the PATCH request to update supplier by ID in the URL path
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines/${id}`, // Include ID directly in the path
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines/${id}`,
     method: 'PATCH',
     body: { ...rest },
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`, // Uncomment if authentication is needed
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
   });
 
-  // Revalidate to update the list view if necessary
-  revalidateTag('list-product-lines');
   return res;
 };
 
 export const handleDeleteProductLineAction = async (id: any) => {
-    // const session = await auth();
-    const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines/${id}`,
-      method: 'DELETE',
-      // headers: {
-      //   Authorization: `Bearer ${session?.user?.access_token}`,
-      // },
-    });
-    revalidateTag('list-product-lines');
-    return res;
-  };
+  const session = await auth();
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines/${id}`,
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+  });
+
+  return res;
+};

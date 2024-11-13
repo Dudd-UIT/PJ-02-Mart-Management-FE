@@ -5,12 +5,12 @@ import { useState, useEffect } from 'react';
 import { Supplier } from '@/types/supplier';
 import SelectedProductUnitTable from '../productUnitComponent/selectedProductUnit.table';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
-import { sendRequest } from '@/utils/api';
 import { handleUpdateSupplierAction } from '@/services/supplierServices';
 import useSWR from 'swr';
 import ProductSupplierModal from '../productSupplierComponent/productSupplier.list';
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { toast } from 'react-toastify';
+import { fetchProductUnitByIds } from '@/services/productUnitServices';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
@@ -20,39 +20,6 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
   { title: 'Giá bán', key: 'sell_price' },
 ];
-
-const fetchProductUnits = async (
-  url: string,
-  current: number,
-  pageSize: number,
-  ids?: number[],
-) => {
-  const queryParams: { [key: string]: any } = {
-    current,
-    pageSize,
-  };
-
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url,
-      method: 'POST',
-      queryParams,
-      body: { ids },
-      nextOption: {
-        next: { tags: ['list-productUnits'] },
-      },
-    });
-
-    if (res?.data) {
-      return res.data;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productSamples failed:', error);
-    throw error;
-  }
-};
 
 function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
   const {
@@ -126,10 +93,9 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     }
   };
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/find-by-ids`;
   const { data, error } = useSWR(
-    [url, current, pageSize, productUnitIds.length],
-    () => fetchProductUnits(url, current, pageSize, productUnitIds),
+    [current, pageSize, productUnitIds.length],
+    () => fetchProductUnitByIds(productUnitIds, current, pageSize),
   );
   if (error)
     return (

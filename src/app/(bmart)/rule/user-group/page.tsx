@@ -28,10 +28,9 @@ const UserGroupsPage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`;
-
   const { data, error } = useSWR(
     [url, current, pageSize, searchParams.name],
-    () => fetchGroups(url, current, pageSize, searchParams.name),
+    () => fetchGroups(current, pageSize, searchParams.name),
   );
 
   if (error)
@@ -69,7 +68,7 @@ const UserGroupsPage = () => {
     if (current < meta.pages) setCurrent(current + 1);
   };
 
-  const onMutate = () => mutate([url, current, pageSize, searchParams.name]);
+  const onMutate = () => mutate([current, pageSize, searchParams.name]);
 
   return (
     <>

@@ -18,6 +18,7 @@ import {
   handleUpdatedInboundReceiptAction,
   handleUpdatedStatusInboundReceiptAction,
 } from '@/services/inboundReceiptServices';
+import { fetchProductUnitByIds } from '@/services/productUnitServices';
 
 type FormDataBatch = {
   id?: number;
@@ -55,24 +56,6 @@ const columns: Column<InboundReceiptCreate>[] = [
   { title: 'Ngày hết hạn', key: 'expiredAt' },
 ];
 
-const fetchProductUnitsByIds = async (ids: number[]) => {
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/find-by-ids`,
-      method: 'POST',
-      body: { ids },
-    });
-    if (res?.data) {
-      return res.data.results;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productUnits failed:', error);
-    throw error;
-  }
-};
-
 function UpdateInboundReceiptModal(
   props: UpdateModalProps<InboundReceiptTransform>,
 ) {
@@ -85,7 +68,6 @@ function UpdateInboundReceiptModal(
   } = props;
   const [isProductSupplierModalOpen, setIsProductSupplierModalOpen] =
     useState(false);
-
 
   const initialInboundReceipt = {
     createdAt: '',
@@ -108,7 +90,7 @@ function UpdateInboundReceiptModal(
   >([]);
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`;
-  const { data: suppliers, error } = useSWR([url], () => fetchSuppliers(url));
+  const { data: suppliers, error } = useSWR([url], () => fetchSuppliers());
 
   useEffect(() => {
     if (inboundReceiptData) {
@@ -157,9 +139,9 @@ function UpdateInboundReceiptModal(
 
   useEffect(() => {
     if (selectedProductUnitIds.length > 0) {
-      fetchProductUnitsByIds(selectedProductUnitIds).then(
+      fetchProductUnitByIds(selectedProductUnitIds).then(
         (selectedProductUnitId) => {
-          const updatedFormBatchData = selectedProductUnitId.map(
+          const updatedFormBatchData = selectedProductUnitId?.results.map(
             (productUnit: ProductUnit) => ({
               inbound_price: 0,
               discount: 0,

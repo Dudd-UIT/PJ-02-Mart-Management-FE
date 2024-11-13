@@ -57,7 +57,7 @@ function CreateStaffModal(props: CreateModalProps) {
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`;
 
-  const { data: groups, error } = useSWR([url], () => fetchGroups(url));
+  const { data: groups, error } = useSWR([url], () => fetchGroups());
 
   if (error)
     return (

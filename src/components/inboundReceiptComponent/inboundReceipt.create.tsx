@@ -4,7 +4,6 @@ import { FaPlus, FaSearch } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { toast } from 'react-toastify';
-import { sendRequest } from '@/utils/api';
 import ProductSupplierModal from '../productSupplierComponent/productSupplier.list';
 import { ProductUnit } from '@/types/productUnit';
 import { HiOutlineTrash } from 'react-icons/hi2';
@@ -13,6 +12,7 @@ import { Input } from '../commonComponent/InputForm';
 import { fetchSuppliers } from '@/services/supplierServices';
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { handleCreatedInboundReceiptAction } from '@/services/inboundReceiptServices';
+import { fetchProductUnitByIds } from '@/services/productUnitServices';
 
 type FormDataBatch = {
   inbound_price: number;
@@ -48,24 +48,6 @@ const columns: Column<InboundReceiptCreate>[] = [
   { title: 'Ngày hết hạn', key: 'expiredAt' },
 ];
 
-const fetchProductUnitsByIds = async (ids: number[]) => {
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/find-by-ids`,
-      method: 'POST',
-      body: { ids },
-    });
-    if (res?.data) {
-      return res.data.results;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productUnits failed:', error);
-    throw error;
-  }
-};
-
 function CreateInboundReceiptModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
   const [isProductSupplierModalOpen, setIsProductSupplierModalOpen] =
@@ -92,13 +74,13 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
   >([]);
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`;
-  const { data: suppliers, error } = useSWR([url], () => fetchSuppliers(url));
+  const { data: suppliers, error } = useSWR([url], () => fetchSuppliers());
 
   useEffect(() => {
     if (selectedProductUnitIds.length > 0) {
-      fetchProductUnitsByIds(selectedProductUnitIds).then(
+      fetchProductUnitByIds(selectedProductUnitIds).then(
         (selectedProductUnitId) => {
-          const updatedFormBatchData = selectedProductUnitId.map(
+          const updatedFormBatchData = selectedProductUnitId?.results.map(
             (productUnit: ProductUnit) => ({
               inbound_price: 0,
               discount: 0,

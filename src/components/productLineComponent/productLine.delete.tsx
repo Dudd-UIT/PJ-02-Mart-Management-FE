@@ -1,9 +1,11 @@
 import { handleDeleteProductLineAction } from '@/services/productLineServices';
-import { ProductLine } from '@/types/productLine';
+import { ProductLineTransform } from '@/types/productLine';
 import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
-const DeleteProductLineModal = (props: DeleteModalProps<ProductLine>) => {
+const DeleteProductLineModal = (
+  props: DeleteModalProps<ProductLineTransform>,
+) => {
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,

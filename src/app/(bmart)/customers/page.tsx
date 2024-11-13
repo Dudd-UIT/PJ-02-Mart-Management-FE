@@ -28,13 +28,10 @@ const CustomersPage = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/users`;
-
   const { data, error } = useSWR(
-    [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
+    [current, pageSize, groupId, searchParams.name, searchParams.phone],
     () =>
       fetchCustomers(
-        url,
         current,
         pageSize,
         groupId,
@@ -80,10 +77,9 @@ const CustomersPage = () => {
 
   const onMutate = () =>
     mutate(
-      [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
+      [current, pageSize, groupId, searchParams.name, searchParams.phone],
       async () =>
         await fetchCustomers(
-          url,
           current,
           pageSize,
           groupId,

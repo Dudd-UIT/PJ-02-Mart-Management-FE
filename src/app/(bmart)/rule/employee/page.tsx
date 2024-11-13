@@ -4,6 +4,7 @@ import { Input } from '@/components/commonComponent/InputForm';
 import CreateStaffModal from '@/components/staffComponent/staff.create';
 import StaffTable from '@/components/staffComponent/staff.table';
 import { fetchCustomers } from '@/services/customerServices';
+import { fetchStaffs } from '@/services/staffServices';
 import { Customer } from '@/types/customer';
 import { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
@@ -27,13 +28,10 @@ const EmployeesPage = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/users`;
-
   const { data, error } = useSWR(
-    [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
+    [current, pageSize, groupId, searchParams.name, searchParams.phone],
     () =>
-      fetchCustomers(
-        url,
+      fetchStaffs(
         current,
         pageSize,
         groupId,
@@ -79,10 +77,9 @@ const EmployeesPage = () => {
 
   const onMutate = () =>
     mutate(
-      [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
+      [current, pageSize, groupId, searchParams.name, searchParams.phone],
       async () =>
-        await fetchCustomers(
-          url,
+        await fetchStaffs(
           current,
           pageSize,
           groupId,

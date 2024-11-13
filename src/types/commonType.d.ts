@@ -30,11 +30,19 @@ declare global {
 
   interface ILogin {
     user: {
-      _id: string;
-      name: string;
+      id: number;
       email: string;
+      name: string;
+      phone: string;
+      address: string;
+      groupName: string;
     };
     access_token: string;
+  }
+
+  interface InfoModalProps {
+    isInfoModalOpen: boolean;
+    setIsInfoModalOpen: (v: boolean) => void;
   }
 
   export type Column<T> = {

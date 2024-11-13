@@ -1,7 +1,6 @@
-import { IFDateProps, InputProps } from '@/types';
+import { InputProps } from '@/types';
 import { useState } from 'react';
 import { FaCheck, FaXmark } from 'react-icons/fa6';
-import { DatePicker } from 'rsuite';
 import 'rsuite/DatePicker/styles/index.css';
 
 export function Input({

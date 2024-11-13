@@ -38,11 +38,8 @@ const InboundReceiptPage = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/inbound-receipt`;
-
   const { data, error } = useSWR(
     [
-      url,
       current,
       pageSize,
       searchParams.staffName,
@@ -52,7 +49,6 @@ const InboundReceiptPage = () => {
     ],
     () =>
       fetchInboundReceipts(
-        url,
         current,
         pageSize,
         searchParams.staffName,
@@ -119,7 +115,6 @@ const InboundReceiptPage = () => {
 
   const onMutate = () =>
     mutate([
-      url,
       current,
       pageSize,
       searchParams.staffName,
@@ -178,7 +173,7 @@ const InboundReceiptPage = () => {
           className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <FaPlus className="align-middle" />
+          <FaPlus />
           <text>Thêm</text>
         </button>
       </div>
