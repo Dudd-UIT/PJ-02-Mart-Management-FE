@@ -46,7 +46,7 @@ const fetchProductUnits = async (
     if (res?.data) {
       return res.data;
     } else {
-      throw new Error("Data format error: 'data' field is missing.");
+      throw new Error(res.message);
     }
   } catch (error) {
     console.error('Fetch productSamples failed:', error);
@@ -69,8 +69,8 @@ function CreateProductTypeModal(props: CreateModalProps) {
 
   const handleCreateProductType = async () => {
     const newProductType = {
-        name,
-      };
+      name,
+    };
 
     const res = await handleCreaterProductTypeAction(newProductType);
     if (res?.data) {
@@ -96,13 +96,13 @@ function CreateProductTypeModal(props: CreateModalProps) {
         <Modal.Body>
           {/* Thông tin loại sản phẩm */}
           <div className="container mb-4 px-4">
-              <label>Tên loại sản phẩm</label>
-              <input
-                type="text"
-                className="form-control"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+            <label>Tên loại sản phẩm</label>
+            <input
+              type="text"
+              className="form-control"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
         </Modal.Body>
         <Modal.Footer>

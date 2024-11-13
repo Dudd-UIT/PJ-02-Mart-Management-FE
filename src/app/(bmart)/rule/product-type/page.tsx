@@ -6,8 +6,7 @@ import ProductTypeTable from '@/components/productTypeComponent/productType.tabl
 import { fetchProductTypes } from '@/services/productTypeServices';
 import { ProductType } from '@/types/productType';
 import { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { FaPlus } from 'react-icons/fa6';
+import { FaPlus, FaSearch } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
 
 const columns: Column<ProductType>[] = [
@@ -23,11 +22,8 @@ function ProductTypePage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useState({ name: '' });
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`;
-
-  const { data, error } = useSWR(
-    [url, current, pageSize, searchParams.name],
-    () => fetchProductTypes(url, current, pageSize, searchParams.name),
+  const { data, error } = useSWR([current, pageSize, searchParams.name], () =>
+    fetchProductTypes(current, pageSize, searchParams.name),
   );
 
   if (error)
@@ -65,7 +61,7 @@ function ProductTypePage() {
     setCurrent(1);
   };
 
-  const onMutate = () => mutate([url, current, pageSize, searchParams.name]);
+  const onMutate = () => mutate([current, pageSize, searchParams.name]);
 
   return (
     <>

@@ -2,7 +2,11 @@
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
-import { ProductLine, ProductLineTableType } from '@/types/productLine';
+import {
+  ProductLine,
+  ProductLineTableType,
+  ProductLineTransform,
+} from '@/types/productLine';
 import DeleteProductLineModal from './productLine.delete';
 import UpdateProductLineModal from './productLine.update';
 
@@ -11,15 +15,15 @@ const ProductLineTable = (props: ProductLineTableType) => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedProductLine, setSelectedProductLine] = useState<
-    ProductLine | undefined
+    ProductLineTransform | undefined
   >();
 
-  const handleOpenUpdateModal = (productLine: ProductLine) => {
+  const handleOpenUpdateModal = (productLine: ProductLineTransform) => {
     setSelectedProductLine(productLine);
     setIsUpdateModalOpen(true);
   };
 
-  const handleOpenDeleteModal = (productLine: ProductLine) => {
+  const handleOpenDeleteModal = (productLine: ProductLineTransform) => {
     setSelectedProductLine(productLine);
     setIsDeleteModalOpen(true);
   };
@@ -51,7 +55,7 @@ const ProductLineTable = (props: ProductLineTableType) => {
                   <td key={colIndex}>
                     {column.render
                       ? column.render(row)
-                      : row[column.key as keyof ProductLine]}
+                      : row[column.key as keyof ProductLineTransform]}
                   </td>
                 ))}
                 <td>
@@ -72,6 +76,7 @@ const ProductLineTable = (props: ProductLineTableType) => {
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         data={selectedProductLine}
+        setData={setSelectedProductLine}
         onMutate={onMutate}
       />
       <DeleteProductLineModal

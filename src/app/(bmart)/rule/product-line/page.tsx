@@ -4,19 +4,17 @@ import { Input } from '@/components/commonComponent/InputForm';
 import CreateProductLineModal from '@/components/productLineComponent/productLine.create';
 import ProductLineTable from '@/components/productLineComponent/productLine.table';
 import { fetchProductLines } from '@/services/productLineServices';
-import { ProductLine } from '@/types/productLine';
+import { ProductLine, ProductLineTransform } from '@/types/productLine';
 import { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { FaPlus } from 'react-icons/fa6';
+import { FaPlus, FaSearch } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
 
-const columns: RenderableColumn<ProductLine>[] = [
+const columns: Column<ProductLineTransform>[] = [
   { title: '#', key: 'id' },
   { title: 'Tên dòng sản phẩm', key: 'name' },
   {
     title: 'Tên loại sản phẩm',
-    key: 'productType',
-    render: (productLine: ProductLine) => productLine.productType.name,
+    key: 'productTypeName',
   },
 ];
 
@@ -28,11 +26,17 @@ function ProductLinePage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useState({ name: '' });
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`;
+  const { data, error } = useSWR([current, pageSize, searchParams.name], () =>
+    fetchProductLines(current, pageSize, searchParams.name),
+  );
 
-  const { data, error } = useSWR(
-    [url, current, pageSize, searchParams.name],
-    () => fetchProductLines(url, current, pageSize, searchParams.name),
+  const productLines: ProductLineTransform[] = data?.results.map(
+    (item: ProductLine) => ({
+      id: item.id,
+      name: item.name,
+      productTypeName: item.productType.name,
+      productTypeId: item.productType.id,
+    }),
   );
 
   if (error)
@@ -70,7 +74,7 @@ function ProductLinePage() {
     setCurrent(1);
   };
 
-  const onMutate = () => mutate([url, current, pageSize, searchParams.name]);
+  const onMutate = () => mutate([current, pageSize, searchParams.name]);
 
   return (
     <>
@@ -91,17 +95,17 @@ function ProductLinePage() {
       {/* button Thêm Product Line */}
       <div className="d-flex justify-content-end mx-3">
         <button
-          className="btn btn-primary"
+          className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <FaPlus className="align-middle" />
+          <FaPlus />
           <text>Thêm</text>
         </button>
       </div>
 
       {/* Danh sách Product Line */}
       <ProductLineTable
-        productLines={data.results}
+        productLines={productLines}
         columns={columns}
         onMutate={onMutate}
       />

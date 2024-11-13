@@ -1,14 +1,15 @@
 'use server';
 
+import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 import { revalidateTag } from 'next/cache';
 
 export const fetchGroups = async (
-  url: string,
   current?: number,
   pageSize?: number,
   searchName?: string,
 ) => {
+  const session = await auth();
   const queryParams: { [key: string]: any } = {
     current,
     pageSize,
@@ -18,68 +19,61 @@ export const fetchGroups = async (
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
-      url,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`,
       method: 'GET',
       queryParams,
-      nextOption: {
-        next: { tags: ['list-groups'] },
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
 
     if (res?.data) {
       return res.data;
     } else {
-      throw new Error("Data format error: 'data' field is missing.");
+      throw new Error(res.message);
     }
   } catch (error) {
-    console.error('Fetch suppliers failed:', error);
+    console.error('Fetch groups failed:', error);
     throw error;
   }
 };
 
 export const handleCreateGroupAction = async (data: any) => {
-  // const session = await auth();
+  const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`,
     method: 'POST',
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
     body: { ...data },
   });
-  revalidateTag('list-groups');
-
   return res;
 };
 
 export const handleUpdateGroupAction = async (data: any) => {
-  const { id, ...rest } = data; // Separate id from the rest of the data
+  const { id, ...rest } = data;
+  const session = await auth();
 
-  // Send the PATCH request to update supplier by ID in the URL path
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups/${id}`, // Include ID directly in the path
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups/${id}`,
     method: 'PATCH',
     body: { ...rest },
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`, // Uncomment if authentication is needed
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
   });
-
-  // Revalidate to update the list view if necessary
-  revalidateTag('list-groups');
-
   return res;
 };
 
 export const handleDeleteGroupAction = async (id: any) => {
-  // const session = await auth();
+  const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups/${id}`,
     method: 'DELETE',
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
   });
-  revalidateTag('list-groups');
   return res;
 };

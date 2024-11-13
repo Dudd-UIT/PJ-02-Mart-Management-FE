@@ -1,14 +1,16 @@
 'use server';
 
+import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 import { revalidateTag } from 'next/cache';
 
 export const fetchRoles = async (
-  url: string,
   current: number,
   pageSize: number,
   searchDescription?: string,
 ) => {
+  const session = await auth();
+
   const queryParams: { [key: string]: any } = {
     current,
     pageSize,
@@ -18,18 +20,18 @@ export const fetchRoles = async (
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
-      url,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/roles`,
       method: 'GET',
       queryParams,
-      nextOption: {
-        next: { tags: ['list-roles'] },
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
 
     if (res?.data) {
       return res.data;
     } else {
-      throw new Error("Data format error: 'data' field is missing.");
+      throw new Error(res.message);
     }
   } catch (error) {
     console.error('Fetch suppliers failed:', error);
@@ -38,19 +40,17 @@ export const fetchRoles = async (
 };
 
 export const handleAssignRoleToGroupAction = async (data: any) => {
-  const { groupId, ...rest } = data; // Separate id from the rest of the data
+  const { groupId, ...rest } = data;
+  const session = await auth();
 
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups/assign-roles/${groupId}`, // Include ID directly in the path
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups/assign-roles/${groupId}`,
     method: 'PATCH',
     body: { ...rest },
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`, // Uncomment if authentication is needed
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
   });
-
-  // Revalidate to update the list view if necessary
-  revalidateTag('list-roles');
 
   return res;
 };

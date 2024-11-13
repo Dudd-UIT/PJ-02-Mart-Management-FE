@@ -26,18 +26,10 @@ const SuppliersPage = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`;
-
   const { data, error } = useSWR(
-    [url, current, pageSize, searchParams.name, searchParams.phone],
+    [current, pageSize, searchParams.name, searchParams.phone],
     () =>
-      fetchSuppliers(
-        url,
-        current,
-        pageSize,
-        searchParams.name,
-        searchParams.phone,
-      ),
+      fetchSuppliers(current, pageSize, searchParams.name, searchParams.phone),
   );
 
   if (error)
@@ -76,7 +68,7 @@ const SuppliersPage = () => {
   };
 
   const onMutate = () =>
-    mutate([url, current, pageSize, searchParams.name, searchParams.phone]);
+    mutate([current, pageSize, searchParams.name, searchParams.phone]);
 
   return (
     <>

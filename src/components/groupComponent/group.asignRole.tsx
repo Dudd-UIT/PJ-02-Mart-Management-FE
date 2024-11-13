@@ -42,7 +42,7 @@ function AssignRoleModal(props: AssignRoleModalProps) {
         setRoleIds([]);
       }
     }
-  }, [groupData]);
+  }, [groupData, setRoleIds]);
 
   const handleCloseAssignModal = () => {
     setRoleIds([]);
@@ -75,10 +75,9 @@ function AssignRoleModal(props: AssignRoleModalProps) {
     setCurrent(1);
   };
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/roles`;
   const { data, error, mutate } = useSWR(
-    [url, current, pageSize, searchParams.description],
-    () => fetchRoles(url, current, pageSize, searchParams.description),
+    [current, pageSize, searchParams.description],
+    () => fetchRoles(current, pageSize, searchParams.description),
   );
 
   if (error)

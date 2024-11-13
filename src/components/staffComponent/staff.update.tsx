@@ -77,9 +77,7 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
     setStaffInfo((prev) => ({ ...prev, [field]: value }));
   };
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`;
-
-  const { data: groups, error } = useSWR([url], () => fetchGroups(url));
+  const { data: groups, error } = useSWR([], () => fetchGroups());
 
   if (error)
     return (

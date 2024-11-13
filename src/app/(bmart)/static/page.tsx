@@ -1,9 +1,11 @@
+'use client';
+
 function StaticPage() {
-    return ( 
-        <>
-        <p>StaticPage</p>
-        </>
-     );
+  return (
+    <>
+      <p>StaticPage</p>
+    </>
+  );
 }
 
 export default StaticPage;

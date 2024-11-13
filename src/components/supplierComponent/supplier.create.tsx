@@ -10,6 +10,7 @@ import { sendRequest } from '@/utils/api';
 import useSWR from 'swr';
 import { toast } from 'react-toastify';
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
+import { fetchProductUnitByIds } from '@/services/productUnitServices';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
@@ -19,39 +20,6 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
   { title: 'Giá bán', key: 'sell_price' },
 ];
-
-const fetchProductUnits = async (
-  url: string,
-  current: number,
-  pageSize: number,
-  ids?: number[],
-) => {
-  const queryParams: { [key: string]: any } = {
-    current,
-    pageSize,
-  };
-
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url,
-      method: 'POST',
-      queryParams,
-      body: { ids },
-      nextOption: {
-        next: { tags: ['list-productUnits'] },
-      },
-    });
-
-    if (res?.data) {
-      return res.data;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productSamples failed:', error);
-    throw error;
-  }
-};
 
 function CreateSupplierModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
@@ -104,11 +72,9 @@ function CreateSupplierModal(props: CreateModalProps) {
     }
   };
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/find-by-ids`;
-
   const { data, error } = useSWR(
-    [url, current, pageSize, selectedProductUnitIds.length],
-    () => fetchProductUnits(url, current, pageSize, selectedProductUnitIds),
+    [current, pageSize, selectedProductUnitIds.length],
+    () => fetchProductUnitByIds(selectedProductUnitIds, current, pageSize),
   );
 
   if (error)

@@ -12,7 +12,7 @@ import useSWR, { mutate } from 'swr';
 function PointConvertPage() {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/parameters`;
 
-  const { data, error } = useSWR([url], () => fetchParameters(url));
+  const { data, error } = useSWR([url], () => fetchParameters());
   const [parameter, setParameter] = useState<Parameter | null>(null);
 
   useEffect(() => {

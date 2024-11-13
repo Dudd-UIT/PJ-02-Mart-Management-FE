@@ -7,8 +7,15 @@ export type ProductLine = {
   productType: ProductType;
 };
 
+export type ProductLineTransform = {
+  id: number;
+  name: string;
+  productTypeName: string;
+  productTypeId: number;
+};
+
 export interface ProductLineTableType {
-  productLines: ProductLine[];
-  columns: RenderableColumn<ProductLine>[];
+  productLines: ProductLineTransform[];
+  columns: Column<ProductLineTransform>[];
   onMutate: () => void;
 }

@@ -13,6 +13,7 @@ import {
 import { sendRequest } from '@/utils/api';
 import useSWR from 'swr';
 import { Input } from '../commonComponent/InputForm';
+import { fetchProductUnits } from '@/services/productUnitServices';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
@@ -23,41 +24,41 @@ const columns: Column<ProductUnitTransform>[] = [
   // { title: 'Giá bán', key: 'sell_price' },
 ];
 
-const fetchProductUnits = async (
-  url: string,
-  current: number,
-  pageSize: number,
-  searchName?: string,
-  searchCategory?: string,
-) => {
-  const queryParams: { [key: string]: any } = {
-    current,
-    pageSize,
-  };
+// const fetchProductUnits = async (
+//   url: string,
+//   current: number,
+//   pageSize: number,
+//   searchName?: string,
+//   searchCategory?: string,
+// ) => {
+//   const queryParams: { [key: string]: any } = {
+//     current,
+//     pageSize,
+//   };
 
-  if (searchName) queryParams.name = searchName;
-  if (searchCategory) queryParams.productLine = searchCategory;
+//   if (searchName) queryParams.name = searchName;
+//   if (searchCategory) queryParams.productLine = searchCategory;
 
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url,
-      method: 'GET',
-      queryParams,
-      nextOption: {
-        next: { tags: ['list-productUnits'] },
-      },
-    });
+//   try {
+//     const res = await sendRequest<IBackendRes<any>>({
+//       url,
+//       method: 'GET',
+//       queryParams,
+//       nextOption: {
+//         next: { tags: ['list-productUnits'] },
+//       },
+//     });
 
-    if (res?.data) {
-      return res.data;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productSamples failed:', error);
-    throw error;
-  }
-};
+//     if (res?.data) {
+//       return res.data;
+//     } else {
+//       throw new Error(res.message);
+//     }
+//   } catch (error) {
+//     console.error('loi');
+//     throw error;
+//   }
+// };
 
 function ProductSupplierModal(props: ProductSupplierModalProps) {
   const {
@@ -74,19 +75,11 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  // useEffect(() => {
-  //   if (selectedProductUnitIds) {
-  //     setProductUnitIds(selectedProductUnitIds);
-  //   }
-  // }, [selectedProductUnitIds]);
-
-  // Trigger data re-fetch whenever `searchParams` or pagination parameters change
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
   const { data, error, mutate } = useSWR(
     [url, current, pageSize, searchParams.name, searchParams.category],
     () =>
       fetchProductUnits(
-        url,
         current,
         pageSize,
         searchParams.name,
