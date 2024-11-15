@@ -1,70 +1,18 @@
 'use client';
+
 import { Modal, Button } from 'react-bootstrap';
-import { FaPlus } from 'react-icons/fa';
 import { useState } from 'react';
-import { handleCreateSupplierAction } from '@/services/supplierServices';
-import ProductSupplierModal from '../productSupplierComponent/productSupplier.list';
-import SelectedProductUnitTableModal from '../productUnitComponent/selectedProductUnit.table';
-import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
-import { sendRequest } from '@/utils/api';
-import useSWR from 'swr';
 import { toast } from 'react-toastify';
-import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { handleCreaterProductTypeAction } from '@/services/productTypeServices';
-
-const columns: Column<ProductUnitTransform>[] = [
-  { title: 'ID', key: 'id' },
-  { title: 'Tên sản phẩm', key: 'productSampleName' },
-  { title: 'Đơn vị', key: 'unitName' },
-  { title: 'Khối lượng', key: 'volumne' },
-  { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
-  { title: 'Giá bán', key: 'sell_price' },
-];
-
-const fetchProductUnits = async (
-  url: string,
-  current: number,
-  pageSize: number,
-  ids?: number[],
-) => {
-  const queryParams: { [key: string]: any } = {
-    current,
-    pageSize,
-  };
-
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url,
-      method: 'POST',
-      queryParams,
-      body: { ids },
-      nextOption: {
-        next: { tags: ['list-productUnits'] },
-      },
-    });
-
-    if (res?.data) {
-      return res.data;
-    } else {
-      throw new Error(res.message);
-    }
-  } catch (error) {
-    console.error('Fetch productSamples failed:', error);
-    throw error;
-  }
-};
+import { Input } from '../commonComponent/InputForm';
 
 function CreateProductTypeModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
   const [name, setName] = useState('');
 
-  const clearForm = () => {
-    setName('');
-  };
-
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);
-    clearForm();
+    setName('');
   };
 
   const handleCreateProductType = async () => {
@@ -75,11 +23,10 @@ function CreateProductTypeModal(props: CreateModalProps) {
     const res = await handleCreaterProductTypeAction(newProductType);
     if (res?.data) {
       handleCloseCreateModal();
-      clearForm();
-      toast.success('Thêm mới loại sản phẩm thành công');
+      toast.success(res.message);
       onMutate();
     } else {
-      toast.error('Lỗi khi thêm mới loại sản phẩm');
+      toast.error(res.message);
     }
   };
 
@@ -95,15 +42,12 @@ function CreateProductTypeModal(props: CreateModalProps) {
         </Modal.Header>
         <Modal.Body>
           {/* Thông tin loại sản phẩm */}
-          <div className="container mb-4 px-4">
-            <label>Tên loại sản phẩm</label>
-            <input
-              type="text"
-              className="form-control"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
+          <Input
+            size={12}
+            title="Tên loại sản phẩm"
+            value={name}
+            onChange={(value) => setName(value)}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseCreateModal}>

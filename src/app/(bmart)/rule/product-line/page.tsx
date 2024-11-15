@@ -26,16 +26,19 @@ function ProductLinePage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useState({ name: '' });
 
-  const { data, error } = useSWR([current, pageSize, searchParams.name], () =>
-    fetchProductLines(current, pageSize, searchParams.name),
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`;
+
+  const { data, error } = useSWR(
+    [url, current, pageSize, searchParams.name],
+    () => fetchProductLines(current, pageSize, searchParams.name),
   );
 
   const productLines: ProductLineTransform[] = data?.results.map(
     (item: ProductLine) => ({
       id: item.id,
       name: item.name,
-      productTypeName: item.productType.name,
-      productTypeId: item.productType.id,
+      productTypeName: item?.productType?.name,
+      productTypeId: item?.productType?.id,
     }),
   );
 
@@ -78,11 +81,11 @@ function ProductLinePage() {
 
   return (
     <>
-      <h3>Danh sách dòng sản phẩm</h3>
+      <h3>Quản lý dòng sản phẩm</h3>
       {/* button search */}
       <div className="row">
         <Input
-          title="Tìm kiếm"
+          title="Tên dòng sản phẩm"
           size={4}
           value={searchName}
           placeholder="Nhập tên dòng sản phẩm"
@@ -103,7 +106,7 @@ function ProductLinePage() {
         </button>
       </div>
 
-      {/* Danh sách Product Line */}
+      {/* Quản lý Product Line */}
       <ProductLineTable
         productLines={productLines}
         columns={columns}

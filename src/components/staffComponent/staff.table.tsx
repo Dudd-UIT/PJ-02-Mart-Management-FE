@@ -37,7 +37,7 @@ const StaffTable = (props: StaffTableType) => {
                 </th>
               ))}
               <th scope="col" className="text-center align-middle">
-                Chức năng
+                Thao tác
               </th>
             </tr>
           </thead>
@@ -47,7 +47,6 @@ const StaffTable = (props: StaffTableType) => {
                 {columns.map((column, colIndex) => {
                   const cellValue = row[column.key as keyof Staff];
 
-                  // Kiểm tra nếu giá trị là đối tượng `Group`, hiển thị thuộc tính `name` hoặc thuộc tính cần thiết khác
                   const displayValue =
                     cellValue &&
                     typeof cellValue === 'object' &&

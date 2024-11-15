@@ -1,13 +1,9 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
-import CreateCustomerModal from '@/components/customerComponent/customer.create';
-import CustomerTable from '@/components/customerComponent/customer.table';
 import CreateUserGroupModal from '@/components/groupComponent/group.create';
 import UserGroupTable from '@/components/groupComponent/group.table';
-import { fetchCustomers } from '@/services/customerServices';
 import { fetchGroups } from '@/services/groupServices';
-import { Customer } from '@/types/customer';
 import { Group } from '@/types/group';
 import { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
@@ -72,20 +68,18 @@ const UserGroupsPage = () => {
 
   return (
     <>
-      <h2>Danh sách nhóm người dùng</h2>
+      <h2>Quản lý nhóm người dùng</h2>
       {/* 2 button search */}
       <div className="row">
-        <div className="col-md-4">
-          <Input
-            title="Tên nhóm người dùng"
-            size={12}
-            value={searchName}
-            placeholder="Nhập tên nhóm người dùng"
-            onChange={(value) => setSearchName(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
-          />
-        </div>
+        <Input
+          title="Tên nhóm người dùng"
+          size={4}
+          value={searchName}
+          placeholder="Nhập tên nhóm người dùng"
+          onChange={(value) => setSearchName(value)}
+          onClickIcon={handleSearchClick}
+          icon={<FaSearch />}
+        />
       </div>
       {/* button Thêm Supplier */}
       <div className="d-flex justify-content-end mx-3">
@@ -93,13 +87,11 @@ const UserGroupsPage = () => {
           className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <FaPlus className="align-middle" />
-          <span className="ms-1">
-            <text>Thêm</text>
-          </span>
+          <FaPlus />
+          <text>Thêm</text>
         </button>
       </div>
-      {/* Danh sách Supplier */}
+      {/* Quản lý Supplier */}
       <UserGroupTable
         groups={data.results}
         columns={columns}

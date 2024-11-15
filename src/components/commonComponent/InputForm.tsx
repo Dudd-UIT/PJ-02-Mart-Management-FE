@@ -1,5 +1,4 @@
 import { InputProps } from '@/types';
-import { useState } from 'react';
 import { FaCheck, FaXmark } from 'react-icons/fa6';
 import 'rsuite/DatePicker/styles/index.css';
 
@@ -22,7 +21,6 @@ export function Input({
   showObj = 'name',
   type,
 }: InputProps) {
-  const [isActive, setIsActive] = useState(false);
   // Separate handler for select changes
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = options.find(
@@ -40,7 +38,6 @@ export function Input({
   };
 
   const handleOnClickIcon = () => {
-    setIsActive(!isActive);
     if (onClickIcon) {
       onClickIcon();
     }
@@ -63,7 +60,7 @@ export function Input({
           <button
             disabled={disabled}
             type="button"
-            className={`btn btn-icon ${isActive ? 'active' : ''}`}
+            className={`btn btn-icon`}
             onClick={handleOnClickIcon}
           >
             {icon}
@@ -105,6 +102,7 @@ export function Input({
             disabled={readOnly}
             onChange={handleInputChange} // Use handleInputChange for input element
             required={required}
+            style={{ paddingTop: '0.5rem', paddingBottom: '0.3rem' }}
           />
         )}
         {valid === 'error' && (
@@ -139,41 +137,33 @@ export function Input({
   );
 }
 
-// export function IFDate({
-//   title,
-//   size,
-//   defaultValue,
-//   value,
-//   onChange,
-//   readOnly,
-// }: IFDateProps) {
-//   const style = 'col-md-' + size;
-//   const handleDateChange = (date) => {
-//     if (date) {
-//       const formattedDate = new Date(date);
-//       onChange(formattedDate);
-//     } else {
-//       onChange('');
-//     }
-//   };
+type SelectInputProps = {
+  label?: string;
+  value: string | number;
+  options: { label: string; value: string | number }[]; // Các lựa chọn với `label` để hiển thị và `value` là giá trị thực
+  onChange: (value: string | number) => void;
+};
 
-//   return (
-//     <div className={style}>
-//       <label htmlFor={title} className="form-label">
-//         {title}
-//       </label>
-//       <div className="input-group">
-//         <DatePicker
-//           containerProps={{ style: { zIndex: 1056 } }}
-//           id={title}
-//           format="dd/MM/yyyy"
-//           placeholder="dd/mm/yyyy"
-//           onChange={handleDateChange}
-//           defaultValue={defaultValue}
-//           value={value}
-//           readOnly={readOnly}
-//         />
-//       </div>
-//     </div>
-//   );
-// }
+export const SelectInput: React.FC<SelectInputProps> = ({
+  label,
+  value,
+  options,
+  onChange,
+}) => {
+  return (
+    <div>
+      {label && <label>{label}</label>}
+      <select
+        className="form-select mb-3"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};

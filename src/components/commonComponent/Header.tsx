@@ -6,8 +6,8 @@ import { Dropdown } from 'react-bootstrap';
 import { IoPersonOutline } from 'react-icons/io5';
 import InfoModal from './info.modal';
 
-export default function Header() {
-  const { data: session } = useSession();
+export default function Header(props: any) {
+  const { session } = props;
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   return (
@@ -16,7 +16,11 @@ export default function Header() {
         <text className="me-auto pt-3">Xin chào, {session?.user.name} !</text>
 
         <Dropdown>
-          <Dropdown.Toggle id="avatar" as="div" bsPrefix="custom-avatar">
+          <Dropdown.Toggle
+            id="avatar"
+            bsPrefix="custom-avatar"
+            className="d-flex justify-content-center align-items-center p-0"
+          >
             <IoPersonOutline className="fs-3" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -30,6 +34,7 @@ export default function Header() {
       <InfoModal
         isInfoModalOpen={isInfoModalOpen}
         setIsInfoModalOpen={setIsInfoModalOpen}
+        data={session}
       />
     </>
   );

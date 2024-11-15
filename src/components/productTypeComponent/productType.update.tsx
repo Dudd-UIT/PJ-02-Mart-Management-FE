@@ -5,12 +5,14 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { handleUpdateProductTypeAction } from '@/services/productTypeServices';
 import { ProductType } from '@/types/productType';
+import { Input } from '../commonComponent/InputForm';
 
 function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
   const {
     isUpdateModalOpen,
     setIsUpdateModalOpen,
     data: productTypeData,
+    setData,
     onMutate,
   } = props;
 
@@ -32,6 +34,7 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
   const handleCloseCreateModal = () => {
     setIsUpdateModalOpen(false);
     resetForm();
+    setData?.(undefined);
   };
 
   const handleUpdateProductType = async () => {
@@ -43,10 +46,10 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
     const res = await handleUpdateProductTypeAction(newProductType);
     if (res?.data) {
       handleCloseCreateModal();
-      toast.success('Cập nhật loại sản phẩm thành công');
-      onMutate(); // Gọi hàm onMutate để cập nhật danh sách
+      toast.success(res.message);
+      onMutate();
     } else {
-      toast.error('Lỗi cập nhật loại sản phẩm');
+      toast.error(res.message);
     }
   };
 
@@ -62,19 +65,12 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
         </Modal.Header>
         <Modal.Body>
           {/* Thông tin loại sản phẩm */}
-          <div className="container mb-4">
-            <div className="row mb-3">
-              <div className="col-md-12">
-                <label>Tên loại sản phẩm</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
+          <Input
+            size={12}
+            title="Tên loại sản phẩm"
+            value={name}
+            onChange={(value) => setName(value)}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseCreateModal}>

@@ -99,7 +99,7 @@ export default function Sidebar() {
               </li>
               <li className={pathname == '/sale/invoices' ? 'active' : ''}>
                 <Link href="/sale/invoices" className="btn btn-sc">
-                  {isPinned && <text className="small">Danh sách hóa đơn</text>}
+                  {isPinned && <text className="small">Quản lý hóa đơn</text>}
                 </Link>
               </li>
             </ul>

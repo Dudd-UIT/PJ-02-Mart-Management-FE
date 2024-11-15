@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
+import { mutate } from 'swr';
 
 type FormDataLogin = {
   email: string;
@@ -35,7 +36,7 @@ function LoginPage() {
         }
         toast.error('Lỗi đăng nhập');
       } else {
-        router.push('/suppliers');
+        router.replace('/suppliers');
       }
     } catch (error) {
       console.log('Error:', error);
@@ -93,6 +94,7 @@ function LoginPage() {
             <Input
               title="Mật khẩu"
               size={12}
+              type="password"
               value={formLogin.password}
               placeholder="Nhập mật khẩu"
               onChange={(value) => handleLoginFormChange('password', value)}
@@ -100,7 +102,7 @@ function LoginPage() {
           </div>
           <button
             type="button"
-            className="btn btn-danger w-100 mt-3"
+            className="btn btn-primary w-100 mt-3"
             onClick={handleLogin}
           >
             Đăng nhập
@@ -111,7 +113,7 @@ function LoginPage() {
         <div className="mt-3 text-center">
           <span>
             Chưa có tài khoản?{' '}
-            <a href="#" className="text-danger fw-bold">
+            <a href="#" className="text-primary fw-bold">
               Đăng ký ngay!
             </a>
           </span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@/components/commonComponent/InputForm';
+import { Input, SelectInput } from '@/components/commonComponent/InputForm';
 import CreateCustomerModal from '@/components/customerComponent/customer.create';
 import CustomerTable from '@/components/customerComponent/customer.table';
 import { fetchCustomers } from '@/services/customerServices';
@@ -22,10 +22,9 @@ const CustomersPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [groupId, setGroupId] = useState(3);
-  const [searchName, setSearchName] = useState('');
-  const [searchPhone, setSearchPhone] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [searchType, setSearchType] = useState<'name' | 'phone'>('name');
   const [searchParams, setSearchParams] = useState({ name: '', phone: '' });
-
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const { data, error } = useSWR(
@@ -63,7 +62,10 @@ const CustomersPage = () => {
   };
 
   const handleSearchClick = () => {
-    setSearchParams({ name: searchName, phone: searchPhone });
+    setSearchParams({
+      name: searchType === 'name' ? searchValue : '',
+      phone: searchType === 'phone' ? searchValue : '',
+    });
     setCurrent(1);
   };
 
@@ -91,50 +93,51 @@ const CustomersPage = () => {
 
   return (
     <>
-      <h2>Danh sách khách hàng</h2>
-      {/* 2 button search */}
+      <h2>Quản lý khách hàng</h2>
+      {/* Thanh tìm kiếm gộp */}
       <div className="row">
-        <div className="col-md-4">
-          <Input
-            title="Tên khách hàng"
-            size={12}
-            value={searchName}
-            placeholder="Nhập tên khách hàng"
-            onChange={(value) => setSearchName(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
+        <div className="col-md-2">
+          <SelectInput
+            label="Chọn loại tìm kiếm"
+            value={searchType}
+            options={[
+              { label: 'Tên khách hàng', value: 'name' },
+              { label: 'Số điện thoại', value: 'phone' },
+            ]}
+            onChange={(value) => setSearchType(value as 'name' | 'phone')}
           />
         </div>
-        <div className="col-md-4">
-          <Input
-            title="Số điện thoại"
-            value={searchPhone}
-            size={12}
-            placeholder="Nhập số điện thoại"
-            onChange={(value) => setSearchPhone(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
-          />
-        </div>
+        <Input
+          title="Tìm kiếm"
+          size={4}
+          value={searchValue}
+          placeholder={`Nhập ${
+            searchType === 'name' ? 'tên khách hàng' : 'số điện thoại'
+          }`}
+          onChange={(value) => setSearchValue(value)}
+          onClickIcon={handleSearchClick}
+          icon={<FaSearch />}
+        />
       </div>
-      {/* button Thêm Supplier */}
+
+      {/* button Thêm Customer */}
       <div className="d-flex justify-content-end mx-3">
         <button
           className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <FaPlus className="align-middle" />
-          <span className="ms-1">
-            <text>Thêm</text>
-          </span>
+          <FaPlus />
+          <text>Thêm</text>
         </button>
       </div>
-      {/* Danh sách Supplier */}
+
+      {/* Quản lý Customer */}
       <CustomerTable
         customers={data.results}
         columns={columns}
         onMutate={onMutate}
       />
+
       {/* Navigate control */}
       <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center">
@@ -165,7 +168,8 @@ const CustomersPage = () => {
           </li>
         </ul>
       </nav>
-      {/* Modal Create Supplier */}
+
+      {/* Modal Create Customer */}
       <CreateCustomerModal
         isCreateModalOpen={isCreateModalOpen}
         setIsCreateModalOpen={setIsCreateModalOpen}
