@@ -1,4 +1,5 @@
 'use client';
+import { Input } from '@/components/commonComponent/InputForm';
 import {
   fetchParameters,
   handleUpdateParameterAction,
@@ -54,34 +55,26 @@ function PointConvertPage() {
       <div className="container d-flex flex-column align-items-center pt-5">
         <div className="d-flex align-items-center mb-3">
           <div className="me-3">
-            <label className="form-label">Điểm</label>
-            <input
+            <Input
+              title="Điểm"
+              size={12}
               type="number"
-              value={parameter?.value || ''} // Ensure point is displayed once fetched
-              onChange={(e) =>
+              value={parameter?.value || ''}
+              onChange={(value) =>
                 setParameter((prev) =>
-                  prev ? { ...prev, value: +e.target.value } : null,
+                  prev ? { ...prev, value: +value } : null,
                 )
               }
-              className="form-control"
-              placeholder="Nhập điểm"
             />
           </div>
           <span className="mx-4 ">
             <FaArrowRightLong size={24} />
           </span>
           <div className="ms-3">
-            <label className="form-label">VND</label>
-            <input
-              type="number"
-              value={1}
-              disabled
-              className="form-control"
-              placeholder="Nhập VND"
-            />
+            <Input title="VND" size={12} value={1} readOnly type="number" />
           </div>
         </div>
-        <button className="btn btn-danger" onClick={handleSave}>
+        <button className="btn btn-primary" onClick={handleSave}>
           Lưu
         </button>
       </div>

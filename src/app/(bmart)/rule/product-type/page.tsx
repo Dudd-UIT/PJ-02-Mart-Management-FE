@@ -22,8 +22,10 @@ function ProductTypePage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useState({ name: '' });
 
-  const { data, error } = useSWR([current, pageSize, searchParams.name], () =>
-    fetchProductTypes(current, pageSize, searchParams.name),
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`;
+  const { data, error } = useSWR(
+    [url, current, pageSize, searchParams.name],
+    () => fetchProductTypes(current, pageSize, searchParams.name),
   );
 
   if (error)
@@ -65,11 +67,11 @@ function ProductTypePage() {
 
   return (
     <>
-      <h3>Danh sách loại sản phẩm</h3>
+      <h3>Quản lý loại sản phẩm</h3>
       {/* button search */}
       <div className="row">
         <Input
-          title="Tìm kiếm"
+          title="Tên loại sản phẩm"
           size={4}
           value={searchName}
           placeholder="Nhập tên loại sản phẩm"
@@ -82,17 +84,15 @@ function ProductTypePage() {
       {/* button Thêm Product Type */}
       <div className="d-flex justify-content-end mx-3">
         <button
-          className="btn btn-primary"
+          className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <FaPlus className="align-middle" />
-          <span className="ms-1" style={{ position: 'relative', top: '2px' }}>
-            Thêm
-          </span>
+          <FaPlus />
+          <text>Thêm</text>
         </button>
       </div>
 
-      {/* Danh sách Product Type */}
+      {/* Quản lý Product Type */}
       <ProductTypeTable
         productTypes={data.results}
         columns={columns}

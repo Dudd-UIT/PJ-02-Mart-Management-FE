@@ -11,6 +11,7 @@ import ProductSupplierModal from '../productSupplierComponent/productSupplier.li
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { toast } from 'react-toastify';
 import { fetchProductUnitByIds } from '@/services/productUnitServices';
+import { Input } from '../commonComponent/InputForm';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
@@ -20,6 +21,15 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
   { title: 'Giá bán', key: 'sell_price' },
 ];
+
+type FormData = {
+  id: number;
+  name: string;
+  phone: string;
+  address: string;
+  country: string;
+  productUnitIds: number[];
+};
 
 function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
   const {
@@ -31,14 +41,17 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
   } = props;
   const [isProductSupplierModalOpen, setIsProductSupplierModalOpen] =
     useState(false);
-  const [id, setId] = useState<number>();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [country, setCountry] = useState('');
-  const [selectedProductUnitIds, setSelectedProductUnitIds] = useState<
-    number[]
-  >([]);
+
+  const initalFormData = {
+    id: 0,
+    name: '',
+    phone: '',
+    address: '',
+    country: '',
+    productUnitIds: [],
+  };
+
+  const [formData, setFormData] = useState<FormData>(initalFormData);
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
 
   const [current, setCurrent] = useState(1);
@@ -46,43 +59,26 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
 
   useEffect(() => {
     if (supplierData) {
-      setId(supplierData.id);
-      setName(supplierData.name || '');
-      setPhone(supplierData.phone || '');
-      setAddress(supplierData.address || '');
-      setCountry(supplierData.country || '');
-      setSelectedProductUnitIds(supplierData.supplierProducts || []);
+      setFormData({
+        id: supplierData.id,
+        name: supplierData.name || '',
+        phone: supplierData.phone || '',
+        address: supplierData.address || '',
+        country: supplierData.country || '',
+        productUnitIds: supplierData.supplierProducts || [],
+      });
       setProductUnitIds(supplierData.supplierProducts || []);
     }
   }, [supplierData, setProductUnitIds]);
 
-  const resetForm = () => {
-    setId(supplierData?.id);
-    setName(supplierData?.name || '');
-    setPhone(supplierData?.phone || '');
-    setAddress(supplierData?.address || '');
-    setCountry(supplierData?.country || '');
-    setSelectedProductUnitIds([]);
-    setProductUnitIds([]);
-  };
-
   const handleCloseUpdateModal = () => {
     setIsUpdateModalOpen(false);
     setSupplierData?.(undefined);
-    resetForm();
+    setProductUnitIds([]);
   };
 
   const handleUpdateSupplier = async () => {
-    const newSupplier = {
-      id,
-      name,
-      phone,
-      address,
-      country,
-      productUnitIds,
-    };
-
-    const res = await handleUpdateSupplierAction(newSupplier);
+    const res = await handleUpdateSupplierAction(formData);
     if (res?.data) {
       handleCloseUpdateModal();
       setProductUnitIds([]);
@@ -91,6 +87,13 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleFormDataChange = (
+    field: keyof typeof formData,
+    value: number[] | string,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const { data, error } = useSWR(
@@ -154,48 +157,36 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
           {/* Thông tin nhà cung cấp */}
           <div className="container mb-4">
             <div className="row mb-3">
-              <div className="col-md-6">
-                <label>Tên nhà cung cấp</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <label>Số điện thoại</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
+              <Input
+                title="Tên nhà cung cấp"
+                value={formData?.name || ''}
+                size={6}
+                onChange={(value) => handleFormDataChange('name', value)}
+              />
+              <Input
+                title="Số điện thoại"
+                value={formData?.phone || ''}
+                size={6}
+                onChange={(value) => handleFormDataChange('phone', value)}
+              />
             </div>
             <div className="row mb-3">
-              <div className="col-md-8">
-                <label>Địa chỉ</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </div>
-              <div className="col-md-4">
-                <label>Quốc gia</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                />
-              </div>
+              <Input
+                title="Địa chỉ"
+                value={formData?.address || ''}
+                size={8}
+                onChange={(value) => handleFormDataChange('address', value)}
+              />
+              <Input
+                title="Quốc gia"
+                value={formData?.country || ''}
+                size={4}
+                onChange={(value) => handleFormDataChange('country', value)}
+              />
             </div>
           </div>
 
-          <h5>Danh sách mặt hàng được cung cấp</h5>
+          <h5>Quản lý mặt hàng được cung cấp</h5>
           {/* Button Cập nhật danh sách sản phẩm được cung cấp */}
           <div className="d-flex justify-content-end mx-3">
             <button
@@ -211,7 +202,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
               </span>
             </button>
           </div>
-          {/* Danh sách sản phẩm được cung cấp */}
+          {/* Quản lý sản phẩm được cung cấp */}
           {productUnits.length > 0 && (
             <>
               <SelectedProductUnitTable

@@ -42,7 +42,7 @@ const CustomerTable = (props: CustomerTableType) => {
                 </th>
               ))}
               <th scope="col" className="text-center align-middle">
-                Chức năng
+                Thao tác
               </th>
             </tr>
           </thead>
@@ -53,14 +53,10 @@ const CustomerTable = (props: CustomerTableType) => {
                   <td key={colIndex}>{row[column.key as keyof Customer]}</td>
                 ))}
                 <td>
-                  <button
-                    onClick={() => handleOpenUpdateModal(row)}
-                  >
+                  <button onClick={() => handleOpenUpdateModal(row)}>
                     <FaEye size={18} />
                   </button>
-                  <button
-                    onClick={() => handleOpenDeleteModal(row)}
-                  >
+                  <button onClick={() => handleOpenDeleteModal(row)}>
                     <HiOutlineTrash size={18} />
                   </button>
                 </td>
@@ -74,6 +70,7 @@ const CustomerTable = (props: CustomerTableType) => {
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         data={selectedCustomer}
+        setData={setSelectedCustomer}
         onMutate={onMutate}
       />
       <DeleteCustomerModal

@@ -75,6 +75,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`;
   const { data: suppliers, error } = useSWR([url], () => fetchSuppliers());
+  console.log('suppliers', suppliers);
 
   useEffect(() => {
     if (selectedProductUnitIds.length > 0) {
@@ -151,7 +152,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
 
   const handleSubmit = async () => {
     const inboundReceiptDto = {
-      staffId: 2,
+      staffId: inboundReceiptInfo.staffId,
       supplierId: inboundReceiptInfo.supplierId,
       totalPrice: inboundReceiptInfo.totalPrice,
       isReceived: 0,
@@ -174,7 +175,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
       inboundReceiptDto,
       batchsDto,
     };
-
+    console.log('>>>>>>');
     const res = await handleCreatedInboundReceiptAction(payload);
     if (res?.data) {
       toast.success(res.message);

@@ -3,47 +3,44 @@ import { Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { handleCreateCustomerAction } from '@/services/customerServices';
+import { Input } from '../commonComponent/InputForm';
+
+type FormData = {
+  name: string;
+  phone: string;
+};
 
 function CreateCustomerModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  // const [address, setAddress] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [score, setScore] = useState(0);
-
-  const clearForm = () => {
-    setName('');
-    setPhone('');
-    // setAddress('');
-    // setEmail('');
-    // setScore(0);
+  const initalFormData = {
+    name: '',
+    phone: '',
   };
+
+  const [formData, setFormData] = useState<FormData>(initalFormData);
 
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);
-    clearForm();
+    setFormData(initalFormData);
   };
 
   const handleCreateSupplier = async () => {
-    const newCustomer = {
-      name,
-      phone,
-      // address,
-      // email,
-      // score,
-    };
-
-    const res = await handleCreateCustomerAction(newCustomer);
+    const res = await handleCreateCustomerAction(formData);
     if (res?.data) {
       handleCloseCreateModal();
-      clearForm();
       toast.success(res.message);
       onMutate();
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleFormDataChange = (
+    field: keyof typeof formData,
+    value: number[] | string,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -60,24 +57,18 @@ function CreateCustomerModal(props: CreateModalProps) {
           {/* Thông tin khách hàng */}
           <div className="container mb-4">
             <div className="row mb-3">
-              <div className="col-md-12">
-                <label>Tên khách hàng</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-12">
-                <label>Số điện thoại</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
+              <Input
+                title="Tên khách hàng"
+                value={formData?.name || ''}
+                size={12}
+                onChange={(value) => handleFormDataChange('name', value)}
+              />
+              <Input
+                title="Số điện thoại"
+                value={formData?.phone || ''}
+                size={12}
+                onChange={(value) => handleFormDataChange('phone', value)}
+              />
             </div>
           </div>
         </Modal.Body>

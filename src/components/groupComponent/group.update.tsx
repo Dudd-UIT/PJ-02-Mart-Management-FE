@@ -5,46 +5,48 @@ import { toast } from 'react-toastify';
 import { handleUpdateCustomerAction } from '@/services/customerServices';
 import { Group } from '@/types/group';
 import { handleUpdateGroupAction } from '@/services/groupServices';
+import { Input } from '../commonComponent/InputForm';
+
+type FormData = {
+  id: number;
+  name: string;
+  description: string;
+};
 
 function UpdateUserGroupModal(props: UpdateModalProps<Group>) {
   const {
     isUpdateModalOpen,
     setIsUpdateModalOpen,
     data: groupData,
+    setData,
     onMutate,
   } = props;
 
-  const [id, setId] = useState<number>();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const initalFormData = {
+    id: 0,
+    name: '',
+    description: '',
+  };
+
+  const [formData, setFormData] = useState<FormData>(initalFormData);
 
   useEffect(() => {
     if (groupData) {
-      setId(groupData.id);
-      setName(groupData.name || '');
-      setDescription(groupData.description || '');
+      setFormData({
+        id: groupData.id,
+        name: groupData.name || '',
+        description: groupData.description || '',
+      });
     }
   }, [groupData]);
 
-  const resetForm = () => {
-    setId(groupData?.id);
-    setName(groupData?.name || '');
-    setDescription(groupData?.description || '');
-  };
-
   const handleCloseCreateModal = () => {
     setIsUpdateModalOpen(false);
-    resetForm();
+    setData?.(undefined);
   };
 
   const handleUpdateGroup = async () => {
-    const newGroup = {
-      id,
-      name,
-      description,
-    };
-
-    const res = await handleUpdateGroupAction(newGroup);
+    const res = await handleUpdateGroupAction(formData);
     if (res?.data) {
       handleCloseCreateModal();
       onMutate();
@@ -52,6 +54,13 @@ function UpdateUserGroupModal(props: UpdateModalProps<Group>) {
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleFormDataChange = (
+    field: keyof typeof formData,
+    value: number | string,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -67,28 +76,18 @@ function UpdateUserGroupModal(props: UpdateModalProps<Group>) {
         </Modal.Header>
         <Modal.Body>
           {/* Thông tin khách hàng */}
-          <div className="container mb-4">
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <label>Tên nhóm người dùng</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <label>Mô tả</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
+          <Input
+            title="Tên nhóm người dùng"
+            size={12}
+            value={formData.name}
+            onChange={(value) => handleFormDataChange('name', value)}
+          />
+          <Input
+            title="Mô tả"
+            size={12}
+            value={formData.description}
+            onChange={(value) => handleFormDataChange('description', value)}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseCreateModal}>

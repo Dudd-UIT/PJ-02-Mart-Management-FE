@@ -4,60 +4,59 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { Customer } from '@/types/customer';
 import { handleUpdateCustomerAction } from '@/services/customerServices';
+import { Input } from '../commonComponent/InputForm';
+
+type FormData = {
+  id: number;
+  name: string;
+  phone: string;
+  address: string;
+  email: string;
+  score: number;
+};
 
 function UpdateCustomerModal(props: UpdateModalProps<Customer>) {
   const {
     isUpdateModalOpen,
     setIsUpdateModalOpen,
     data: customerData,
+    setData,
     onMutate,
   } = props;
 
-  const [id, setId] = useState<number>();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [email, setEmail] = useState('');
-  const [score, setScore] = useState(0);
+  const initalFormData = {
+    id: 0,
+    name: '',
+    phone: '',
+    address: '',
+    email: '',
+    score: 0,
+  };
+
+  const [formData, setFormData] = useState<FormData>(initalFormData);
 
   useEffect(() => {
     if (customerData) {
-      setId(customerData.id);
-      setName(customerData.name || '');
-      setPhone(customerData.phone || '');
-      setAddress(customerData.address || '');
-      setEmail(customerData.email || '');
-      setScore(customerData.score || 0);
+      setFormData({
+        id: customerData.id,
+        name: customerData.name || '',
+        phone: customerData.phone || '',
+        address: customerData.address || '',
+        email: customerData.email || '',
+        score: customerData.score || 0,
+      });
     }
   }, [customerData]);
 
-  const resetForm = () => {
-    setId(customerData?.id);
-    setName(customerData?.name || '');
-    setPhone(customerData?.phone || '');
-    setAddress(customerData?.address || '');
-    setEmail(customerData?.email || '');
-    setScore(customerData?.score || 0);
-  };
-
-  const handleCloseCreateModal = () => {
+  const handleCloseModal = () => {
     setIsUpdateModalOpen(false);
-    resetForm();
+    setData?.(undefined);
   };
 
   const handleUpdateCustomer = async () => {
-    const newCustomer = {
-      id,
-      name,
-      phone,
-      address,
-      email,
-      score,
-    };
-
-    const res = await handleUpdateCustomerAction(newCustomer);
+    const res = await handleUpdateCustomerAction(formData);
     if (res?.data) {
-      handleCloseCreateModal();
+      handleCloseModal();
       onMutate();
       toast.success(res.message);
     } else {
@@ -65,12 +64,19 @@ function UpdateCustomerModal(props: UpdateModalProps<Customer>) {
     }
   };
 
+  const handleFormDataChange = (
+    field: keyof typeof formData,
+    value: number[] | string,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
     <>
       <Modal
         backdrop={'static'}
         show={isUpdateModalOpen}
-        onHide={handleCloseCreateModal}
+        onHide={handleCloseModal}
         size="lg"
       >
         <Modal.Header closeButton>
@@ -80,29 +86,23 @@ function UpdateCustomerModal(props: UpdateModalProps<Customer>) {
           {/* Thông tin khách hàng */}
           <div className="container mb-4">
             <div className="row mb-3">
-              <div className="col-md-6">
-                <label>Tên khách hàng</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <label>Số điện thoại</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
+              <Input
+                title="Tên khách hàng"
+                value={formData?.name || ''}
+                size={6}
+                onChange={(value) => handleFormDataChange('name', value)}
+              />
+              <Input
+                title="Số điện thoại"
+                value={formData?.phone || ''}
+                size={6}
+                onChange={(value) => handleFormDataChange('phone', value)}
+              />
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
+          <Button variant="secondary" onClick={handleCloseModal}>
             Thoát
           </Button>
           <Button variant="danger" onClick={handleUpdateCustomer}>

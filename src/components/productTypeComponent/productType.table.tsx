@@ -1,6 +1,5 @@
 // SupplierTable Component
 import { FaEye } from 'react-icons/fa';
-import { Supplier, SupplierTableType } from '@/types/supplier';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
 import { ProductType, ProductTypeTableType } from '@/types/productType';
@@ -41,7 +40,7 @@ const ProductTypeTable = (props: ProductTypeTableType) => {
                 </th>
               ))}
               <th scope="col" className="text-center align-middle">
-                Chức năng
+                Thao tác
               </th>
             </tr>
           </thead>
@@ -68,7 +67,8 @@ const ProductTypeTable = (props: ProductTypeTableType) => {
       <UpdateProductTypeModal
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
-        data={selectedProductType} // Pass selected supplier data to modal
+        data={selectedProductType}
+        setData={setSelectedProductType}
         onMutate={onMutate}
       />
       <DeleteProductTypeModal

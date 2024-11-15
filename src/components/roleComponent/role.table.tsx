@@ -24,9 +24,7 @@ function RoleTable(props: RoleTableProps) {
       <table className="table table-hover">
         <thead>
           <tr>
-            <th scope="col" className="text-center align-middle">
-              {/* <input type="checkbox" disabled /> */}
-            </th>
+            <th scope="col" className="text-center align-middle"></th>
             {columns?.map((column, index) => (
               <th key={index} scope="col" className="text-center align-middle">
                 {column.title}

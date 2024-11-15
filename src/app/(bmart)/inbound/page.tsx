@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@/components/commonComponent/InputForm';
+import { Input, SelectInput } from '@/components/commonComponent/InputForm';
 import CreateInboundReceiptModal from '@/components/inboundReceiptComponent/inboundReceipt.create';
 import InboundReceiptTable from '@/components/inboundReceiptComponent/inboundReceipt.table';
 import { fetchInboundReceipts } from '@/services/inboundReceiptServices';
@@ -17,18 +17,19 @@ const columns: Column<InboundReceiptTransform>[] = [
   { title: 'Tên nhân viên', key: 'staffName' },
   { title: 'Tên nhà cung cấp', key: 'supplierName' },
   { title: 'Tổng tiền', key: 'totalPrice' },
-  { title: 'Trạng thái thanh toán', key: 'isPaid' },
-  { title: 'Trạng thái nhận hàng', key: 'isReceived' },
+  { title: 'TT thanh toán', key: 'isPaid' },
+  { title: 'TT nhận hàng', key: 'isReceived' },
   { title: 'Ngày tạo', key: 'createdAt' },
 ];
 
 const InboundReceiptPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [searchStaffName, setSearchStaffName] = useState('');
-  const [searchSupplierName, setSearchSupplierName] = useState('');
-  const [searchStartDate, setSearchStartDate] = useState('');
-  const [searchEndDate, setSearchEndDate] = useState('');
+
+  const [searchType, setSearchType] = useState<
+    'staffName' | 'supplierName' | 'startDate' | 'endDate'
+  >('staffName');
+  const [searchValue, setSearchValue] = useState('');
   const [searchParams, setSearchParams] = useState({
     staffName: '',
     supplierName: '',
@@ -97,10 +98,11 @@ const InboundReceiptPage = () => {
 
   const handleSearchClick = () => {
     setSearchParams({
-      staffName: searchStaffName,
-      supplierName: searchSupplierName,
-      startDate: searchStartDate,
-      endDate: searchEndDate,
+      ...searchParams,
+      staffName: searchType === 'staffName' ? searchValue : '',
+      supplierName: searchType === 'supplierName' ? searchValue : '',
+      startDate: searchType === 'startDate' ? searchValue : '',
+      endDate: searchType === 'endDate' ? searchValue : '',
     });
     setCurrent(1);
   };
@@ -125,48 +127,44 @@ const InboundReceiptPage = () => {
 
   return (
     <>
-      <h2>Danh sách đơn nhập hàng</h2>
-      {/* 2 button search */}
+      <h2>Quản lý đơn nhập hàng</h2>
+      {/* Thanh tìm kiếm gộp */}
       <div className="row">
+        <div className="col-md-2">
+          <SelectInput
+            label="Chọn loại tìm kiếm"
+            value={searchType}
+            options={[
+              { label: 'Tên nhân viên', value: 'staffName' },
+              { label: 'Tên nhà cung cấp', value: 'supplierName' },
+              { label: 'Từ ngày', value: 'startDate' },
+              { label: 'Đến ngày', value: 'endDate' },
+            ]}
+            onChange={(value) => setSearchType(value as typeof searchType)}
+          />
+        </div>
         <Input
-          title="Tên nhân viên"
-          size={3}
-          value={searchStaffName}
-          placeholder="Nhập tên nhân viên"
-          onChange={(value) => setSearchStaffName(value)}
-          onClickIcon={handleSearchClick}
-          icon={<FaSearch />}
-        />
-        <Input
-          title="Tên nhà cung cấp"
+          title="Tìm kiếm"
           size={4}
-          value={searchSupplierName}
-          placeholder="Nhập tên nhà cung cấp"
-          onChange={(value) => setSearchSupplierName(value)}
-          onClickIcon={handleSearchClick}
-          icon={<FaSearch />}
-        />
-        <Input
-          title="Từ ngày"
-          value={searchStartDate}
-          size={2}
-          type="date"
-          onChange={(value) => {
-            setSearchStartDate(value);
-          }}
-          onClickIcon={handleSearchClick}
-          icon={<FaSearch />}
-        />
-        <Input
-          title="Đến ngày"
-          value={searchEndDate}
-          size={2}
-          type="date"
-          onChange={(value) => setSearchEndDate(value)}
+          value={searchValue}
+          placeholder={`Nhập ${
+            searchType === 'staffName'
+              ? 'tên nhân viên'
+              : searchType === 'supplierName'
+              ? 'tên nhà cung cấp'
+              : 'ngày'
+          }`}
+          type={
+            searchType === 'startDate' || searchType === 'endDate'
+              ? 'date'
+              : 'text'
+          }
+          onChange={(value) => setSearchValue(value)}
           onClickIcon={handleSearchClick}
           icon={<FaSearch />}
         />
       </div>
+
       {/* button Thêm Supplier */}
       <div className="d-flex justify-content-end mx-3">
         <button
@@ -177,12 +175,14 @@ const InboundReceiptPage = () => {
           <text>Thêm</text>
         </button>
       </div>
-      {/* Danh sách Supplier */}
+
+      {/* Quản lý Supplier */}
       <InboundReceiptTable
         inboundReceipts={inboundReceipts}
         columns={columns}
         onMutate={onMutate}
       />
+
       {/* Navigate control */}
       <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center">
@@ -213,6 +213,7 @@ const InboundReceiptPage = () => {
           </li>
         </ul>
       </nav>
+
       {/* Modal Create Supplier */}
       <CreateInboundReceiptModal
         isCreateModalOpen={isCreateModalOpen}

@@ -41,7 +41,7 @@ const SupplierTable = (props: SupplierTableType) => {
                 </th>
               ))}
               <th scope="col" className="text-center align-middle">
-                Chức năng
+                Thao tác
               </th>
             </tr>
           </thead>

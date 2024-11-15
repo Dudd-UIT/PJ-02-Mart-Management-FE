@@ -43,6 +43,7 @@ declare global {
   interface InfoModalProps {
     isInfoModalOpen: boolean;
     setIsInfoModalOpen: (v: boolean) => void;
+    data: User;
   }
 
   export type Column<T> = {

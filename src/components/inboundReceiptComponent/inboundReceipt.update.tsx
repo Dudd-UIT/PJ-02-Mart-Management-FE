@@ -231,11 +231,11 @@ function UpdateInboundReceiptModal(
   const handleSubmit = async () => {
     const inboundReceiptId = inboundReceiptInfo.id;
     const inboundReceiptDto = {
-      staffId: 2,
+      staffId: inboundReceiptInfo.staffId,
       supplierId: inboundReceiptInfo.supplierId,
       totalPrice: inboundReceiptInfo.totalPrice,
-      isReceived: 0,
-      isPaid: 0,
+      isReceived: inboundReceiptInfo.isReceived,
+      isPaid: inboundReceiptInfo.isPaid,
       discount: inboundReceiptInfo.discount,
       vat: inboundReceiptInfo.vat,
       createdAt: inboundReceiptInfo.createdAt,

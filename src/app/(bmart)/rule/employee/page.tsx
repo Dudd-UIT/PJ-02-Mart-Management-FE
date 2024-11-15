@@ -1,16 +1,15 @@
 'use client';
 
-import { Input } from '@/components/commonComponent/InputForm';
+import { Input, SelectInput } from '@/components/commonComponent/InputForm';
 import CreateStaffModal from '@/components/staffComponent/staff.create';
 import StaffTable from '@/components/staffComponent/staff.table';
-import { fetchCustomers } from '@/services/customerServices';
 import { fetchStaffs } from '@/services/staffServices';
-import { Customer } from '@/types/customer';
+import { Staff } from '@/types/staff';
 import { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
 
-const columns: Column<Customer>[] = [
+const columns: Column<Staff>[] = [
   { title: '#', key: 'id' },
   { title: 'Tên nhân viên', key: 'name' },
   { title: 'Số điện thoại', key: 'phone' },
@@ -22,8 +21,8 @@ const EmployeesPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [groupId, setGroupId] = useState(2);
-  const [searchName, setSearchName] = useState('');
-  const [searchPhone, setSearchPhone] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [searchType, setSearchType] = useState<'name' | 'phone'>('name'); // Loại tìm kiếm (name hoặc phone)
   const [searchParams, setSearchParams] = useState({ name: '', phone: '' });
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -43,7 +42,7 @@ const EmployeesPage = () => {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load customers: {error.message}</div>
+        <div>Failed to load staff: {error.message}</div>
       </div>
     );
 
@@ -63,7 +62,10 @@ const EmployeesPage = () => {
   };
 
   const handleSearchClick = () => {
-    setSearchParams({ name: searchName, phone: searchPhone });
+    setSearchParams({
+      name: searchType === 'name' ? searchValue : '',
+      phone: searchType === 'phone' ? searchValue : '',
+    });
     setCurrent(1);
   };
 
@@ -91,46 +93,47 @@ const EmployeesPage = () => {
 
   return (
     <>
-      <h2>Danh sách nhân viên</h2>
-      {/* 2 button search */}
+      <h2>Quản lý nhân viên</h2>
+      {/* Thanh tìm kiếm gộp */}
       <div className="row">
-        <div className="col-md-4">
-          <Input
-            title="Tên nhân viên"
-            size={12}
-            value={searchName}
-            placeholder="Nhập tên nhân viên"
-            onChange={(value) => setSearchName(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
+        <div className="col-md-2">
+          <SelectInput
+            label="Chọn loại tìm kiếm"
+            value={searchType}
+            options={[
+              { label: 'Tên nhân viên', value: 'name' },
+              { label: 'Số điện thoại', value: 'phone' },
+            ]}
+            onChange={(value) => setSearchType(value as 'name' | 'phone')}
           />
         </div>
-        <div className="col-md-4">
-          <Input
-            title="Số điện thoại"
-            value={searchPhone}
-            size={12}
-            placeholder="Nhập số điện thoại"
-            onChange={(value) => setSearchPhone(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
-          />
-        </div>
+        <Input
+          title="Tìm kiếm"
+          size={4}
+          value={searchValue}
+          placeholder={`Nhập ${
+            searchType === 'name' ? 'tên nhân viên' : 'số điện thoại'
+          }`}
+          onChange={(value) => setSearchValue(value)}
+          onClickIcon={handleSearchClick}
+          icon={<FaSearch />}
+        />
       </div>
+
       {/* button Thêm Nhân viên */}
       <div className="d-flex justify-content-end mx-3">
         <button
           className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <FaPlus className="align-middle" />
-          <span className="ms-1">
-            <text>Thêm</text>
-          </span>
+          <FaPlus />
+          <text>Thêm</text>
         </button>
       </div>
-      {/* Danh sách Nhân viên */}
+
+      {/* Quản lý Nhân viên */}
       <StaffTable staffs={data.results} columns={columns} onMutate={onMutate} />
+
       {/* Navigate control */}
       <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center">
@@ -161,6 +164,7 @@ const EmployeesPage = () => {
           </li>
         </ul>
       </nav>
+
       {/* Modal Create Nhân viên */}
       <CreateStaffModal
         isCreateModalOpen={isCreateModalOpen}

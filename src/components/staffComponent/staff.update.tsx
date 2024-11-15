@@ -8,7 +8,7 @@ import { Input } from '../commonComponent/InputForm';
 import useSWR from 'swr';
 import { fetchGroups } from '@/services/groupServices';
 
-type FormDataStaffInfo = {
+type FormData = {
   id: number;
   groupId: number;
   name: string;
@@ -27,7 +27,7 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
     onMutate,
   } = props;
 
-  const initalStaffInfo = {
+  const initalFormData = {
     id: 0,
     name: '',
     phone: '',
@@ -37,12 +37,11 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
     groupId: 0,
   };
 
-  const [staffInfo, setStaffInfo] =
-    useState<FormDataStaffInfo>(initalStaffInfo);
+  const [formData, setFormData] = useState<FormData>(initalFormData);
 
   useEffect(() => {
     if (staffData) {
-      setStaffInfo({
+      setFormData({
         id: staffData.id,
         name: staffData.name,
         phone: staffData.phone,
@@ -60,7 +59,7 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
   };
 
   const handleUpdateStaff = async () => {
-    const res = await handleUpdateStaffAction(staffInfo);
+    const res = await handleUpdateStaffAction(formData);
     if (res?.data) {
       handleCloseUpdateModal();
       onMutate();
@@ -70,14 +69,16 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
     }
   };
 
-  const handleStaffInfoChange = (
-    field: keyof typeof staffInfo,
+  const handleFormDataChange = (
+    field: keyof typeof formData,
     value: number | string,
   ) => {
-    setStaffInfo((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const { data: groups, error } = useSWR([], () => fetchGroups());
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`;
+
+  const { data: groups, error } = useSWR([url], () => fetchGroups());
 
   if (error)
     return (
@@ -112,20 +113,19 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
               <Input
                 size={7}
                 title="Tên nhân viên"
-                value={staffInfo?.name || ''}
-                onChange={(value) => handleStaffInfoChange('name', value)}
+                value={formData?.name || ''}
+                onChange={(value) => handleFormDataChange('name', value)}
               />
               <Input
                 title="Nhóm người dùng"
                 size={5}
-                value={staffInfo?.groupId || 0}
+                value={formData?.groupId || 0}
                 placeholder="Chọn nhóm người dùng"
-                // icon={<FaSearch />}
                 options={groups?.results}
                 keyObj="id"
                 showObj="name"
                 onSelectedChange={(value) =>
-                  handleStaffInfoChange('groupId', value)
+                  handleFormDataChange('groupId', value)
                 }
               />
             </div>
@@ -133,30 +133,29 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
               <Input
                 size={6}
                 title="Email"
-                value={staffInfo?.email || ''}
-                onChange={(value) => handleStaffInfoChange('email', value)}
+                value={formData?.email || ''}
+                onChange={(value) => handleFormDataChange('email', value)}
               />
               <Input
                 size={6}
                 readOnly={true}
                 title="Mật khẩu"
-                value={staffInfo?.password || ''}
-                onChange={(value) => handleStaffInfoChange('password', value)}
+                value={formData?.password || ''}
+                onChange={(value) => handleFormDataChange('password', value)}
               />
             </div>
             <div className="row mb-3">
               <Input
                 size={4}
                 title="Số điện thoại"
-                value={staffInfo?.phone || ''}
-                onChange={(value) => handleStaffInfoChange('phone', value)}
+                value={formData?.phone || ''}
+                onChange={(value) => handleFormDataChange('phone', value)}
               />
-
               <Input
                 title="Địa chỉ"
                 size={8}
-                value={staffInfo?.address || ''}
-                onChange={(value) => handleStaffInfoChange('address', value)}
+                value={formData?.address || ''}
+                onChange={(value) => handleFormDataChange('address', value)}
               />
             </div>
           </div>

@@ -48,16 +48,27 @@ const UserGroupTable = (props: UserGroupTableType) => {
                 </th>
               ))}
               <th scope="col" className="text-center align-middle">
-                Chức năng
+                Thao tác
               </th>
             </tr>
           </thead>
           <tbody>
             {groups?.map((row, rowIndex) => (
               <tr key={rowIndex} className="text-center align-middle">
-                {columns.map((column, colIndex) => (
-                  <td key={colIndex}>{row[column.key as keyof Group]}</td>
-                ))}
+                {columns.map((column, colIndex) => {
+                  const cellValue = row[column.key as keyof Group];
+
+                  const displayValue =
+                    cellValue &&
+                    typeof cellValue === 'object' &&
+                    'name' in cellValue
+                      ? (cellValue as { name: string }).name
+                      : cellValue !== undefined && cellValue !== null
+                      ? String(cellValue)
+                      : '';
+
+                  return <td key={colIndex}>{displayValue}</td>;
+                })}
                 <td>
                   <button onClick={() => handleOpenAssignRoleModal(row)}>
                     <HiOutlineUserGroup size={18} />
@@ -87,6 +98,7 @@ const UserGroupTable = (props: UserGroupTableType) => {
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         data={selectedGroup}
+        setData={setSelectedGroup}
         onMutate={onMutate}
       />
       <DeleteUserGroupModal

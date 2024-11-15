@@ -3,38 +3,45 @@ import { Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { handleCreateGroupAction } from '@/services/groupServices';
+import { Input } from '../commonComponent/InputForm';
+
+type FormData = {
+  name: string;
+  description: string;
+};
 
 function CreateUserGroupModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-
-  const clearForm = () => {
-    setName('');
-    setDescription('');
+  const initalFormData = {
+    name: '',
+    description: '',
   };
+
+  const [formData, setFormData] = useState<FormData>(initalFormData);
 
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);
-    clearForm();
+    setFormData(initalFormData);
   };
 
   const handleCreateGroup = async () => {
-    const newGroup = {
-      name,
-      description,
-    };
-
-    const res = await handleCreateGroupAction(newGroup);
+    const res = await handleCreateGroupAction(formData);
     if (res?.data) {
       handleCloseCreateModal();
-      clearForm();
+      setFormData(initalFormData);
       toast.success(res.message);
       onMutate();
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleFormDataChange = (
+    field: keyof typeof formData,
+    value: number[] | string,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -49,28 +56,18 @@ function CreateUserGroupModal(props: CreateModalProps) {
         </Modal.Header>
         <Modal.Body>
           {/* Thông tin nhóm người dùng */}
-          <div className="container mb-4">
-            <div className="row mb-3">
-              <div className="col-md-12">
-                <label>Tên nhóm người dùng</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-12">
-                <label>Mô tả</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
+          <Input
+            title="Tên nhóm người dùng"
+            size={12}
+            value={formData.name}
+            onChange={(value) => handleFormDataChange('name', value)}
+          />
+          <Input
+            title="Mô tả"
+            size={12}
+            value={formData.description}
+            onChange={(value) => handleFormDataChange('description', value)}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseCreateModal}>
