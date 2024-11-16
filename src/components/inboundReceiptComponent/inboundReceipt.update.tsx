@@ -22,10 +22,10 @@ import { fetchProductUnitByIds } from '@/services/productUnitServices';
 
 type FormDataBatch = {
   id?: number;
-  inbound_price: number;
+  inboundPrice: number;
   discount: number;
-  invent_quantity: number;
-  inbound_quantity: number;
+  inventQuantity: number;
+  inboundQuantity: number;
   expiredAt: string;
   productUnitId: number;
   productSampleName?: string;
@@ -50,8 +50,8 @@ const columns: Column<InboundReceiptCreate>[] = [
   { title: '#', key: 'id' },
   { title: 'Tên sản phẩm', key: 'productSampleName' },
   { title: 'Đơn vị', key: 'unitName' },
-  { title: 'Số lượng nhập', key: 'inbound_quantity' },
-  { title: 'Giá nhập', key: 'inbound_price' },
+  { title: 'Số lượng nhập', key: 'inboundQuantity' },
+  { title: 'Giá nhập', key: 'inboundPrice' },
   { title: 'Tổng lô hàng', key: 'totalPriceBatch' },
   { title: 'Ngày hết hạn', key: 'expiredAt' },
 ];
@@ -116,15 +116,15 @@ function UpdateInboundReceiptModal(
       const updatedBatchData = inboundReceiptData.batchs.map(
         (batch: Batch) => ({
           id: batch?.id,
-          inbound_price: batch.inbound_price,
+          inboundPrice: batch.inboundPrice,
           discount: batch.discount,
-          invent_quantity: batch.invent_quantity,
-          inbound_quantity: batch.inbound_quantity,
+          inventQuantity: batch.inventQuantity,
+          inboundQuantity: batch.inboundQuantity,
           expiredAt: batch.expiredAt,
           productUnitId: batch.productUnit.id,
           productSampleName: batch.productUnit?.productSample?.name,
           unitName: batch.productUnit?.unit?.name,
-          total: batch.inbound_price * batch.inbound_quantity,
+          total: batch.inboundPrice * batch.inboundQuantity,
         }),
       );
       setFormBatchData(updatedBatchData);
@@ -143,10 +143,10 @@ function UpdateInboundReceiptModal(
         (selectedProductUnitId) => {
           const updatedFormBatchData = selectedProductUnitId?.results.map(
             (productUnit: ProductUnit) => ({
-              inbound_price: 0,
+              inboundPrice: 0,
               discount: 0,
-              invent_quantity: 0,
-              inbound_quantity: 0,
+              inventQuantity: 0,
+              inboundQuantity: 0,
               expiredAt: '',
               productUnitId: productUnit?.id,
               productSampleName: productUnit.productSample?.name || '',
@@ -180,13 +180,13 @@ function UpdateInboundReceiptModal(
             ...item,
             [field]: value,
             total:
-              field === 'inbound_price' || field === 'inbound_quantity'
-                ? (field === 'inbound_price'
+              field === 'inboundPrice' || field === 'inboundQuantity'
+                ? (field === 'inboundPrice'
                     ? (value as number)
-                    : item.inbound_price) *
-                  (field === 'inbound_quantity'
+                    : item.inboundPrice) *
+                  (field === 'inboundQuantity'
                     ? (value as number)
-                    : item.inbound_quantity)
+                    : item.inboundQuantity)
                 : item.total,
           }
         : item,
@@ -243,10 +243,10 @@ function UpdateInboundReceiptModal(
 
     const batchsDto = formBatchData.map((item) => ({
       id: item?.id,
-      inbound_price: item.inbound_price,
+      inboundPrice: item.inboundPrice,
       discount: item.discount,
-      invent_quantity: item.inbound_quantity,
-      inbound_quantity: item.inbound_quantity,
+      inventQuantity: item.inboundQuantity,
+      inboundQuantity: item.inboundQuantity,
       expiredAt: item.expiredAt,
       productUnitId: item.productUnitId,
     }));
@@ -390,11 +390,11 @@ function UpdateInboundReceiptModal(
                       <td>
                         <input
                           type="number"
-                          value={item.inbound_quantity}
+                          value={item.inboundQuantity}
                           onChange={(e) =>
                             handleBatchInfoChange(
                               index,
-                              'inbound_quantity',
+                              'inboundQuantity',
                               parseInt(e.target.value),
                             )
                           }
@@ -404,11 +404,11 @@ function UpdateInboundReceiptModal(
                       <td>
                         <input
                           type="number"
-                          value={item.inbound_price}
+                          value={item.inboundPrice}
                           onChange={(e) =>
                             handleBatchInfoChange(
                               index,
-                              'inbound_price',
+                              'inboundPrice',
                               parseFloat(e.target.value),
                             )
                           }

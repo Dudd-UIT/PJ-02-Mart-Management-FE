@@ -20,8 +20,8 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Tên sản phẩm', key: 'productSampleName' },
   { title: 'Đơn vị', key: 'unitName' },
   { title: 'Khối lượng', key: 'volumne' },
-  { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
-  // { title: 'Giá bán', key: 'sell_price' },
+  { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
+  // { title: 'Giá bán', key: 'sellPrice' },
 ];
 
 // const fetchProductUnits = async (
@@ -104,8 +104,8 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
 
   const productUnits = data.results.map((item: ProductUnit) => ({
     id: item.id,
-    sell_price: item.sell_price,
-    conversion_rate: item.conversion_rate,
+    sellPrice: item.sellPrice,
+    conversionRate: item.conversionRate,
     createdAt: item.createdAt,
     volumne: item.volumne,
     productSampleName: item.productSample?.name,

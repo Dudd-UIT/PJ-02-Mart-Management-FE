@@ -7,9 +7,9 @@ export type InboundReceiptCreate = {
   staffId: string; //inbound-receipt
   supplierId: string; //inbound-receipt
   discount: number; //inbound-receipt*
-  inbound_price: number; //batch
-  // sell_price: number; //batch
-  inbound_quantity: number; //batch
+  inboundPrice: number; //batch
+  // sellPrice: number; //batch
+  inboundQuantity: number; //batch
   totalPriceBatch: number; //batch
   expiredAt: Date; //batch
   productSampleName: string; //batch
@@ -18,10 +18,10 @@ export type InboundReceiptCreate = {
 
 export type Batch = {
   id: number;
-  inbound_price: number;
+  inboundPrice: number;
   discount: number;
-  invent_quantity: number;
-  inbound_quantity: number;
+  inventQuantity: number;
+  inboundQuantity: number;
   expiredAt: string;
   createdAt: string;
   productUnit: ProductUnit;

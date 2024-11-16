@@ -17,7 +17,7 @@ const columns: Column<Staff>[] = [
   { title: 'Email', key: 'email' },
 ];
 
-const EmployeesPage = () => {
+const StaffsPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [groupId, setGroupId] = useState(2);
@@ -175,4 +175,4 @@ const EmployeesPage = () => {
   );
 };
 
-export default EmployeesPage;
+export default StaffsPage;

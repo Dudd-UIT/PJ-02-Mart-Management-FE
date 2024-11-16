@@ -2,8 +2,8 @@ import { Column, MetaData } from './commonType';
 
 export type ProductUnitTransform = {
   id: number;
-  sell_price: number;
-  conversion_rate: number;
+  sellPrice: number;
+  conversionRate: number;
   createdAt: string;
   volumne: string;
   productSampleName: string;
@@ -12,8 +12,8 @@ export type ProductUnitTransform = {
 
 export type ProductUnit = {
   id: number;
-  sell_price: number;
-  conversion_rate: number;
+  sellPrice: number;
+  conversionRate: number;
   createdAt: string;
   volumne: string;
   productSample?: {
