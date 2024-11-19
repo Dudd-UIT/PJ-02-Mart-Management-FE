@@ -11967,6 +11967,7 @@ textarea.form-control-lg {
 }
 .btn {
   border-bottom-width: 4px;
+  gap: 0.5rem;
 }
 
 .btn.borderless {
@@ -12132,6 +12133,9 @@ table * * * {
 .accordion-body {
   border-left: 1px solid #a1c4a6 !important;
   margin-top: 0.5rem;
+  padding-right: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 #side_nav {

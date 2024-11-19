@@ -1,0 +1,20 @@
+.btn-group-custom {
+    border-radius: 0px;
+    border: 1px;
+    border-left: 2px solid #727272;
+    height: 100%;
+}
+
+.btn-group-custom-selected {
+    background-color: #fadadd;
+    color: #e57373;
+}
+
+.btn-group-custom:hover {
+    border-color: #727272!important;
+}
+
+.btn-group-custom-selected:hover {
+    background-color: #fadadd;
+    color: #e57373;
+}
