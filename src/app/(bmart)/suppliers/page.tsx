@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@/components/commonComponent/InputForm';
+import { Input, SelectInput } from '@/components/commonComponent/InputForm';
 import CreateSupplierModal from '@/components/supplierComponent/supplier.create';
 import SupplierTable from '@/components/supplierComponent/supplier.table';
 import { fetchSuppliers } from '@/services/supplierServices';
@@ -20,24 +20,15 @@ const columns: Column<Supplier>[] = [
 const SuppliersPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [searchName, setSearchName] = useState('');
-  const [searchPhone, setSearchPhone] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [searchType, setSearchType] = useState<'name' | 'phone'>('name');
   const [searchParams, setSearchParams] = useState({ name: '', phone: '' });
-
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`;
-
   const { data, error } = useSWR(
-    [url, current, pageSize, searchParams.name, searchParams.phone],
+    [current, pageSize, searchParams.name, searchParams.phone],
     () =>
-      fetchSuppliers(
-        url,
-        current,
-        pageSize,
-        searchParams.name,
-        searchParams.phone,
-      ),
+      fetchSuppliers(current, pageSize, searchParams.name, searchParams.phone),
   );
 
   if (error)
@@ -63,7 +54,10 @@ const SuppliersPage = () => {
   };
 
   const handleSearchClick = () => {
-    setSearchParams({ name: searchName, phone: searchPhone });
+    setSearchParams({
+      name: searchType === 'name' ? searchValue : '',
+      phone: searchType === 'phone' ? searchValue : '',
+    });
     setCurrent(1);
   };
 
@@ -76,61 +70,57 @@ const SuppliersPage = () => {
   };
 
   const onMutate = () =>
-    mutate([url, current, pageSize, searchParams.name, searchParams.phone]);
+    mutate([current, pageSize, searchParams.name, searchParams.phone]);
 
   return (
     <>
-      <h2>Danh sách nhà cung cấp</h2>
-      {/* 2 button search */}
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <Input
-            title="Tên nhà cung cấp"
-            size={12}
-            value={searchName}
-            placeholder="Nhập tên nhà cung cấp"
-            onChange={(value) => setSearchName(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
+      <h2>Quản lý nhà cung cấp</h2>
+      {/* Thanh tìm kiếm gộp */}
+      <div className="row">
+        <div className="col-md-2">
+          <SelectInput
+            label="Chọn loại tìm kiếm"
+            value={searchType}
+            options={[
+              { label: 'Tên nhà cung cấp', value: 'name' },
+              { label: 'Số điện thoại', value: 'phone' },
+            ]}
+            onChange={(value) => setSearchType(value as 'name' | 'phone')}
           />
         </div>
-        <div className="col-md-4">
-          <Input
-            title="Số điện thoại"
-            value={searchPhone}
-            size={12}
-            placeholder="Nhập số điện thoại"
-            onChange={(value) => setSearchPhone(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
-          />
-        </div>
+        <Input
+          title="Tìm kiếm"
+          size={4}
+          value={searchValue}
+          placeholder={`Nhập ${
+            searchType === 'name' ? 'tên nhà cung cấp' : 'số điện thoại'
+          }`}
+          onChange={(value) => setSearchValue(value)}
+          onClickIcon={handleSearchClick}
+          icon={<FaSearch />}
+        />
       </div>
+
       {/* button Thêm Supplier */}
       <div className="d-flex justify-content-end mx-3">
         <button
-          className="btn d-flex align-items-center"
+          className="btn d-flex align-items-center btn-primary"
           onClick={() => setIsCreateModalOpen(true)}
-          style={{
-            backgroundColor: '#ffe7e7',
-            color: '#333',
-            borderColor: '#f28b82',
-          }}
         >
           <FaPlus className="align-middle" />
-          <span className="ms-1" style={{ position: 'relative', top: '2px' }}>
-            Thêm
-          </span>
+          <text>Thêm</text>
         </button>
       </div>
-      {/* Danh sách Supplier */}
+
+      {/* Quản lý Supplier */}
       <SupplierTable
         suppliers={data.results}
         columns={columns}
         onMutate={onMutate}
       />
+
       {/* Navigate control */}
-      <nav aria-label="Page navigation example" className="mt-3">
+      <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center">
           <li className={`page-item ${current === 1 ? 'disabled' : ''}`}>
             <button className="page-link" onClick={handlePreviousPage}>
@@ -159,6 +149,7 @@ const SuppliersPage = () => {
           </li>
         </ul>
       </nav>
+
       {/* Modal Create Supplier */}
       <CreateSupplierModal
         isCreateModalOpen={isCreateModalOpen}

@@ -1,87 +1,73 @@
 'use server';
 
+import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
-import { revalidateTag } from 'next/cache';
 
-export const fetchProductUnit = async (
-  url: string,
+export const fetchProductUnits = async (
   current: number,
   pageSize: number,
   searchName?: string,
-  searchPhone?: string,
+  searchCategory?: string,
 ) => {
+  const session = await auth();
+
   const queryParams: { [key: string]: any } = {
     current,
     pageSize,
   };
 
   if (searchName) queryParams.name = searchName;
-  if (searchPhone) queryParams.phone = searchPhone;
+  if (searchCategory) queryParams.productLine = searchCategory;
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
-      url,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`,
       method: 'GET',
       queryParams,
-      nextOption: {
-        next: { tags: ['list-product-units'] },
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
+      },
+    });
+    if (res?.data) {
+      return res.data;
+    } else {
+      throw new Error(res.message);
+    }
+  } catch (error) {
+    console.error('loi');
+    throw error;
+  }
+};
+
+export const fetchProductUnitByIds = async (
+  ids: number[],
+  current?: number,
+  pageSize?: number,
+) => {
+  const session = await auth();
+  const queryParams: { [key: string]: any } = {};
+
+  if (current !== null) queryParams.current = current;
+  if (pageSize !== null) queryParams.pageSize = pageSize;
+
+  try {
+    const res = await sendRequest<IBackendRes<any>>({
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/find-by-ids`,
+      method: 'POST',
+      queryParams,
+      body: { ids },
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
 
     if (res?.data) {
       return res.data;
     } else {
-      throw new Error("Data format error: 'data' field is missing.");
+      throw new Error(res.message);
     }
   } catch (error) {
-    console.error('Fetch product-units failed:', error);
+    console.error('Fetch productUnit by ids failed:', error);
     throw error;
   }
-};
-
-export const handleCreateBatchAction = async (data: any) => {
-  // const session = await auth();
-  const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`,
-    method: 'POST',
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`,
-    // },
-    body: { ...data },
-  });
-  revalidateTag('list-product-units');
-
-  return res;
-};
-
-export const handleUpdateBatchAction = async (data: any) => {
-  const { id, ...rest } = data; // Separate id from the rest of the data
-
-  // Send the PATCH request to update Batch by ID in the URL path
-  const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/${id}`, // Include ID directly in the path
-    method: 'PATCH',
-    body: { ...rest },
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`, // Uncomment if authentication is needed
-    // },
-  });
-
-  // Revalidate to update the list view if necessary
-  revalidateTag('list-product-units');
-
-  return res;
-};
-
-export const handleDeleteBatchAction = async (id: any) => {
-  // const session = await auth();
-  const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/${id}`,
-    method: 'DELETE',
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`,
-    // },
-  });
-  revalidateTag('list-product-units');
-  return res;
 };

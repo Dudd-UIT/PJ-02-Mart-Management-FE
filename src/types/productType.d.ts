@@ -1,6 +1,12 @@
+import { Column, MetaData } from './commonType';
+
 export type ProductType = {
-    id: number;
-    name: string;
-    createAt: string;
-    deleteAt: string;
+  id: number;
+  name: string;
+};
+
+export interface ProductTypeTableType {
+  productTypes: ProductType[];
+  columns: Column<ProductType>[];
+  onMutate: () => void;
 }

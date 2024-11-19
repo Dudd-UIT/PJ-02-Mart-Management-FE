@@ -37,6 +37,7 @@ export default function Sidebar() {
       className={`sidebar col-md-2 col-sm-4 ${isPinned ? 'pinned' : ''}`}
       id="side_nav"
       style={{
+        height: '100vh',
         width: isPinned ? '230px' : '60px',
         transition: 'width 0.3s',
       }}
@@ -98,7 +99,7 @@ export default function Sidebar() {
               </li>
               <li className={pathname == '/sale/invoices' ? 'active' : ''}>
                 <Link href="/sale/invoices" className="btn btn-sc">
-                  {isPinned && <text className="small">Danh sách hóa đơn</text>}
+                  {isPinned && <text className="small">Quản lý hóa đơn</text>}
                 </Link>
               </li>
             </ul>

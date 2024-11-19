@@ -3,8 +3,8 @@ import { ProductSample } from './productSample';
 
 export type ProductUnitTransform = {
   id: number;
-  sell_price: number;
-  conversion_rate: number;
+  sellPrice: number;
+  conversionRate: number;
   createdAt: string;
   volumne: string;
   productSampleName: string;
@@ -13,19 +13,21 @@ export type ProductUnitTransform = {
 
 export type ProductUnit = {
   id: number;
-  sell_price: number;
-  conversion_rate: number;
+  sellPrice: number;
+  conversionRate: number;
   createdAt: string;
   volumne: string;
   productSample?: {
+    id: number;
     name: string;
   };
   unit?: {
+    id: number;
     name: string;
   };
 };
 
-export interface ProductUnitTableModalProps {
+export interface ProductUnitTableProps {
   productUnits: ProductUnitTransform[];
   columns: Column<ProductUnitTransform>[];
   // meta: MetaData;
@@ -34,10 +36,11 @@ export interface ProductUnitTableModalProps {
 export interface ProductSupplierModalProps {
   isProductSupplierModalOpen: boolean;
   setIsProductSupplierModalOpen: (v: boolean) => void;
-  onSelectedProductUnitsChange: (v: number[]) => void;
+  onSelectedProductUnitsChange?: (v: number[]) => void;
+  selectedProductUnitIds?: number[];
 }
 
-export interface SelectedProductUnitTableModalProps {
+export interface SelectedProductUnitTableProps {
   productUnits: ProductUnitTransform[];
   columns: Column<ProductUnitTransform>[];
   // meta: MetaData;

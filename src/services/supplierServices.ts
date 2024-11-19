@@ -1,15 +1,17 @@
 'use server';
 
+import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 import { revalidateTag } from 'next/cache';
 
 export const fetchSuppliers = async (
-  url: string,
-  current: number,
-  pageSize: number,
+  current?: number,
+  pageSize?: number,
   searchName?: string,
   searchPhone?: string,
 ) => {
+  const session = await auth();
+
   const queryParams: { [key: string]: any } = {
     current,
     pageSize,
@@ -20,18 +22,18 @@ export const fetchSuppliers = async (
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
-      url,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`,
       method: 'GET',
       queryParams,
-      nextOption: {
-        next: { tags: ['list-suppliers'] },
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
 
     if (res?.data) {
       return res.data;
     } else {
-      throw new Error("Data format error: 'data' field is missing.");
+      throw new Error(res.message);
     }
   } catch (error) {
     console.error('Fetch suppliers failed:', error);
@@ -40,48 +42,44 @@ export const fetchSuppliers = async (
 };
 
 export const handleCreateSupplierAction = async (data: any) => {
-  // const session = await auth();
+  const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`,
     method: 'POST',
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
     body: { ...data },
   });
-  revalidateTag('list-suppliers');
 
   return res;
 };
 
 export const handleUpdateSupplierAction = async (data: any) => {
-  const { id, ...rest } = data; // Separate id from the rest of the data
+  const { id, ...rest } = data;
+  const session = await auth();
 
-  // Send the PATCH request to update supplier by ID in the URL path
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers/${id}`, // Include ID directly in the path
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers/${id}`,
     method: 'PATCH',
     body: { ...rest },
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`, // Uncomment if authentication is needed
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
   });
-
-  // Revalidate to update the list view if necessary
-  revalidateTag('list-suppliers');
 
   return res;
 };
 
 export const handleDeleteSupplierAction = async (id: any) => {
-  // const session = await auth();
+  const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers/${id}`,
     method: 'DELETE',
-    // headers: {
-    //   Authorization: `Bearer ${session?.user?.access_token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
   });
-  revalidateTag('list-suppliers');
+
   return res;
 };

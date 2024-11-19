@@ -1,12 +1,10 @@
 import {
   ProductUnitTransform,
-  SelectedProductUnitTableModalProps,
+  SelectedProductUnitTableProps,
 } from '@/types/productUnit';
 import React from 'react';
 
-function SelectedProductUnitTableModal(
-  props: SelectedProductUnitTableModalProps,
-) {
+function SelectedProductUnitModal(props: SelectedProductUnitTableProps) {
   const { columns, productUnits } = props;
 
   return (
@@ -37,4 +35,4 @@ function SelectedProductUnitTableModal(
   );
 }
 
-export default SelectedProductUnitTableModal;
+export default SelectedProductUnitModal;

@@ -30,16 +30,29 @@ declare global {
 
   interface ILogin {
     user: {
-      _id: string;
-      name: string;
+      id: number;
       email: string;
+      name: string;
+      phone: string;
+      address: string;
+      groupName: string;
     };
     access_token: string;
+  }
+
+  interface InfoModalProps {
+    isInfoModalOpen: boolean;
+    setIsInfoModalOpen: (v: boolean) => void;
+    data: User;
   }
 
   export type Column<T> = {
     title: string;
     key: keyof T;
+  };
+
+  export type RenderableColumn<T> = Column<T> & {
+    render?: (record: T) => React.ReactNode;
   };
 
   export interface MetaData {
@@ -59,6 +72,7 @@ declare global {
     isUpdateModalOpen: boolean;
     setIsUpdateModalOpen: (v: boolean) => void;
     data?: T;
+    setData?: (v: T | undefined) => void;
     onMutate: () => void;
   }
 

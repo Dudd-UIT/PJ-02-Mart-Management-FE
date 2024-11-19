@@ -19,9 +19,9 @@ const DeleteSupplierModal = (props: DeleteModalProps<Supplier>) => {
     if (res?.data) {
       handleCloseDeleteModal();
       onMutate();
-      toast.success('Xóa nhà cung cấp thành công');
+      toast.success(res.message);
     } else {
-      toast.error('Lỗi xóa nhà cung cấp');
+      toast.error(res.message);
     }
   };
 
@@ -30,14 +30,13 @@ const DeleteSupplierModal = (props: DeleteModalProps<Supplier>) => {
       <Modal
         show={isDeleteModalOpen}
         onHide={handleCloseDeleteModal}
-        size="lg"
         backdrop={'static'}
       >
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>Bạn có chắc muốn xóa nhà cung cấp {supplierData?.name}?</div>
+          <text>Bạn có chắc muốn xóa nhà cung cấp {supplierData?.name}?</text>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDeleteModal}>

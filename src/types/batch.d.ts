@@ -1,15 +1,43 @@
-import { ProductSample } from './productSample.d';
 import { Column, MetaData } from './commonType';
 import { ProductUnit } from './productUnit';
 
+export type InboundReceiptCreate = {
+  id: number;
+  totalPrice: number; //inbound-receipt
+  staffId: string; //inbound-receipt
+  supplierId: string; //inbound-receipt
+  discount: number; //inbound-receipt*
+  inboundPrice: number; //batch
+  // sellPrice: number; //batch
+  inboundQuantity: number; //batch
+  totalPriceBatch: number; //batch
+  expiredAt: Date; //batch
+  productSampleName: string; //batch
+  unitName: string; //batch
+};
+
+export type Batch = {
+  id: number;
+  inboundPrice: number;
+  sellPrice?: number;
+  discount: number;
+  inventQuantity: number;
+  inboundQuantity: number;
+  expiredAt: string;
+  createdAt: string;
+  inboundReceipt?: {
+    id: number;
+  };
+  productUnit: ProductUnit;
+};
 
 export type BatchGrouped = {
   id: number;
-  inbound_price: number;
-  sell_price: number;
+  inboundPrice: number;
+  sellPrice: number;
   discount: number;
-  quantity: number;
-  inbound_quantity: number;
+  inventQuantity: number;
+  inboundQuantity: number;
   expiredAt: number; 
   inboundReceiptId: number; 
   unit: string;
@@ -22,16 +50,35 @@ export interface BatchTableType {
   onMutate: () => void;
 }
 
-export type Batch = {
-  id: number;
-  inbound_price: number;
-  sell_price: number;
-  discount: number;
-  quantity: number;
-  inbound_quantity: number;
-  expiredAt: string;
-  inboundReceipt: {
-      id: number;
-  };
-  productUnit: ProductUnit;
-}
+
+// export type InboundReceipt = {
+//   id: number;
+//   staff?: {
+//     name: string;
+//   };
+//   supplier?: {
+//     name: string;
+//   };
+//   totalPrice: number;
+//   isReceived: number;
+//   isPaid: string;
+//   createdAt: string;
+// };
+
+// export interface InboundReceiptTableModalProps {
+//   inboundReceipts: InboundReceiptTransform[];
+//   columns: Column<InboundReceiptTransform>[];
+//   onMutate: () => void;
+// }
+
+// export interface ProductSupplierModalProps {
+//   isProductSupplierModalOpen: boolean;
+//   setIsProductSupplierModalOpen: (v: boolean) => void;
+//   onSelectedInboundReceiptsChange: (v: number[]) => void;
+// }
+
+// export interface SelectedInboundReceiptTableModalProps {
+//   InboundReceipts: InboundReceiptTransform[];
+//   columns: Column<InboundReceiptTransform>[];
+//   // meta: MetaData;
+// }

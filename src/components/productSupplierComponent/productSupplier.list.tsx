@@ -4,7 +4,7 @@ import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
-import ProductUnitTableModal from '../productUnitComponent/productUnit.table';
+import ProductUnitTable from '../productUnitComponent/productUnit.table';
 import {
   ProductSupplierModalProps,
   ProductUnit,
@@ -13,56 +13,58 @@ import {
 import { sendRequest } from '@/utils/api';
 import useSWR from 'swr';
 import { Input } from '../commonComponent/InputForm';
+import { fetchProductUnits } from '@/services/productUnitServices';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
   { title: 'Tên sản phẩm', key: 'productSampleName' },
   { title: 'Đơn vị', key: 'unitName' },
   { title: 'Khối lượng', key: 'volumne' },
-  { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
-  { title: 'Giá bán', key: 'sell_price' },
+  { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
+  // { title: 'Giá bán', key: 'sellPrice' },
 ];
 
-const fetchProductUnits = async (
-  url: string,
-  current: number,
-  pageSize: number,
-  searchName?: string,
-  searchCategory?: string,
-) => {
-  const queryParams: { [key: string]: any } = {
-    current,
-    pageSize,
-  };
+// const fetchProductUnits = async (
+//   url: string,
+//   current: number,
+//   pageSize: number,
+//   searchName?: string,
+//   searchCategory?: string,
+// ) => {
+//   const queryParams: { [key: string]: any } = {
+//     current,
+//     pageSize,
+//   };
 
-  if (searchName) queryParams.name = searchName;
-  if (searchCategory) queryParams.productLine = searchCategory;
+//   if (searchName) queryParams.name = searchName;
+//   if (searchCategory) queryParams.productLine = searchCategory;
 
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url,
-      method: 'GET',
-      queryParams,
-      nextOption: {
-        next: { tags: ['list-productUnits'] },
-      },
-    });
+//   try {
+//     const res = await sendRequest<IBackendRes<any>>({
+//       url,
+//       method: 'GET',
+//       queryParams,
+//       nextOption: {
+//         next: { tags: ['list-productUnits'] },
+//       },
+//     });
 
-    if (res?.data) {
-      return res.data;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productSamples failed:', error);
-    throw error;
-  }
-};
+//     if (res?.data) {
+//       return res.data;
+//     } else {
+//       throw new Error(res.message);
+//     }
+//   } catch (error) {
+//     console.error('loi');
+//     throw error;
+//   }
+// };
 
 function ProductSupplierModal(props: ProductSupplierModalProps) {
   const {
     isProductSupplierModalOpen,
     setIsProductSupplierModalOpen,
+    selectedProductUnitIds,
     onSelectedProductUnitsChange,
   } = props;
 
@@ -73,13 +75,11 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  // Trigger data re-fetch whenever `searchParams` or pagination parameters change
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
   const { data, error, mutate } = useSWR(
     [url, current, pageSize, searchParams.name, searchParams.category],
     () =>
       fetchProductUnits(
-        url,
         current,
         pageSize,
         searchParams.name,
@@ -104,8 +104,8 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
 
   const productUnits = data.results.map((item: ProductUnit) => ({
     id: item.id,
-    sell_price: item.sell_price,
-    conversion_rate: item.conversion_rate,
+    sellPrice: item.sellPrice,
+    conversionRate: item.conversionRate,
     createdAt: item.createdAt,
     volumne: item.volumne,
     productSampleName: item.productSample?.name,
@@ -120,12 +120,11 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   };
 
   const handleCloseProductUnitListModal = () => {
-    setProductUnitIds([]);
     setIsProductSupplierModalOpen(false);
   };
 
   const handleSave = () => {
-    onSelectedProductUnitsChange(productUnitIds);
+    onSelectedProductUnitsChange?.(productUnitIds);
     setIsProductSupplierModalOpen(false);
   };
 
@@ -158,10 +157,10 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
           <div className="row mb-3">
             <div className="col-md-4">
               <Input
-                title="Tên nhà cung cấp"
+                title="Tên sản phẩm"
                 size={12}
                 value={searchName}
-                placeholder="Nhập tên nhà cung cấp"
+                placeholder="Nhập tên sản phẩm"
                 onChange={(value) => setSearchName(value)}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}
@@ -181,7 +180,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
           </div>
         </Form>
         {/* ProductUnit Table */}
-        <ProductUnitTableModal columns={columns} productUnits={productUnits} />
+        <ProductUnitTable columns={columns} productUnits={productUnits} />
         {/* Navigate Control */}
         <nav aria-label="Page navigation example" className="mt-3">
           <ul className="pagination justify-content-center">
@@ -216,10 +215,10 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
         </nav>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleCloseProductUnitListModal}>
+        <Button variant="danger" onClick={handleCloseProductUnitListModal}>
           Thoát
         </Button>
-        <Button variant="danger" onClick={handleSave}>
+        <Button className="btn-primary" onClick={handleSave}>
           Lưu
         </Button>
       </Modal.Footer>

@@ -4,53 +4,29 @@ import { FaPlus } from 'react-icons/fa';
 import { useState } from 'react';
 import { handleCreateSupplierAction } from '@/services/supplierServices';
 import ProductSupplierModal from '../productSupplierComponent/productSupplier.list';
-import SelectedProductUnitTableModal from '../productUnitComponent/selectedProductUnit.table';
+import SelectedProductUnitTable from '../productUnitComponent/selectedProductUnit.table';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
-import { sendRequest } from '@/utils/api';
 import useSWR from 'swr';
 import { toast } from 'react-toastify';
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
+import { fetchProductUnitByIds } from '@/services/productUnitServices';
+import { Input } from '../commonComponent/InputForm';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
   { title: 'Tên sản phẩm', key: 'productSampleName' },
   { title: 'Đơn vị', key: 'unitName' },
   { title: 'Khối lượng', key: 'volumne' },
-  { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
-  { title: 'Giá bán', key: 'sell_price' },
+  { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
+  // { title: 'Giá bán', key: 'sellPrice' },
 ];
 
-const fetchProductUnits = async (
-  url: string,
-  current: number,
-  pageSize: number,
-  ids?: number[],
-) => {
-  const queryParams: { [key: string]: any } = {
-    current,
-    pageSize,
-  };
-
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url,
-      method: 'POST',
-      queryParams,
-      body: { ids },
-      nextOption: {
-        next: { tags: ['list-productUnits'] },
-      },
-    });
-
-    if (res?.data) {
-      return res.data;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productSamples failed:', error);
-    throw error;
-  }
+type FormData = {
+  name: string;
+  phone: string;
+  address: string;
+  country: string;
+  productUnitIds: number[];
 };
 
 function CreateSupplierModal(props: CreateModalProps) {
@@ -58,57 +34,49 @@ function CreateSupplierModal(props: CreateModalProps) {
   const [isProductSupplierModalOpen, setIsProductSupplierModalOpen] =
     useState(false);
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [country, setCountry] = useState('');
-  const [selectedProductUnitIds, setSelectedProductUnitIds] = useState<
-    number[]
-  >([]);
+  const initalFormData = {
+    name: '',
+    phone: '',
+    address: '',
+    country: '',
+    productUnitIds: [],
+  };
+
+  const [formData, setFormData] = useState<FormData>(initalFormData);
+
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  const clearForm = () => {
-    setName('');
-    setPhone('');
-    setAddress('');
-    setCountry('');
-    setSelectedProductUnitIds([]);
-  };
-
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);
-    clearForm();
+    setFormData(initalFormData);
     setProductUnitIds([]);
   };
 
   const handleCreateSupplier = async () => {
-    const newSupplier = {
-      name,
-      phone,
-      address,
-      country,
-      productUnitIds: selectedProductUnitIds,
-    };
-
-    const res = await handleCreateSupplierAction(newSupplier);
+    const res = await handleCreateSupplierAction(formData);
     if (res?.data) {
       handleCloseCreateModal();
-      clearForm();
+      setFormData(initalFormData);
       setProductUnitIds([]);
       toast.success(res.message);
       onMutate();
     } else {
-      toast.error('Lỗi khi tạo mới nhà cung cấp');
+      toast.error(res.message);
     }
   };
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/find-by-ids`;
+  const handleFormDataChange = (
+    field: keyof typeof formData,
+    value: number[] | string,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const { data, error } = useSWR(
-    [url, current, pageSize, selectedProductUnitIds.length],
-    () => fetchProductUnits(url, current, pageSize, selectedProductUnitIds),
+    [current, pageSize, formData.productUnitIds],
+    () => fetchProductUnitByIds(formData.productUnitIds, current, pageSize),
   );
 
   if (error)
@@ -129,8 +97,8 @@ function CreateSupplierModal(props: CreateModalProps) {
   const productUnits = Array.isArray(data?.results)
     ? data.results.map((item: ProductUnit) => ({
         id: item.id,
-        sell_price: item.sell_price,
-        conversion_rate: item.conversion_rate,
+        sellPrice: item.sellPrice,
+        conversionRate: item.conversionRate,
         createdAt: item.createdAt,
         volumne: item.volumne,
         productSampleName: item.productSample?.name,
@@ -168,71 +136,49 @@ function CreateSupplierModal(props: CreateModalProps) {
           {/* Thông tin nhà cung cấp */}
           <div className="container mb-4">
             <div className="row mb-3">
-              <div className="col-md-6">
-                <label>Tên nhà cung cấp</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <label>Số điện thoại</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
+              <Input
+                title="Tên nhà cung cấp"
+                value={formData?.name || ''}
+                size={6}
+                onChange={(value) => handleFormDataChange('name', value)}
+              />
+              <Input
+                title="Số điện thoại"
+                value={formData?.phone || ''}
+                size={6}
+                onChange={(value) => handleFormDataChange('phone', value)}
+              />
             </div>
             <div className="row mb-3">
-              <div className="col-md-8">
-                <label>Địa chỉ</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </div>
-              <div className="col-md-4">
-                <label>Quốc gia</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                />
-              </div>
+              <Input
+                title="Địa chỉ"
+                value={formData?.address || ''}
+                size={8}
+                onChange={(value) => handleFormDataChange('address', value)}
+              />
+              <Input
+                title="Quốc gia"
+                value={formData?.country || ''}
+                size={4}
+                onChange={(value) => handleFormDataChange('country', value)}
+              />
             </div>
           </div>
-          <h5>Danh sách mặt hàng được cung cấp</h5>
+          <h5>Quản lý mặt hàng được cung cấp</h5>
           {/* Button thêm */}
           <div className="d-flex justify-content-end mx-3">
             <button
-              className="btn d-flex align-items-center"
-              style={{
-                backgroundColor: '#ffe7e7',
-                color: '#333',
-                borderColor: '#f28b82',
-              }}
+              className="btn d-flex align-items-center btn-primary"
               onClick={() => setIsProductSupplierModalOpen(true)}
             >
               <FaPlus className="align-middle" />
-              <span
-                className="ms-1"
-                style={{ position: 'relative', top: '2px' }}
-              >
-                Thêm
-              </span>
+              <text>Thêm</text>
             </button>
           </div>
-          {/* Danh sách các sản phẩm được chọn */}
+          {/* Quản lý các sản phẩm được chọn */}
           {productUnits.length > 0 && (
             <>
-              <SelectedProductUnitTableModal
+              <SelectedProductUnitTable
                 columns={columns}
                 productUnits={productUnits}
               />
@@ -276,10 +222,10 @@ function CreateSupplierModal(props: CreateModalProps) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
+          <Button variant="danger" onClick={handleCloseCreateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleCreateSupplier}>
+          <Button className="btn-primary" onClick={handleCreateSupplier}>
             Lưu
           </Button>
         </Modal.Footer>
@@ -288,7 +234,9 @@ function CreateSupplierModal(props: CreateModalProps) {
       <ProductSupplierModal
         isProductSupplierModalOpen={isProductSupplierModalOpen}
         setIsProductSupplierModalOpen={setIsProductSupplierModalOpen}
-        onSelectedProductUnitsChange={setSelectedProductUnitIds}
+        onSelectedProductUnitsChange={(value) =>
+          handleFormDataChange('productUnitIds', value)
+        }
       />
     </>
   );
