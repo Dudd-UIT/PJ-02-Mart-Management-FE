@@ -185,8 +185,8 @@ export default function Sidebar() {
                   {isPinned && <text className="small">Nhóm người dùng</text>}
                 </Link>
               </li>
-              <li className={pathname == '/rule/employee' ? 'active' : ''}>
-                <Link href="/rule/employee" className="btn btn-sc">
+              <li className={pathname == '/rule/staff' ? 'active' : ''}>
+                <Link href="/rule/staff" className="btn btn-sc">
                   {isPinned && <text className="small">Nhân viên</text>}
                 </Link>
               </li>

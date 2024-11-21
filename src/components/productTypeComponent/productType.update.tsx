@@ -31,7 +31,7 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
     setName(productTypeData?.name || '');
   };
 
-  const handleCloseCreateModal = () => {
+  const handleCloseUpdateModal = () => {
     setIsUpdateModalOpen(false);
     resetForm();
     setData?.(undefined);
@@ -45,7 +45,7 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
 
     const res = await handleUpdateProductTypeAction(newProductType);
     if (res?.data) {
-      handleCloseCreateModal();
+      handleCloseUpdateModal();
       toast.success(res.message);
       onMutate();
     } else {
@@ -58,7 +58,7 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
       <Modal
         backdrop={'static'}
         show={isUpdateModalOpen}
-        onHide={handleCloseCreateModal}
+        onHide={handleCloseUpdateModal}
       >
         <Modal.Header closeButton>
           <Modal.Title>Thông tin loại sản phẩm</Modal.Title>
@@ -73,7 +73,7 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
+          <Button variant="secondary" onClick={handleCloseUpdateModal}>
             Thoát
           </Button>
           <Button variant="danger" onClick={handleUpdateProductType}>

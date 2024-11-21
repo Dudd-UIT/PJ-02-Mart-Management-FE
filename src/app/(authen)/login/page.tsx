@@ -34,7 +34,7 @@ function LoginPage() {
         if (res?.code === 2) {
           return;
         }
-        toast.error('Lỗi đăng nhập');
+        toast.error(res.message);
       } else {
         router.replace('/suppliers');
       }
@@ -85,6 +85,7 @@ function LoginPage() {
             <Input
               title="Email"
               size={12}
+              required
               value={formLogin.email}
               placeholder="Nhập email"
               onChange={(value) => handleLoginFormChange('email', value)}

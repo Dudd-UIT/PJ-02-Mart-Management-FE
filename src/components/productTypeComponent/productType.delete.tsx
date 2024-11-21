@@ -19,9 +19,9 @@ const DeleteProductTypeModal = (props: DeleteModalProps<ProductType>) => {
     if (res?.data) {
       handleCloseDeleteModal();
       onMutate();
-      toast.success('Xóa loại sản phẩm thành công');
+      toast.success(res.message);
     } else {
-      toast.error('Lỗi xóa loại sản phẩm');
+      toast.error(res.message);
     }
   };
 

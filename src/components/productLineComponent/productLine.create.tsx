@@ -15,7 +15,6 @@ type FormData = {
 function CreateProductLineModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
   const initalFormData = {
-    id: 0,
     name: '',
     productTypeId: 0,
   };
