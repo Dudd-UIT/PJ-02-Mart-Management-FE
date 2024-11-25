@@ -6,6 +6,7 @@ import { fetchProductTypes } from '@/services/productTypeServices';
 import { handleCreaterProductLineAction } from '@/services/productLineServices';
 import useSWR from 'swr';
 import { ProductType } from '@/types/productType';
+import { Input } from '../commonComponent/InputForm';
 
 
 function CreateProductLineModal(props: CreateModalProps) {
@@ -53,7 +54,6 @@ function CreateProductLineModal(props: CreateModalProps) {
     setProductTypeId(selectedProductType?.id);
     setProductTypeName(selectedProductType?.name || '');
   };
-
 
   return (
     <>

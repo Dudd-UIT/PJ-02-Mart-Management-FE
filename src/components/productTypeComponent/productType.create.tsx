@@ -1,58 +1,8 @@
 'use client';
 import { Modal, Button } from 'react-bootstrap';
-import { FaPlus } from 'react-icons/fa';
 import { useState } from 'react';
-import { handleCreateSupplierAction } from '@/services/supplierServices';
-import ProductSupplierModal from '../productSupplierComponent/productSupplier.list';
-import SelectedProductUnitTableModal from '../productUnitComponent/selectedProductUnit.table';
-import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
-import { sendRequest } from '@/utils/api';
-import useSWR from 'swr';
 import { toast } from 'react-toastify';
-import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { handleCreaterProductTypeAction } from '@/services/productTypeServices';
-
-const columns: Column<ProductUnitTransform>[] = [
-  { title: 'ID', key: 'id' },
-  { title: 'Tên sản phẩm', key: 'productSampleName' },
-  { title: 'Đơn vị', key: 'unitName' },
-  { title: 'Khối lượng', key: 'volumne' },
-  { title: 'Tỷ lệ chuyển đổi', key: 'conversion_rate' },
-  { title: 'Giá bán', key: 'sell_price' },
-];
-
-const fetchProductUnits = async (
-  url: string,
-  current: number,
-  pageSize: number,
-  ids?: number[],
-) => {
-  const queryParams: { [key: string]: any } = {
-    current,
-    pageSize,
-  };
-
-  try {
-    const res = await sendRequest<IBackendRes<any>>({
-      url,
-      method: 'POST',
-      queryParams,
-      body: { ids },
-      nextOption: {
-        next: { tags: ['list-productUnits'] },
-      },
-    });
-
-    if (res?.data) {
-      return res.data;
-    } else {
-      throw new Error("Data format error: 'data' field is missing.");
-    }
-  } catch (error) {
-    console.error('Fetch productSamples failed:', error);
-    throw error;
-  }
-};
 
 function CreateProductTypeModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
