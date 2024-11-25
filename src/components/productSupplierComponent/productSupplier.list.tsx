@@ -21,44 +21,7 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị', key: 'unitName' },
   { title: 'Khối lượng', key: 'volumne' },
   { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
-  // { title: 'Giá bán', key: 'sellPrice' },
 ];
-
-// const fetchProductUnits = async (
-//   url: string,
-//   current: number,
-//   pageSize: number,
-//   searchName?: string,
-//   searchCategory?: string,
-// ) => {
-//   const queryParams: { [key: string]: any } = {
-//     current,
-//     pageSize,
-//   };
-
-//   if (searchName) queryParams.name = searchName;
-//   if (searchCategory) queryParams.productLine = searchCategory;
-
-//   try {
-//     const res = await sendRequest<IBackendRes<any>>({
-//       url,
-//       method: 'GET',
-//       queryParams,
-//       nextOption: {
-//         next: { tags: ['list-productUnits'] },
-//       },
-//     });
-
-//     if (res?.data) {
-//       return res.data;
-//     } else {
-//       throw new Error(res.message);
-//     }
-//   } catch (error) {
-//     console.error('loi');
-//     throw error;
-//   }
-// };
 
 function ProductSupplierModal(props: ProductSupplierModalProps) {
   const {
@@ -76,7 +39,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const [pageSize, setPageSize] = useState(5);
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
-  const { data, error, mutate } = useSWR(
+  const { data, error } = useSWR(
     [url, current, pageSize, searchParams.name, searchParams.category],
     () =>
       fetchProductUnits(

@@ -15,7 +15,6 @@ interface User {
 function InfoModal(props: InfoModalProps) {
   const { isInfoModalOpen, setIsInfoModalOpen, data } = props;
   const [userSession, setUserSession] = useState<User | null>(null);
-  console.log('data', data);
 
   const handleCloseUpdateModal = () => {
     setIsInfoModalOpen(false);

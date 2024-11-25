@@ -1,34 +1,30 @@
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
-import {
-  InboundReceiptTableModalProps,
-  InboundReceiptTransform,
-} from '@/types/inboundReceipt';
-import UpdateInboundReceiptModal from './inboundReceipt.update';
-import DeleteInboundReceiptModal from './inboundReceipt.delete';
-import { renderStatusBadge } from '../commonComponent/Status';
 import { formatDateDMY } from '@/utils/format';
+import { OrderTableModalProps, OrderTransform } from '@/types/order';
+import UpdateOrderModal from './order.update';
+import DeleteOrderModal from './order.delete';
+import { renderStatusBadge } from '../commonComponent/Status';
 
-const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
-  const { inboundReceipts, columns, onMutate } = props;
+const OrderTable = (props: OrderTableModalProps) => {
+  const { orders, columns, onMutate } = props;
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-  const [selectedInboundReceipt, setSelectedInboundReceipt] = useState<
-    InboundReceiptTransform | undefined
+  const [selectedOrder, setSelectedOrder] = useState<
+    OrderTransform | undefined
   >();
 
-  const handleOpenUpdateModal = (inboundReceipt: InboundReceiptTransform) => {
-    setSelectedInboundReceipt(inboundReceipt);
+  const handleOpenUpdateModal = (order: OrderTransform) => {
+    setSelectedOrder(order);
     setIsUpdateModalOpen(true);
   };
 
-  const handleOpenDeleteModal = (inboundReceipt: InboundReceiptTransform) => {
-    setSelectedInboundReceipt(inboundReceipt);
+  const handleOpenDeleteModal = (order: OrderTransform) => {
+    setSelectedOrder(order);
     setIsDeleteModalOpen(true);
   };
-
 
   return (
     <>
@@ -51,12 +47,10 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
             </tr>
           </thead>
           <tbody>
-            {inboundReceipts?.map((row, rowIndex) => (
+            {orders?.map((row, rowIndex) => (
               <tr key={rowIndex} className="text-center align-middle">
                 {columns.map((column, colIndex) => {
-                  const cellData =
-                    row[column.key as keyof InboundReceiptTransform];
-
+                  const cellData = row[column.key as keyof OrderTransform];
                   // Conditional rendering for isPaid and isReceived statuses
                   if (column.key === 'isPaid') {
                     return (
@@ -73,10 +67,9 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
                       </td>
                     );
                   }
-
-                  // Format 'createdAt' to dd-mm-yyyy
                   if (
-                    column.key === 'createdAt' &&
+                    (column.key === 'paymentTime' ||
+                      column.key === 'createdAt') &&
                     typeof cellData === 'string'
                   ) {
                     return <td key={colIndex}>{formatDateDMY(cellData)}</td>;
@@ -104,21 +97,21 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
         </table>
       </div>
 
-      <UpdateInboundReceiptModal
+      <UpdateOrderModal
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
-        data={selectedInboundReceipt} // Pass selected InboundReceipt data to modal
-        setData={setSelectedInboundReceipt}
+        data={selectedOrder}
+        setData={setSelectedOrder}
         onMutate={onMutate}
       />
-      <DeleteInboundReceiptModal
+      <DeleteOrderModal
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
-        data={selectedInboundReceipt}
+        data={selectedOrder}
         onMutate={onMutate}
       />
     </>
   );
 };
 
-export default InboundReceiptTable;
+export default OrderTable;

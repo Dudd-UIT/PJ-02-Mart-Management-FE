@@ -92,13 +92,13 @@ export default function Sidebar() {
           </div>
           {isSaleOpen && (
             <ul className="list-unstyled ps-5 gap-4">
-              <li className={pathname == '/sale' ? 'active' : ''}>
-                <Link href="/sale" className="btn btn-sc">
+              <li className={pathname == '/order/sale' ? 'active' : ''}>
+                <Link href="/order/sale" className="btn btn-sc">
                   {isPinned && <text className="small">Bán hàng</text>}
                 </Link>
               </li>
-              <li className={pathname == '/sale/invoices' ? 'active' : ''}>
-                <Link href="/sale/invoices" className="btn btn-sc">
+              <li className={pathname == '/order' ? 'active' : ''}>
+                <Link href="/order" className="btn btn-sc">
                   {isPinned && <text className="small">Quản lý hóa đơn</text>}
                 </Link>
               </li>

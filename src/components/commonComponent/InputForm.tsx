@@ -21,18 +21,16 @@ export function Input({
   showObj = 'name',
   type,
 }: InputProps) {
-  // Separate handler for select changes
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = options.find(
-      (option) => +option[keyObj] === +e.target.value,
+      (option) => `${option[keyObj]}` === `${e.target.value}`,
     );
 
     if (selectedOption) {
-      onSelectedChange?.(+selectedOption[keyObj]);
+      onSelectedChange?.(selectedOption[keyObj]);
     }
   };
 
-  // Separate handler for input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.value);
   };
@@ -138,20 +136,22 @@ export function Input({
 }
 
 type SelectInputProps = {
+  size: number;
   label?: string;
   value: string | number;
-  options: { label: string; value: string | number }[]; // Các lựa chọn với `label` để hiển thị và `value` là giá trị thực
+  options: { label: string; value: string | number }[];
   onChange: (value: string | number) => void;
 };
 
 export const SelectInput: React.FC<SelectInputProps> = ({
+  size = 4,
   label,
   value,
   options,
   onChange,
 }) => {
   return (
-    <div>
+    <div className={`col-md-${size}`}>
       {label && <label>{label}</label>}
       <select
         className="form-select mb-3"

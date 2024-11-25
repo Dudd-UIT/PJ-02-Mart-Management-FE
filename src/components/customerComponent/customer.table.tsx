@@ -1,6 +1,4 @@
-// SupplierTable Component
 import { FaEye } from 'react-icons/fa';
-import { Supplier, SupplierTableType } from '@/types/supplier';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
 import { Customer, CustomerTableType } from '@/types/customer';

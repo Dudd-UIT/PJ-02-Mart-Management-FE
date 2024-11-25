@@ -69,7 +69,6 @@ function UpdateUserGroupModal(props: UpdateModalProps<Group>) {
         backdrop={'static'}
         show={isUpdateModalOpen}
         onHide={handleCloseCreateModal}
-        size="lg"
       >
         <Modal.Header closeButton>
           <Modal.Title>Thông tin nhóm người dùng</Modal.Title>

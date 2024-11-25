@@ -1,60 +1,58 @@
 'use client';
 
 import { Input, SelectInput } from '@/components/commonComponent/InputForm';
-import CreateInboundReceiptModal from '@/components/inboundReceiptComponent/inboundReceipt.create';
-import InboundReceiptTable from '@/components/inboundReceiptComponent/inboundReceipt.table';
-import { fetchInboundReceipts } from '@/services/inboundReceiptServices';
-import {
-  InboundReceipt,
-  InboundReceiptTransform,
-} from '@/types/inboundReceipt';
+import OrderTable from '@/components/orderComponent/order.table';
+import { fetchOrders } from '@/services/orderServices';
+import { Order, OrderTransform } from '@/types/order';
+import Link from 'next/link';
 import { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
 
-const columns: Column<InboundReceiptTransform>[] = [
+const columns: Column<OrderTransform>[] = [
   { title: '#', key: 'id' },
   { title: 'Tên nhân viên', key: 'staffName' },
-  { title: 'Tên nhà cung cấp', key: 'supplierName' },
+  { title: 'Tên khách hàng', key: 'customerName' },
   { title: 'Tổng tiền', key: 'totalPrice' },
+  { title: 'PTTT', key: 'paymentMethod' },
+  { title: 'TDTT', key: 'paymentTime' },
+  { title: 'Loại hóa đơn', key: 'orderType' },
+  { title: 'Ngày tạo', key: 'createdAt' },
   { title: 'TT thanh toán', key: 'isPaid' },
   { title: 'TT nhận hàng', key: 'isReceived' },
-  { title: 'Ngày tạo', key: 'createdAt' },
 ];
 
-const InboundReceiptPage = () => {
+const OrdersPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
   const [searchType, setSearchType] = useState<
-    'staffName' | 'supplierName' | 'startDate' | 'endDate'
+    'staffName' | 'customerName' | 'startDate' | 'endDate'
   >('staffName');
   const [searchValue, setSearchValue] = useState('');
   const [searchParams, setSearchParams] = useState({
     staffName: '',
-    supplierName: '',
+    customerName: '',
     startDate: '',
     endDate: '',
   });
-
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/inbound-receipt`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/orders`;
   const { data, error } = useSWR(
     [
       url,
       current,
       pageSize,
       searchParams.staffName,
-      searchParams.supplierName,
+      searchParams.customerName,
       searchParams.startDate,
       searchParams.endDate,
     ],
     () =>
-      fetchInboundReceipts(
+      fetchOrders(
         current,
         pageSize,
         searchParams.staffName,
-        searchParams.supplierName,
+        searchParams.customerName,
         searchParams.startDate,
         searchParams.endDate,
       ),
@@ -63,7 +61,7 @@ const InboundReceiptPage = () => {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load suppliers: {error.message}</div>
+        <div>Failed to load orders: {error.message}</div>
       </div>
     );
 
@@ -75,19 +73,20 @@ const InboundReceiptPage = () => {
       </div>
     );
 
-  const inboundReceipts = data.results.map((item: InboundReceipt) => ({
+  const orders = data.results.map((item: Order) => ({
     id: item.id,
     staffId: item.staff?.id,
     staffName: item.staff?.name,
-    supplierId: item.supplier?.id,
-    supplierName: item.supplier?.name,
+    customerId: item.customer?.id,
+    customerName: item.customer?.name,
     totalPrice: item.totalPrice,
+    paymentTime: item.paymentTime,
+    paymentMethod: item.paymentMethod,
     isReceived: item.isReceived,
     isPaid: item.isPaid,
     createdAt: item.createdAt,
-    discount: item.discount,
-    vat: item.vat,
-    batchs: item.batchs,
+    orderType: item.orderType,
+    orderDetails: item.orderDetails,
   }));
 
   const meta: MetaData = {
@@ -101,7 +100,7 @@ const InboundReceiptPage = () => {
     setSearchParams({
       ...searchParams,
       staffName: searchType === 'staffName' ? searchValue : '',
-      supplierName: searchType === 'supplierName' ? searchValue : '',
+      customerName: searchType === 'customerName' ? searchValue : '',
       startDate: searchType === 'startDate' ? searchValue : '',
       endDate: searchType === 'endDate' ? searchValue : '',
     });
@@ -122,14 +121,14 @@ const InboundReceiptPage = () => {
       current,
       pageSize,
       searchParams.staffName,
-      searchParams.supplierName,
+      searchParams.customerName,
       searchParams.startDate,
       searchParams.endDate,
     ]);
 
   return (
     <>
-      <h2>Quản lý đơn nhập hàng</h2>
+      <h2>Quản lý đơn hàng</h2>
       {/* Thanh tìm kiếm gộp */}
       <div className="row">
         <SelectInput
@@ -138,7 +137,7 @@ const InboundReceiptPage = () => {
           value={searchType}
           options={[
             { label: 'Tên nhân viên', value: 'staffName' },
-            { label: 'Tên nhà cung cấp', value: 'supplierName' },
+            { label: 'Tên khách hàng', value: 'customerName' },
             { label: 'Từ ngày', value: 'startDate' },
             { label: 'Đến ngày', value: 'endDate' },
           ]}
@@ -151,8 +150,8 @@ const InboundReceiptPage = () => {
           placeholder={`Nhập ${
             searchType === 'staffName'
               ? 'tên nhân viên'
-              : searchType === 'supplierName'
-              ? 'tên nhà cung cấp'
+              : searchType === 'customerName'
+              ? 'tên khách hàng'
               : 'ngày'
           }`}
           type={
@@ -168,21 +167,17 @@ const InboundReceiptPage = () => {
 
       {/* button Thêm Supplier */}
       <div className="d-flex justify-content-end mx-3">
-        <button
+        <Link
+          href="/order/sale"
           className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
         >
           <FaPlus />
           <text>Thêm</text>
-        </button>
+        </Link>
       </div>
 
       {/* Quản lý Supplier */}
-      <InboundReceiptTable
-        inboundReceipts={inboundReceipts}
-        columns={columns}
-        onMutate={onMutate}
-      />
+      <OrderTable orders={orders} columns={columns} onMutate={onMutate} />
 
       {/* Navigate control */}
       <nav aria-label="Page navigation example">
@@ -214,15 +209,8 @@ const InboundReceiptPage = () => {
           </li>
         </ul>
       </nav>
-
-      {/* Modal Create Supplier */}
-      <CreateInboundReceiptModal
-        isCreateModalOpen={isCreateModalOpen}
-        setIsCreateModalOpen={setIsCreateModalOpen}
-        onMutate={onMutate}
-      />
     </>
   );
 };
 
-export default InboundReceiptPage;
+export default OrdersPage;
