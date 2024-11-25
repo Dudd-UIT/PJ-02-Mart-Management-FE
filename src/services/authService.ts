@@ -14,21 +14,22 @@ export async function authenticate(formData: FormDataLogin) {
       password: formData.password,
       redirect: false,
     });
+
     return res;
   } catch (error) {
     if ((error as any).name === 'InvalidEmailPasswordError') {
       return {
-        error: (error as any).type,
+        message: (error as any).type,
         code: 1,
       };
     } else if ((error as any).name === 'InvalidActiveAccountError') {
       return {
-        error: (error as any).type,
+        message: (error as any).type,
         code: 2,
       };
     } else {
       return {
-        error: 'Internal Server Error',
+        message: 'Lỗi đăng nhập. Vui lòng thử lại sau...',
         code: 0,
       };
     }

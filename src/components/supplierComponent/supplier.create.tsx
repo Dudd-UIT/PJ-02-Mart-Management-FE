@@ -73,9 +73,9 @@ function CreateSupplierModal(props: CreateModalProps) {
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/find-by-ids`;
   const { data, error } = useSWR(
-    [current, pageSize, formData.productUnitIds],
+    [url, current, pageSize, formData.productUnitIds],
     () => fetchProductUnitByIds(formData.productUnitIds, current, pageSize),
   );
 

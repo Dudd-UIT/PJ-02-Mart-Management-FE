@@ -64,12 +64,11 @@ const UserGroupsPage = () => {
     if (current < meta.pages) setCurrent(current + 1);
   };
 
-  const onMutate = () => mutate([current, pageSize, searchParams.name]);
+  const onMutate = () => mutate([url, current, pageSize, searchParams.name]);
 
   return (
     <>
       <h2>Quản lý nhóm người dùng</h2>
-      {/* 2 button search */}
       <div className="row">
         <Input
           title="Tên nhóm người dùng"
@@ -81,7 +80,6 @@ const UserGroupsPage = () => {
           icon={<FaSearch />}
         />
       </div>
-      {/* button Thêm Supplier */}
       <div className="d-flex justify-content-end mx-3">
         <button
           className="btn d-flex align-items-center btn-primary"
@@ -91,7 +89,6 @@ const UserGroupsPage = () => {
           <text>Thêm</text>
         </button>
       </div>
-      {/* Quản lý Supplier */}
       <UserGroupTable
         groups={data.results}
         columns={columns}

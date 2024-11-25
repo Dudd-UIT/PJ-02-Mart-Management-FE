@@ -26,9 +26,9 @@ const StaffsPage = () => {
   const [searchParams, setSearchParams] = useState({ name: '', phone: '' });
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/users`;
   const { data, error } = useSWR(
-    [current, pageSize, groupId, searchParams.name, searchParams.phone],
+    [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
     () =>
       fetchStaffs(
         current,
@@ -79,7 +79,7 @@ const StaffsPage = () => {
 
   const onMutate = () =>
     mutate(
-      [current, pageSize, groupId, searchParams.name, searchParams.phone],
+      [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
       async () =>
         await fetchStaffs(
           current,
@@ -96,17 +96,16 @@ const StaffsPage = () => {
       <h2>Quản lý nhân viên</h2>
       {/* Thanh tìm kiếm gộp */}
       <div className="row">
-        <div className="col-md-2">
-          <SelectInput
-            label="Chọn loại tìm kiếm"
-            value={searchType}
-            options={[
-              { label: 'Tên nhân viên', value: 'name' },
-              { label: 'Số điện thoại', value: 'phone' },
-            ]}
-            onChange={(value) => setSearchType(value as 'name' | 'phone')}
-          />
-        </div>
+        <SelectInput
+          size={2}
+          label="Chọn loại tìm kiếm"
+          value={searchType}
+          options={[
+            { label: 'Tên nhân viên', value: 'name' },
+            { label: 'Số điện thoại', value: 'phone' },
+          ]}
+          onChange={(value) => setSearchType(value as 'name' | 'phone')}
+        />
         <Input
           title="Tìm kiếm"
           size={4}

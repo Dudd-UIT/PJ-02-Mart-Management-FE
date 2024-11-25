@@ -2,6 +2,10 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { sendRequest } from './utils/api';
 import { User } from './types/auth';
+import {
+  InvalidActiveAccountError,
+  InvalidEmailPasswordError,
+} from './utils/error';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -35,8 +39,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               access_token: res.data?.access_token,
             };
           }
+        } else if (+res.statusCode === 401 || 404) {
+          throw new InvalidEmailPasswordError();
+        } else if (+res.statusCode === 400) {
+          throw new InvalidActiveAccountError();
         } else {
-          throw new Error('Invalid credentials.');
+          throw new Error('Lỗi đăng nhập. Vui lòng thử lại sau...');
         }
 
         return null;
@@ -64,6 +72,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   session: {
     strategy: 'jwt',
-    maxAge: 300,
+    maxAge: 3600,
   },
 });

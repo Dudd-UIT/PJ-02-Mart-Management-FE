@@ -7,9 +7,8 @@ export type InboundReceiptTransform = {
   supplierName: string;
   totalPrice: number;
   isReceived: number;
-  isPaid: string;
+  isPaid: number;
   createdAt: string;
-
   staffId: number;
   supplierId: number;
   discount: number;

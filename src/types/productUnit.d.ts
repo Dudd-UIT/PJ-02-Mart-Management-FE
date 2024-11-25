@@ -8,6 +8,7 @@ export type ProductUnitTransform = {
   volumne: string;
   productSampleName: string;
   unitName: string;
+  image: string;
 };
 
 export type ProductUnit = {
@@ -16,6 +17,7 @@ export type ProductUnit = {
   conversionRate: number;
   createdAt: string;
   volumne: string;
+  image: string;
   productSample?: {
     id: number;
     name: string;
