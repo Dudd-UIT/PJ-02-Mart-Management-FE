@@ -72,7 +72,12 @@ export default function Sidebar() {
           </Link>
         </li>
         <li>
-          <div className="btn btn-sc" onClick={toggleSale}>
+          <div
+            className={`btn btn-sc ${
+              pathname.startsWith('/sale') ? 'active' : ''
+            }`}
+            onClick={toggleSale}
+          >
             <div style={{ padding: '0.2rem 0' }}>
               <FaShoppingCart />
             </div>
@@ -138,7 +143,12 @@ export default function Sidebar() {
           </Link>
         </li>
         <li>
-          <div className="btn btn-sc" onClick={toggleRule}>
+          <div
+            className={`btn btn-sc ${
+              pathname.startsWith('/rule') ? 'active' : ''
+            }`}
+            onClick={toggleRule}
+          >
             <div style={{ padding: '0.2rem 0' }}>
               <TbShieldStar />
             </div>

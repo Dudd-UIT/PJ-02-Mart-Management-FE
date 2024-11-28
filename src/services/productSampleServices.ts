@@ -3,13 +3,14 @@
 import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 
-export const fetchProductLines = async (
-  current?: number,
-  pageSize?: number,
+export const fetchProductSamples = async (
+  current: number,
+  pageSize: number,
   searchName?: string,
-  searchProductTypeId?: number,
+  searchProductLineId?: number,
 ) => {
   const session = await auth();
+
   const queryParams: { [key: string]: any } = {
     current,
     pageSize,
@@ -19,50 +20,51 @@ export const fetchProductLines = async (
     queryParams.name = searchName;
   }
 
-  if (searchProductTypeId) {
-    queryParams.productTypeId = searchProductTypeId;
+  if (searchProductLineId) {
+    queryParams.productLineId = searchProductLineId;
   }
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`,
       method: 'GET',
       queryParams,
       headers: {
         Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
+
     if (res?.data) {
       return res.data;
     } else {
       throw new Error(res.message);
     }
   } catch (error) {
-    console.error('Fetch product lines failed:', error);
+    console.error('Fetch product samples failed:', error);
     throw error;
   }
 };
 
-export const handleCreaterProductLineAction = async (data: any) => {
+export const handleCreateProductSampleAction = async (data: any) => {
   const session = await auth();
+
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`,
     method: 'POST',
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
     },
     body: { ...data },
   });
-
   return res;
 };
 
-export const handleUpdateProductLineAction = async (data: any) => {
+export const handleUpdateProductSampleAction = async (data: any) => {
   const { id, ...rest } = data;
   const session = await auth();
 
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples/product-units/${id}`,
     method: 'PATCH',
     body: { ...rest },
     headers: {
@@ -73,15 +75,14 @@ export const handleUpdateProductLineAction = async (data: any) => {
   return res;
 };
 
-export const handleDeleteProductLineAction = async (id: any) => {
+export const handleDeleteProductSampleAction = async (id: any) => {
   const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples/${id}`,
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
     },
   });
-
   return res;
 };

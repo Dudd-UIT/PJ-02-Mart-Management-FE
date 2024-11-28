@@ -34,19 +34,19 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
   const [searchName, setSearchName] = useState('');
   const [searchCategory, setSearchCategory] = useState('');
-  const [searchParams, setSearchParams] = useState({ name: '', category: '' });
+  const [searchParams, setSearchParams] = useState({ name: '', productLineId: '' });
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
   const { data, error } = useSWR(
-    [url, current, pageSize, searchParams.name, searchParams.category],
+    [url, current, pageSize, searchParams.name, searchParams.productLineId],
     () =>
       fetchProductUnits(
         current,
         pageSize,
         searchParams.name,
-        searchParams.category,
+        +searchParams.productLineId,
       ),
   );
 
@@ -100,7 +100,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   };
 
   const handleSearchClick = () => {
-    setSearchParams({ name: searchName, category: searchCategory });
+    setSearchParams({ name: searchName, productLineId: searchCategory });
     setCurrent(1); // Reset to the first page when new search is triggered
   };
 
@@ -130,7 +130,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
               />
             </div>
             <div className="col-md-4">
-              <Input
+              {/* <Input
                 title="Dòng sản phẩm"
                 value={searchCategory}
                 size={12}
@@ -138,7 +138,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
                 onChange={(value) => setSearchCategory(value)}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}
-              />
+              /> */}
             </div>
           </div>
         </Form>

@@ -7,7 +7,7 @@ export const fetchProductUnits = async (
   current: number,
   pageSize: number,
   searchName?: string,
-  searchCategory?: string,
+  searchProuductLineId?: number,
 ) => {
   const session = await auth();
 
@@ -17,7 +17,7 @@ export const fetchProductUnits = async (
   };
 
   if (searchName) queryParams.name = searchName;
-  if (searchCategory) queryParams.productLine = searchCategory;
+  if (searchProuductLineId) queryParams.productLineId = searchProuductLineId;
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
@@ -70,4 +70,31 @@ export const fetchProductUnitByIds = async (
     console.error('Fetch productUnit by ids failed:', error);
     throw error;
   }
+};
+
+export const handleCreateProductUnitAction = async (data: any) => {
+  const session = await auth();
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+    body: { ...data },
+  });
+
+  return res;
+};
+
+export const handleDeleteProductUnitAction = async (id: any) => {
+  const session = await auth();
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/${id}`,
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+  });
+  return res;
 };
