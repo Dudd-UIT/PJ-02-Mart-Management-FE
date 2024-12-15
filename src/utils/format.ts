@@ -1,0 +1,16 @@
+export function formatDate(dateString: string) {
+  if (!dateString) return '';
+  return new Date(dateString).toISOString().split('T')[0];
+}
+
+export const formatDateDMY = (dateString: string) => {
+  if (!dateString) return 'Invalid Date'; // Handle empty or invalid dates
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return 'Invalid Date'; // Handle invalid date objects
+  return date.toLocaleDateString('en-GB'); // formats to dd/mm/yyyy
+};
+
+export const parseDateDMYtoYMD = (dateString: string) => {
+  const [day, month, year] = dateString.split('/');
+  return `${year}-${month}-${day}`;
+};
