@@ -54,7 +54,7 @@ function UpdateProductLineModal(props: UpdateModalProps<ProductLineTransform>) {
     setData?.(undefined);
   };
 
-  const handleUpdateProductType = async () => {
+  const handleUpdateProductLine = async () => {
     const res = await handleUpdateProductLineAction(formData);
     if (res?.data) {
       handleCloseModal();
@@ -110,7 +110,7 @@ function UpdateProductLineModal(props: UpdateModalProps<ProductLineTransform>) {
           <Button variant="secondary" onClick={handleCloseModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateProductType}>
+          <Button variant="danger" onClick={handleUpdateProductLine}>
             Lưu
           </Button>
         </Modal.Footer>

@@ -21,9 +21,9 @@ const DeleteProductLineModal = (
     if (res?.data) {
       handleCloseDeleteModal();
       onMutate();
-      toast.success('Xóa dòng sản phẩm thành công');
+      toast.success(res.message);
     } else {
-      toast.error('Lỗi xóa dòng sản phẩm');
+      toast.error(res.message);
     }
   };
 

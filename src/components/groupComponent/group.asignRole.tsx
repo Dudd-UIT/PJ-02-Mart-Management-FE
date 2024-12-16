@@ -74,9 +74,9 @@ function AssignRoleModal(props: AssignRoleModalProps) {
     setSearchParams({ description: searchDescription });
     setCurrent(1);
   };
-
-  const { data, error, mutate } = useSWR(
-    [current, pageSize, searchParams.description],
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/roles`;
+  const { data, error } = useSWR(
+    [url, current, pageSize, searchParams.description],
     () => fetchRoles(current, pageSize, searchParams.description),
   );
 

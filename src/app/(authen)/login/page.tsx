@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
-import { mutate } from 'swr';
 
 type FormDataLogin = {
   email: string;
@@ -31,11 +30,10 @@ function LoginPage() {
     console.log(formLogin);
     try {
       const res = await authenticate(formLogin);
-      console.log(res);
-      if (res?.error) {
-        if (res?.code === 2) {
-          return;
-        }
+      if (res?.message) {
+        // if (res?.code === 2) {
+        //   return;
+        // }
         toast.error(res.message);
       } else {
         router.replace('/suppliers');
@@ -87,6 +85,7 @@ function LoginPage() {
             <Input
               title="Email"
               size={12}
+              required
               value={formLogin.email}
               placeholder="Nhập email"
               onChange={(value) => handleLoginFormChange('email', value)}

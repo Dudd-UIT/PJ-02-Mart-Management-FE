@@ -75,7 +75,6 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers`;
   const { data: suppliers, error } = useSWR([url], () => fetchSuppliers());
-  console.log('suppliers', suppliers);
 
   useEffect(() => {
     if (selectedProductUnitIds.length > 0) {
@@ -101,7 +100,6 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
   }, [selectedProductUnitIds]);
 
   useEffect(() => {
-    // Calculate the total price and update the order info
     const totalPrice = formBatchData.reduce((acc, item) => acc + item.total, 0);
     setInboundReceiptInfo((prev) => ({
       ...prev,
@@ -150,7 +148,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
     setFormBatchData(formBatchData.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async () => {
+  const handleCreateInboundReceipt = async () => {
     const inboundReceiptDto = {
       staffId: inboundReceiptInfo.staffId,
       supplierId: inboundReceiptInfo.supplierId,
@@ -175,7 +173,6 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
       inboundReceiptDto,
       batchsDto,
     };
-    console.log('>>>>>>');
     const res = await handleCreatedInboundReceiptAction(payload);
     if (res?.data) {
       toast.success(res.message);
@@ -361,7 +358,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
           <Button variant="secondary" onClick={handleCloseModal}>
             Thoát
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button variant="primary" onClick={handleCreateInboundReceipt}>
             Lưu
           </Button>
         </Modal.Footer>

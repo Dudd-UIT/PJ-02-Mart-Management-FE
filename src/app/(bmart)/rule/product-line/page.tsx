@@ -77,7 +77,7 @@ function ProductLinePage() {
     setCurrent(1);
   };
 
-  const onMutate = () => mutate([current, pageSize, searchParams.name]);
+  const onMutate = () => mutate([url, current, pageSize, searchParams.name]);
 
   return (
     <>

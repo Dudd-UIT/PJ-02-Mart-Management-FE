@@ -1,26 +1,30 @@
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
-import { Customer, CustomerTableType } from '@/types/customer';
-import UpdateCustomerModal from './customer.update';
-import DeleteCustomerModal from './customer.delete';
+import UpdateProductSampleModal from './productSample.update';
+import DeleteProductSampleModal from './productSample.delete';
+import {
+  ProductSample,
+  ProductSampleUnitTableType,
+} from '@/types/productSample';
+import { ProductLine } from '@/types/productLine';
 
-const CustomerTable = (props: CustomerTableType) => {
-  const { customers, columns, onMutate } = props;
+const ProductSampleUnitTable = (props: ProductSampleUnitTableType) => {
+  const { productUnits, columns, onMutate } = props;
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-  const [selectedCustomer, setSelectedCustomer] = useState<
-    Customer | undefined
+  const [selectedProductUnit, setSelectedProductUnit] = useState<
+    ProductSample | undefined
   >();
 
-  const handleOpenUpdateModal = (Customer: Customer) => {
-    setSelectedCustomer(Customer);
+  const handleOpenUpdateModal = (productUnit: ProductSample) => {
+    setSelectedProductUnit(productUnit);
     setIsUpdateModalOpen(true);
   };
 
-  const handleOpenDeleteModal = (Customer: Customer) => {
-    setSelectedCustomer(Customer);
+  const handleOpenDeleteModal = (productUnit: ProductSample) => {
+    setSelectedProductUnit(productUnit);
     setIsDeleteModalOpen(true);
   };
 
@@ -45,11 +49,19 @@ const CustomerTable = (props: CustomerTableType) => {
             </tr>
           </thead>
           <tbody>
-            {customers?.map((row, rowIndex) => (
+            {productUnits?.map((row, rowIndex) => (
               <tr key={rowIndex} className="text-center align-middle">
-                {columns.map((column, colIndex) => (
-                  <td key={colIndex}>{row[column.key as keyof Customer]}</td>
-                ))}
+                {columns.map((column, colIndex) => {
+                  const cellData = row[column.key as keyof ProductSample];
+
+                  const formattedData = Array.isArray(cellData)
+                    ? cellData.map((item) => item.id || item.id).join(', ')
+                    : typeof cellData === 'object' && cellData !== null
+                    ? (cellData as ProductLine).name
+                    : cellData;
+
+                  return <td key={colIndex}>{formattedData}</td>;
+                })}
                 <td>
                   <button onClick={() => handleOpenUpdateModal(row)}>
                     <FaEye size={18} />
@@ -64,21 +76,21 @@ const CustomerTable = (props: CustomerTableType) => {
         </table>
       </div>
 
-      <UpdateCustomerModal
+      <UpdateProductSampleModal
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
-        data={selectedCustomer}
-        setData={setSelectedCustomer}
+        data={selectedProductUnit}
+        setData={setSelectedProductUnit}
         onMutate={onMutate}
       />
-      <DeleteCustomerModal
+      <DeleteProductSampleModal
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
-        data={selectedCustomer}
+        data={selectedProductUnit}
         onMutate={onMutate}
       />
     </>
   );
 };
 
-export default CustomerTable;
+export default ProductSampleUnitTable;

@@ -35,23 +35,24 @@ function ProductUnitTable(props: ProductUnitTableProps) {
           </tr>
         </thead>
         <tbody>
-          {productUnits?.map((row, rowIndex) => (
-            <tr key={rowIndex} className="text-center align-middle">
-              <td>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  checked={productUnitIds.includes(row.id)}
-                  onChange={() => handleCheckboxChange(row.id)}
-                />
-              </td>
-              {columns.map((column, colIndex) => (
-                <td key={colIndex}>
-                  {row[column.key as keyof ProductUnitTransform]}
+          {productUnits &&
+            productUnits?.map((row, rowIndex) => (
+              <tr key={rowIndex} className="text-center align-middle">
+                <td>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={productUnitIds.includes(row.id)}
+                    onChange={() => handleCheckboxChange(row.id)}
+                  />
                 </td>
-              ))}
-            </tr>
-          ))}
+                {columns.map((column, colIndex) => (
+                  <td key={colIndex}>
+                    {row[column.key as keyof ProductUnitTransform]}
+                  </td>
+                ))}
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

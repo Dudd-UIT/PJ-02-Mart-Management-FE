@@ -1,21 +1,24 @@
-import { handleDeleteProductTypeAction } from '@/services/productTypeServices';
-import { ProductType } from '@/types/productType';
+import { handleDeletedInboundReceiptAction } from '@/services/inboundReceiptServices';
+import { handleDeletedOrderAction } from '@/services/orderServices';
+import { InboundReceiptTransform } from '@/types/inboundReceipt';
+import { OrderTransform } from '@/types/order';
+import { Supplier } from '@/types/supplier';
 import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
-const DeleteProductTypeModal = (props: DeleteModalProps<ProductType>) => {
+const DeleteOrderModal = (props: DeleteModalProps<OrderTransform>) => {
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
-    data: productTypeData,
+    data: orderData,
     onMutate,
   } = props;
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteProductType = async () => {
-    const res = await handleDeleteProductTypeAction(productTypeData?.id);
+  const handleDeleteInboundReceipt = async () => {
+    const res = await handleDeletedOrderAction(orderData?.id);
     if (res?.data) {
       handleCloseDeleteModal();
       onMutate();
@@ -30,20 +33,19 @@ const DeleteProductTypeModal = (props: DeleteModalProps<ProductType>) => {
       <Modal
         show={isDeleteModalOpen}
         onHide={handleCloseDeleteModal}
-        size="lg"
         backdrop={'static'}
       >
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>Bạn có chắc muốn xóa loại sản phẩm {productTypeData?.name}?</div>
+          <text>Bạn có chắc muốn xóa đơn hàng {orderData?.id}?</text>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDeleteModal}>
             Hủy
           </Button>
-          <Button variant="danger" onClick={handleDeleteProductType}>
+          <Button variant="danger" onClick={handleDeleteInboundReceipt}>
             Đồng ý
           </Button>
         </Modal.Footer>
@@ -52,4 +54,4 @@ const DeleteProductTypeModal = (props: DeleteModalProps<ProductType>) => {
   );
 };
 
-export default DeleteProductTypeModal;
+export default DeleteOrderModal;

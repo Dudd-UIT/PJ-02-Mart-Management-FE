@@ -4,9 +4,10 @@ import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 
 export const fetchProductLines = async (
-  current: number,
-  pageSize: number,
+  current?: number,
+  pageSize?: number,
   searchName?: string,
+  searchProductTypeId?: number,
 ) => {
   const session = await auth();
   const queryParams: { [key: string]: any } = {
@@ -16,6 +17,10 @@ export const fetchProductLines = async (
 
   if (searchName) {
     queryParams.name = searchName;
+  }
+
+  if (searchProductTypeId) {
+    queryParams.productTypeId = searchProductTypeId;
   }
 
   try {

@@ -74,7 +74,12 @@ export default function Sidebar() {
           </Link>
         </li>
         <li>
-          <div className="btn btn-sc" onClick={toggleSale}>
+          <div
+            className={`btn btn-sc ${
+              pathname.startsWith('/sale') ? 'active' : ''
+            }`}
+            onClick={toggleSale}
+          >
             <div style={{ padding: '0.2rem 0' }}>
               <FaShoppingCart />
             </div>
@@ -94,13 +99,13 @@ export default function Sidebar() {
           </div>
           {isSaleOpen && (
             <ul className="list-unstyled ps-5 gap-4">
-              <li className={pathname == '/sale' ? 'active' : ''}>
-                <Link href="/sale" className="btn btn-sc">
+              <li className={pathname == '/order/sale' ? 'active' : ''}>
+                <Link href="/order/sale" className="btn btn-sc">
                   {isPinned && <text className="small">Bán hàng</text>}
                 </Link>
               </li>
-              <li className={pathname == '/sale/invoices' ? 'active' : ''}>
-                <Link href="/sale/invoices" className="btn btn-sc">
+              <li className={pathname == '/order' ? 'active' : ''}>
+                <Link href="/order" className="btn btn-sc">
                   {isPinned && <text className="small">Quản lý hóa đơn</text>}
                 </Link>
               </li>
@@ -140,7 +145,12 @@ export default function Sidebar() {
           </Link>
         </li>
         <li>
-          <div className="btn btn-sc" onClick={toggleRule}>
+          <div
+            className={`btn btn-sc ${
+              pathname.startsWith('/rule') ? 'active' : ''
+            }`}
+            onClick={toggleRule}
+          >
             <div style={{ padding: '0.2rem 0' }}>
               <TbShieldStar />
             </div>
@@ -187,8 +197,8 @@ export default function Sidebar() {
                   {isPinned && <text className="small">Nhóm người dùng</text>}
                 </Link>
               </li>
-              <li className={pathname == '/rule/employee' ? 'active' : ''}>
-                <Link href="/rule/employee" className="btn btn-sc">
+              <li className={pathname == '/rule/staff' ? 'active' : ''}>
+                <Link href="/rule/staff" className="btn btn-sc">
                   {isPinned && <text className="small">Nhân viên</text>}
                 </Link>
               </li>

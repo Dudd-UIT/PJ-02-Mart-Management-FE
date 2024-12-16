@@ -1,21 +1,21 @@
-import { handleDeleteProductTypeAction } from '@/services/productTypeServices';
-import { ProductType } from '@/types/productType';
+import { handleDeleteProductSampleAction } from '@/services/productSampleServices';
+import { ProductSample } from '@/types/productSample';
 import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
-const DeleteProductTypeModal = (props: DeleteModalProps<ProductType>) => {
+const DeleteProductSampleModal = (props: DeleteModalProps<ProductSample>) => {
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
-    data: productTypeData,
+    data: productSample,
     onMutate,
   } = props;
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteProductType = async () => {
-    const res = await handleDeleteProductTypeAction(productTypeData?.id);
+  const handleDeleteProductSample = async () => {
+    const res = await handleDeleteProductSampleAction(productSample?.id);
     if (res?.data) {
       handleCloseDeleteModal();
       onMutate();
@@ -37,13 +37,13 @@ const DeleteProductTypeModal = (props: DeleteModalProps<ProductType>) => {
           <Modal.Title>Xác nhận</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>Bạn có chắc muốn xóa loại sản phẩm {productTypeData?.name}?</div>
+          <div>Bạn có chắc muốn xóa mẫu sản phẩm {productSample?.name}?</div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDeleteModal}>
             Hủy
           </Button>
-          <Button variant="danger" onClick={handleDeleteProductType}>
+          <Button variant="danger" onClick={handleDeleteProductSample}>
             Đồng ý
           </Button>
         </Modal.Footer>
@@ -52,4 +52,4 @@ const DeleteProductTypeModal = (props: DeleteModalProps<ProductType>) => {
   );
 };
 
-export default DeleteProductTypeModal;
+export default DeleteProductSampleModal;

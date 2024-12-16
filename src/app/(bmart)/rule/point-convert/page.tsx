@@ -14,11 +14,17 @@ function PointConvertPage() {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/parameters`;
 
   const { data, error } = useSWR([url], () => fetchParameters());
-  const [parameter, setParameter] = useState<Parameter | null>(null);
+  const [point, setPoint] = useState<number>();
+  const [money, setMoney] = useState<number>();
 
   useEffect(() => {
-    if (data && data.results && data.results[0]) {
-      setParameter(data.results[0]);
+    if (data && data.results) {
+      if (data.results[0]) {
+        setPoint(data.results[0].value);
+      }
+      if (data.results[1]) {
+        setMoney(data.results[1].value);
+      }
     }
   }, [data]);
 
@@ -39,8 +45,11 @@ function PointConvertPage() {
 
   const onMutate = () => mutate([url]);
 
-  const handleSave = async () => {
-    const res = await handleUpdateParameterAction(parameter);
+  const handleSave = async (id: number, value?: number) => {
+    if (!value) {
+      return;
+    }
+    const res = await handleUpdateParameterAction({ id, value });
     if (res?.data) {
       toast.success(res.message);
       onMutate();
@@ -52,6 +61,8 @@ function PointConvertPage() {
   return (
     <>
       <h2>Quản lý tỷ lệ quy đổi điểm</h2>
+      <h4>Bao nhiêu điểm được 1 VND?</h4>
+
       <div className="container d-flex flex-column align-items-center pt-5">
         <div className="d-flex align-items-center mb-3">
           <div className="me-3">
@@ -59,12 +70,8 @@ function PointConvertPage() {
               title="Điểm"
               size={12}
               type="number"
-              value={parameter?.value || ''}
-              onChange={(value) =>
-                setParameter((prev) =>
-                  prev ? { ...prev, value: +value } : null,
-                )
-              }
+              value={point}
+              onChange={(value) => setPoint(+value)}
             />
           </div>
           <span className="mx-4 ">
@@ -74,7 +81,39 @@ function PointConvertPage() {
             <Input title="VND" size={12} value={1} readOnly type="number" />
           </div>
         </div>
-        <button className="btn btn-primary" onClick={handleSave}>
+        <button
+          className="btn btn-primary"
+          onClick={() => handleSave(1, point)}
+        >
+          Lưu
+        </button>
+      </div>
+
+      <h2>Quản lý tỷ lệ quy đổi điểm</h2>
+      <h4>Bao nhiêu VND được 1 điểm?</h4>
+
+      <div className="container d-flex flex-column align-items-center pt-5">
+        <div className="d-flex align-items-center mb-3">
+          <div className="me-3">
+            <Input
+              title="VND"
+              size={12}
+              type="number"
+              value={money}
+              onChange={(value) => setMoney(+value)}
+            />
+          </div>
+          <span className="mx-4 ">
+            <FaArrowRightLong size={24} />
+          </span>
+          <div className="ms-3">
+            <Input title="Điểm" size={12} value={1} readOnly type="number" />
+          </div>
+        </div>
+        <button
+          className="btn btn-primary"
+          onClick={() => handleSave(2, money)}
+        >
           Lưu
         </button>
       </div>

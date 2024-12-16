@@ -38,7 +38,7 @@ const DeleteStaffModal = (props: DeleteModalProps<Staff>) => {
           <Modal.Title>Xác nhận</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>Bạn có chắc muốn xóa nhân viên {staffData?.name}?</div>
+          <div>Bạn có chắc muốn xóa tài khoản nhân viên {staffData?.name}?</div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDeleteModal}>

@@ -54,8 +54,6 @@ export const handleCreatedInboundReceiptAction = async (data: any) => {
     inboundReceiptDto: updatedInboundReceiptDto,
     batchsDto,
   };
-  console.log('data', data);
-  console.log('updatedData', updatedData);
 
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/inbound-receipt/inbound-receipt-batchs`,
@@ -72,7 +70,6 @@ export const handleCreatedInboundReceiptAction = async (data: any) => {
 export const handleUpdatedInboundReceiptAction = async (data: any) => {
   const session = await auth();
   const { inboundReceiptId, ...rest } = data;
-  console.log('rest', rest);
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/inbound-receipt/inbound-receipt-batchs/${inboundReceiptId}`, // Include ID directly in the path
     method: 'PATCH',

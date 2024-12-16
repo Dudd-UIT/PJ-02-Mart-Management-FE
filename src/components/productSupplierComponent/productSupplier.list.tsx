@@ -21,44 +21,7 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị', key: 'unitName' },
   { title: 'Khối lượng', key: 'volumne' },
   { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
-  // { title: 'Giá bán', key: 'sellPrice' },
 ];
-
-// const fetchProductUnits = async (
-//   url: string,
-//   current: number,
-//   pageSize: number,
-//   searchName?: string,
-//   searchCategory?: string,
-// ) => {
-//   const queryParams: { [key: string]: any } = {
-//     current,
-//     pageSize,
-//   };
-
-//   if (searchName) queryParams.name = searchName;
-//   if (searchCategory) queryParams.productLine = searchCategory;
-
-//   try {
-//     const res = await sendRequest<IBackendRes<any>>({
-//       url,
-//       method: 'GET',
-//       queryParams,
-//       nextOption: {
-//         next: { tags: ['list-productUnits'] },
-//       },
-//     });
-
-//     if (res?.data) {
-//       return res.data;
-//     } else {
-//       throw new Error(res.message);
-//     }
-//   } catch (error) {
-//     console.error('loi');
-//     throw error;
-//   }
-// };
 
 function ProductSupplierModal(props: ProductSupplierModalProps) {
   const {
@@ -71,19 +34,19 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
   const [searchName, setSearchName] = useState('');
   const [searchCategory, setSearchCategory] = useState('');
-  const [searchParams, setSearchParams] = useState({ name: '', category: '' });
+  const [searchParams, setSearchParams] = useState({ name: '', productLineId: '' });
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
-  const { data, error, mutate } = useSWR(
-    [url, current, pageSize, searchParams.name, searchParams.category],
+  const { data, error } = useSWR(
+    [url, current, pageSize, searchParams.name, searchParams.productLineId],
     () =>
       fetchProductUnits(
         current,
         pageSize,
         searchParams.name,
-        searchParams.category,
+        +searchParams.productLineId,
       ),
   );
 
@@ -137,7 +100,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   };
 
   const handleSearchClick = () => {
-    setSearchParams({ name: searchName, category: searchCategory });
+    setSearchParams({ name: searchName, productLineId: searchCategory });
     setCurrent(1); // Reset to the first page when new search is triggered
   };
 
@@ -167,7 +130,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
               />
             </div>
             <div className="col-md-4">
-              <Input
+              {/* <Input
                 title="Dòng sản phẩm"
                 value={searchCategory}
                 size={12}
@@ -175,7 +138,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
                 onChange={(value) => setSearchCategory(value)}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}
-              />
+              /> */}
             </div>
           </div>
         </Form>

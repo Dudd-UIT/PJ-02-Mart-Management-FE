@@ -5,10 +5,15 @@ export type ProductUnitTransform = {
   id: number;
   sellPrice: number;
   conversionRate: number;
-  createdAt: string;
+  compareUnitName?: string;
+  compareUnitId?: number;
+  createdAt?: string;
   volumne: string;
-  productSampleName: string;
+  productSampleName?: string;
+  productSampleId?: number;
   unitName: string;
+  unitId: number;
+  image: string;
 };
 
 export type ProductUnit = {
@@ -17,11 +22,16 @@ export type ProductUnit = {
   conversionRate: number;
   createdAt: string;
   volumne: string;
+  image: string;
   productSample?: {
     id: number;
     name: string;
   };
   unit?: {
+    id: number;
+    name: string;
+  };
+  compareUnit?: {
     id: number;
     name: string;
   };
