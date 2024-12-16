@@ -28,13 +28,15 @@ function LoginPage() {
   };
 
   const handleLogin = async () => {
+    console.log(formLogin);
     try {
       const res = await authenticate(formLogin);
+      console.log(res);
       if (res?.error) {
         if (res?.code === 2) {
           return;
         }
-        toast.error('Lỗi đăng nhập');
+        toast.error(res.message);
       } else {
         router.replace('/suppliers');
       }

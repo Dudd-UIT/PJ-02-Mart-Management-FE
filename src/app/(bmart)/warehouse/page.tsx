@@ -4,74 +4,114 @@ import { useState, useEffect } from 'react';
 import useSWR, { mutate } from 'swr';
 import WarehouseTable from '@/components/warehouseComponent/warehouse.table';
 import { Batch, BatchGrouped } from '@/types/batch';
-import { fetchProductUnit } from '@/services/productUnitServices';
+import { fetchProductUnits } from '@/services/productUnitServices';
 import { Product } from '@/types/productUnit';
 import { GroupedProductData } from '@/types/commonType';
 import { Input } from '@/components/commonComponent/InputForm';
-import { FaSearch, FaEye, FaEyeDropper } from 'react-icons/fa';
+import {
+  FaSearch,
+  FaEye,
+  FaEyeDropper,
+  FaFilter,
+  FaPlus,
+} from 'react-icons/fa';
 import './style.css';
 import { RiEyeCloseLine, RiEyeFill } from 'react-icons/ri';
+import Link from 'next/link';
 
 function WarehousePage() {
   const current = 1;
   const pageSize = 10;
-  const [level, setLevel] = useState('type');
-  const [showOption, setShowOption] = useState(1);
+  const [level, setLevel] = useState(1);
+  const [showOption, setShowOption] = useState(0);
+  const [searchSample, setSearchSample] = useState('');
+  const [searchType, setSearchType] = useState('');
+  const [searchLine, setSearchLine] = useState('');
+  const [searchQuantity, setSearchQuantity] = useState('');
+  const [searchExpDate, setSearchExpDate] = useState('');
+  const [searchProductUnitParams, setSearchProductUnitParams] = useState({
+    name: '',
+    productTypeName: '',
+    productLineName: '',
+  });
+  const [searchBatchParams, setSearchBatchParams] = useState({
+    quantity: '',
+    expDate: '',
+  });
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const columnsBatch: Column<BatchGrouped>[] = [
     { title: '#', key: 'id' },
     { title: 'Mã đơn nhập', key: 'inboundReceiptId' },
-    { title: 'Giá nhập', key: 'inbound_price' },
-    { title: 'Giá bán', key: 'sell_price' },
+    { title: 'Giá nhập', key: 'inboundPrice' },
+    { title: 'Giá bán', key: 'sellPrice' },
     { title: 'Giảm giá', key: 'discount' },
-    { title: 'Tồn', key: 'quantity' },
-    { title: 'Nhập', key: 'inbound_quantity' },
+    { title: 'Tồn', key: 'inventQuantity' },
+    { title: 'Nhập', key: 'inboundQuantity' },
     { title: 'HSD', key: 'expiredAt' },
     { title: 'Đơn vị', key: 'unit' },
   ];
 
-  const [data, setData] = useState<{
-    product: GroupedProductData;
-    batches: BatchGrouped[];
-  } | null>(null);
+  const { data, error } = useSWR([current, pageSize], async () => {
+    const [batchData, productUnitsData] = await Promise.all([
+      fetchBatchs(
+        current,
+        pageSize,
+        searchBatchParams.quantity,
+        searchBatchParams.expDate,
+      ), // Fetch batches
+      fetchProductUnits(
+        current,
+        pageSize,
+        searchProductUnitParams.name,
+        undefined,
+        searchProductUnitParams.productLineName,
+        searchProductUnitParams.productTypeName,
+      ), // Fetch product units
+    ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [batches, productUnit] = await Promise.all([
-          fetchBatchs(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/batchs`,
-            current,
-            pageSize,
-          ),
-          fetchProductUnit(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`,
-            current,
-            pageSize,
-          ),
-        ]);
+    return { batchData, productUnitsData }; // Combine both results
+  });
 
-        const groupedProductData = groupProductData(productUnit.results);
-        const groupedBatchData = groupBatch(batches.results);
+  if (error)
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div>Failed to load suppliers: {error.message}</div>
+      </div>
+    );
 
-        // console.log('groupedProductData:', groupedProductData);
-        // console.log('groupedBatchData:', groupedBatchData);
+  if (!data)
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="spinner-grow text-success" role="status"></div>
+        <span className="sr-only text-success">Loading...</span>
+      </div>
+    );
 
-        setData({ product: groupedProductData, batches: groupedBatchData });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error;
-      }
-    };
-    fetchData();
-  }, []);
+  // console.log(data)
+  const groupedProductData = groupProductData(data.productUnitsData.results);
+  const groupedBatchData = groupBatch(data.batchData.results);
+
+  console.log('groupedProductData:', groupedProductData);
+  console.log('groupedBatchData:', groupedBatchData);
 
   const handleSearchClick = () => {
-    // setSearchParams({ name: searchName, phone: searchPhone });
-    // setCurrent(1);
+    setSearchProductUnitParams({
+      name: searchSample,
+      productTypeName: searchType,
+      productLineName: searchLine,
+    });
+    setSearchBatchParams({ quantity: searchQuantity, expDate: searchExpDate });
+    // console.log(searchProductUnitParams)
+    console.log('SearchBatchParams', searchBatchParams);
   };
 
   const onMutate = () => mutate(['', current, pageSize]);
+
+  function convertISOString(dateString : string) {
+    const date = new Date(dateString);
+    return date.toISOString();
+}
 
   return (
     <>
@@ -80,20 +120,28 @@ function WarehousePage() {
           <Input
             title="Mẫu sản phẩm"
             size={6}
-            value={''}
+            value={searchSample}
             placeholder="Nhập mẫu sản phẩm"
-            onChange={(value) => value}
+            onChange={(value) => setSearchSample(value)}
             onClickIcon={handleSearchClick}
             icon={<FaSearch />}
           />
           <Input
-            title="Số điện thoại"
-            value={''}
+            title="Mức độ phân loại"
+            value={level}
             size={6}
-            placeholder="Nhập số điện thoại"
-            onChange={(value) => value}
+            onSelectedChange={(value) => {
+              setLevel(value);
+            }}
             onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
+            icon={<FaFilter />}
+            options={[
+              { label: 'Loại sản phẩm', value: 1 },
+              { label: 'Dòng sản phẩm', value: 2 },
+              { label: 'Mẫu sản phẩm', value: 3 },
+            ]}
+            keyObj="value"
+            showObj="label"
           />
         </div>
         <div className="row mb-3">
@@ -102,44 +150,41 @@ function WarehousePage() {
               <Input
                 title="Loại sản phẩm"
                 size={6}
-                value={''}
+                value={searchType}
                 placeholder="Chọn"
-                onChange={(value) => value}
+                onChange={(value) => setSearchType(value)}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}
-                options={['1', '2']}
               />
               <Input
                 title="Dòng sản phẩm"
-                value={''}
+                value={searchLine}
                 size={6}
                 placeholder="Chọn"
-                onChange={(value) => value}
+                onChange={(value) => setSearchLine(value)}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}
-                options={['1', '2']}
               />
             </div>
             <div className="row mb-3">
               <Input
                 title="Số lượng tồn"
                 size={6}
-                value={''}
+                value={searchQuantity}
                 placeholder="Chọn"
-                onChange={(value) => value}
+                onChange={(value) => setSearchQuantity(value)}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}
-                options={['1', '2']}
               />
               <Input
                 title="Hạn sử dụng"
-                value={''}
+                value={searchExpDate.split('T')[0]}
                 size={6}
+                type="date"
                 placeholder="Chọn"
-                onChange={(value) => value}
+                onChange={(value) => setSearchExpDate(convertISOString(value))}
                 onClickIcon={handleSearchClick}
                 icon={<FaSearch />}
-                options={['1', '2']}
               />
             </div>
           </div>
@@ -231,11 +276,23 @@ function WarehousePage() {
         </div>
       </div>
 
+      {/* Button thêm */}
+      <div className="d-flex justify-content-end my-3">
+        <Link
+          className="btn d-flex align-items-center btn-primary"
+          href={'/inbound'}
+          // onClick={() => setIsCreateModalOpen(true)}
+        >
+          <FaPlus className="align-middle" />
+          <text>Nhập lô</text>
+        </Link>
+      </div>
+
       {data && (
         <WarehouseTable
           level={level}
-          product={data.product}
-          batches={data.batches}
+          product={groupedProductData}
+          batches={groupedBatchData}
           columnsBatch={columnsBatch}
         />
       )}
@@ -277,13 +334,13 @@ function groupProductData(data: Product[]) {
 function groupBatch(results: Batch[]): BatchGrouped[] {
   return results.map((item) => ({
     id: item.id,
-    inbound_price: item.inbound_price,
-    sell_price: item.sell_price,
+    inboundPrice: item.inboundPrice,
+    sellPrice: item.sellPrice ?? 0,
     discount: item.discount,
-    quantity: item.quantity,
-    inbound_quantity: item.inbound_quantity,
-    expiredAt: new Date(item.expiredAt).getTime(),
-    inboundReceiptId: item.inboundReceipt.id,
+    inventQuantity: item.inventQuantity,
+    inboundQuantity: item.inboundQuantity,
+    expiredAt: new Date(item.expiredAt).toISOString(),
+    inboundReceiptId: item.inboundReceipt?.id ?? 0,
     unit: item.productUnit.unit?.name || '',
     productSample: item.productUnit.productSample?.name || '',
   }));

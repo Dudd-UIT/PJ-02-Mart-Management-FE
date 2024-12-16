@@ -38,7 +38,7 @@ export type BatchGrouped = {
   discount: number;
   inventQuantity: number;
   inboundQuantity: number;
-  expiredAt: number; 
+  expiredAt: string; 
   inboundReceiptId: number; 
   unit: string;
   productSample: string;

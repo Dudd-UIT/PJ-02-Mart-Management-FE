@@ -3,11 +3,11 @@ import { FaEye } from 'react-icons/fa6';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import BatchTable from './batches.table';
 
-function WarehouseTable({ product, batches, columnsBatch, level = 'type' }: WarehouseTableType) {
+function WarehouseTable({ product, batches, columnsBatch, level = 1 }: WarehouseTableType) {
   
   return (
     <div className="accordion" id="productTypeLevel">
-      {level === 'type' && Object.entries(product).map(([typeName, productLines], typeIndex) => (
+      {level === 1 && Object.entries(product).map(([typeName, productLines], typeIndex) => (
         <div className="accordion-item" key={`Type${typeIndex}`}>
           <h2 className="accordion-header" id={`headingType${typeIndex}`}>
             <button
@@ -33,11 +33,11 @@ function WarehouseTable({ product, batches, columnsBatch, level = 'type' }: Ware
         </div>
       ))}
 
-      {level === 'line' && Object.entries(product).flatMap(([_, productLines], typeIndex) =>
+      {level === 2 && Object.entries(product).flatMap(([_, productLines], typeIndex) =>
         renderProductLines(productLines, typeIndex)
       )}
 
-      {level === 'sample' && Object.entries(product).flatMap(([_, productLines], typeIndex) =>
+      {level === 3 && Object.entries(product).flatMap(([_, productLines], typeIndex) =>
         Object.entries(productLines).flatMap(([_, productSamples], lineIndex) =>
           renderProductSamples(productSamples, typeIndex, lineIndex)
         )

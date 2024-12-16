@@ -9,6 +9,6 @@ export interface WarehouseTableType {
   product: GroupedProductData;
   batches: BatchGrouped[];
   columnsBatch: Column<BatchGrouped>[];
-  level: string;
+  level: number;
   onMutate?: () => void;
 }

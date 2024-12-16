@@ -3,6 +3,8 @@ import { FaEye } from 'react-icons/fa';
 import { Batch, BatchGrouped, BatchTableType } from '@/types/batch';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
+import UpdateWarehouseModal from './warehouse.update';
+import DeleteWarehouseModal from './warehouse.delete';
 // import UpdateBatchModal from './Batch.update';
 // import DeleteBatchModal from './Batch.delete';
 
@@ -11,15 +13,18 @@ const BatchTable = (props: BatchTableType) => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-  const [selectedBatch, setSelectedBatch] = useState<Batch | undefined>();
+  const [selectedBatch, setSelectedBatch] = useState<
+    BatchGrouped | undefined
+  >();
 
   const handleOpenUpdateModal = (batch: BatchGrouped) => {
-    // setSelectedBatch(batch);
+    setSelectedBatch(batch);
+    console.log(batch);
     setIsUpdateModalOpen(true);
   };
 
   const handleOpenDeleteModal = (batch: BatchGrouped) => {
-    // setSelectedBatch(batch);
+    setSelectedBatch(batch);
     setIsDeleteModalOpen(true);
   };
 
@@ -44,7 +49,14 @@ const BatchTable = (props: BatchTableType) => {
               <tr key={rowIndex} className="text-center align-middle">
                 {columns.map((column, colIndex) => (
                   <td key={colIndex}>
-                    {row[column.key as keyof BatchGrouped]}
+                    {column.key === 'expiredAt' &&
+                    row[column.key as keyof BatchGrouped]
+                      ? (row[column.key as keyof BatchGrouped] as string)
+                          .replace(/T.*/, '')
+                          .split('-')
+                          .reverse()
+                          .join('/')
+                      : row[column.key as keyof BatchGrouped]}
                   </td>
                 ))}
                 <td>
@@ -73,18 +85,18 @@ const BatchTable = (props: BatchTableType) => {
         </tbody>
       </table>
 
-      {/* <UpdateBatchModal
+      <UpdateWarehouseModal
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         data={selectedBatch} // Pass selected Batch data to modal
         onMutate={onMutate}
       />
-      <DeleteBatchModal
+      <DeleteWarehouseModal
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
         data={selectedBatch}
         onMutate={onMutate}
-      /> */}
+      />
     </>
   );
 };

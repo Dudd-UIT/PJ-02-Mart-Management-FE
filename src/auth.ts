@@ -21,7 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: credentials.password,
           },
         });
-
+        console.log('>>>> res authorize', res)
         if (res.statusCode === 201) {
           const user = res.data?.user;
           if (user) {
@@ -64,6 +64,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   session: {
     strategy: 'jwt',
-    maxAge: 300,
+    maxAge: 3600,
   },
 });
