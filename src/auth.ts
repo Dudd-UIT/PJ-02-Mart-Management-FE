@@ -25,7 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: credentials.password,
           },
         });
-
+        console.log('>>>> res authorize', res)
         if (res.statusCode === 201) {
           const user = res.data?.user;
           if (user) {

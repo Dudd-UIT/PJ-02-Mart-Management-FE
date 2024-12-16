@@ -24,6 +24,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const togglePin = () => {
     setIsPinned(!isPinned);
+    setIsSaleOpen(false);
   };
   const toggleSale = () => {
     setIsSaleOpen(!isSaleOpen);
@@ -37,7 +38,8 @@ export default function Sidebar() {
       className={`sidebar col-md-2 col-sm-4 ${isPinned ? 'pinned' : ''}`}
       id="side_nav"
       style={{
-        height: '100vh',
+        height: 'auto',
+        minHeight: '100vh',
         width: isPinned ? '230px' : '60px',
         transition: 'width 0.3s',
       }}

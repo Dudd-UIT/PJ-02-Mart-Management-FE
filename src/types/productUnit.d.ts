@@ -1,4 +1,5 @@
 import { Column, MetaData } from './commonType';
+import { ProductSample } from './productSample';
 
 export type ProductUnitTransform = {
   id: number;
@@ -53,4 +54,19 @@ export interface SelectedProductUnitTableProps {
   productUnits: ProductUnitTransform[];
   columns: Column<ProductUnitTransform>[];
   // meta: MetaData;
+}
+
+interface Unit {
+  id: number;
+  name: string;
+}
+
+interface Product {
+  id: number;
+  sell_price: number;
+  conversion_rate: number;
+  image: string;
+  volumne: string;
+  productSample: ProductSample;
+  // unit: Unit;
 }

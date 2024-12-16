@@ -14,7 +14,6 @@ export async function authenticate(formData: FormDataLogin) {
       password: formData.password,
       redirect: false,
     });
-
     return res;
   } catch (error) {
     if ((error as any).name === 'InvalidEmailPasswordError') {

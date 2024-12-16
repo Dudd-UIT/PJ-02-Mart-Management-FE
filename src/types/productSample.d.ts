@@ -1,3 +1,14 @@
+// import { ProductLine } from "./productLine";
+
+// export type ProductSample = {
+//     id: number;
+//     name: string;
+//     description: string;
+//     volumne: string;
+//     createAt: string;
+//     deleteAt: string;
+//     productLine: ProductLine;
+// }
 import { ProductType } from './productType.d';
 import { Column, MetaData } from './commonType';
 import { ProductUnit } from './productUnit';

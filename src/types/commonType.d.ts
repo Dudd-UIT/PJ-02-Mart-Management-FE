@@ -83,3 +83,9 @@ declare global {
     onMutate: () => void;
   }
 }
+
+interface GroupedProductData {
+  [typeName: string]: {
+      [lineName: string]: Product[];
+  };
+}

@@ -29,6 +29,7 @@ $accordion-button-focus-box-shadow: $body-bg;
 
 .btn {
   border-bottom-width: 4px;
+  gap: 0.5rem;
 }
 
 .btn.borderless {
@@ -167,6 +168,9 @@ table * * * {
 .accordion-body {
   border-left: 1px solid $secondaryContainer !important;
   margin-top: 0.5rem;
+  padding-right: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 #side_nav {
