@@ -1,0 +1,14 @@
+{
+    "validUser":{
+      "email":"dudd@mini.mart",
+      "password":"123"
+    },
+    "invalidUser": {
+         "email": "abc@test.com",
+         "password":"wrongPassword"
+    },
+    "invalidEmail": {
+          "email":"wrongemail",
+          "password":"test"
+    }
+}

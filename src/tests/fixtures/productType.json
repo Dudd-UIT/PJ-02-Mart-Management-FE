@@ -1,0 +1,8 @@
+{
+    "validProductType": {
+        "name": "ProductType Test 3"
+    },
+   "invalidProductType": {
+        "name": ""
+    }
+}

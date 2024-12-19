@@ -1,0 +1,10 @@
+{
+    "validCustomer": {
+      "name": "Khách hàng test 6",
+      "phone": "0909090926"
+      },
+    "invalidCustomer": {
+      "name": "",
+      "phone": ""
+      }
+   }
