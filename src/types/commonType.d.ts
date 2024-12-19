@@ -96,3 +96,9 @@ export type StatisticsCardProps = {
   unit?: string;
   onClick?: () => void;
 }
+
+type RevenueChartData = {
+  time: string;
+  income: number;
+  expense: number;
+};

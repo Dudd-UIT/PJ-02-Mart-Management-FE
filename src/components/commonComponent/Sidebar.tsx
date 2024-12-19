@@ -20,6 +20,7 @@ import Link from 'next/link';
 export default function Sidebar() {
   const [isPinned, setIsPinned] = useState(false);
   const [isSaleOpen, setIsSaleOpen] = useState(false);
+  const [isStatOpen, setIsStatOpen] = useState(false);
   const [isRuleOpen, setIsRuleOpen] = useState(false);
   const pathname = usePathname();
   const togglePin = () => {
@@ -28,6 +29,9 @@ export default function Sidebar() {
   };
   const toggleSale = () => {
     setIsSaleOpen(!isSaleOpen);
+  };
+  const toggleStat = () => {
+    setIsStatOpen(!isStatOpen);
   };
   const toggleRule = () => {
     setIsRuleOpen(!isRuleOpen);
@@ -65,13 +69,54 @@ export default function Sidebar() {
           setIsPinned(true);
         }}
       >
-        <li className={pathname == '/statistics' ? 'active' : ''}>
-          <Link href="/statistics" className="btn btn-sc">
+        <li>
+          <div
+            className={`btn btn-sc ${
+              pathname.startsWith('/statistics') ? 'active' : ''
+            }`}
+            onClick={toggleStat}
+          >
             <div style={{ padding: '0.2rem 0' }}>
               <IoStatsChart />
             </div>
-            {isPinned && <text>Thống kê</text>}
-          </Link>
+            {isPinned && (
+              <div
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <text>Thống kê</text>{' '}
+                {isStatOpen ? <FaAngleUp /> : <FaAngleDown />}
+              </div>
+            )}
+          </div>
+          {isStatOpen && (
+            <ul className="list-unstyled ps-5 gap-4">
+              <li className={pathname == '/statistics' ? 'active' : ''}>
+                <Link href="/statistics" className="btn btn-sc">
+                  {isPinned && <text className="small">Tổng quan hệ thống</text>}
+                </Link>
+              </li>
+              <li className={pathname == '/statistics/revenue' ? 'active' : ''}>
+                <Link href="/statistics/revenue" className="btn btn-sc">
+                  {isPinned && <text className="small">Doanh thu</text>}
+                </Link>
+              </li>
+              <li className={pathname == '/statistics/best-sale' ? 'active' : ''}>
+                <Link href="/statistics/best-sale" className="btn btn-sc">
+                  {isPinned && <text className="small">Sản phẩm thịnh hành</text>}
+                </Link>
+              </li>
+              <li className={pathname == '/statistics/order-statistics' ? 'active' : ''}>
+                <Link href="/statistics/order-statistics" className="btn btn-sc">
+                  {isPinned && <text className="small">Thống kê đơn hàng</text>}
+                </Link>
+              </li>
+            </ul>
+          )}
         </li>
         <li>
           <div
