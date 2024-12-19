@@ -278,7 +278,7 @@ function SalePage() {
       const newTotal = totalPrice - discount; // Tổng tiền còn lại
       const newScore = 0; // Điểm sau khi sử dụng = 0
       handleOrderInfoChange('totalPrice', newTotal);
-      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString()} VND`);
+      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString('vi-VN')} VND`);
 
       // Gọi API cập nhật điểm (nếu cần)
       handleUpdateCustomerAction({ id: customer.id, score: newScore });
@@ -362,7 +362,7 @@ function SalePage() {
                 <div className="d-flex flex-column justify-content-center align-items-center">
                   <text className="p-0">{productUnit.productSampleName}</text>
                   <text className="text-danger p-1">
-                    {productUnit.sellPrice?.toLocaleString()} đ
+                    {productUnit.sellPrice?.toLocaleString('vi-VN')} đ
                   </text>
                 </div>
               </div>
