@@ -90,7 +90,7 @@ interface GroupedProductData {
   };
 }
 
-export type StaticCardProps = {
+export type StatisticsCardProps = {
   title: string;
   data?: string|number;
   unit?: string;

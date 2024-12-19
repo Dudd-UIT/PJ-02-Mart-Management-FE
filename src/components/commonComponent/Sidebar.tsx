@@ -65,8 +65,8 @@ export default function Sidebar() {
           setIsPinned(true);
         }}
       >
-        <li className={pathname == '/static' ? 'active' : ''}>
-          <Link href="/static" className="btn btn-sc">
+        <li className={pathname == '/statistics' ? 'active' : ''}>
+          <Link href="/statistics" className="btn btn-sc">
             <div style={{ padding: '0.2rem 0' }}>
               <IoStatsChart />
             </div>

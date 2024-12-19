@@ -1,12 +1,10 @@
 'use client';
 
 import Card from '@/components/commonComponent/Card';
-import { useStaticContext } from '@/context/staticContext';
 
-function StaticPage() {
+function StatisticsPage() {
   const d = new Date();
   console.log(d);
-  const { totalValue, totalSale } = useStaticContext();
   return (
     <>
       <h2>Dashboard tổng quan</h2>
@@ -39,7 +37,6 @@ function StaticPage() {
           <Card title={`Ngày ${d.getDate()}`} data={12345} unit='VNĐ' />
           <Card
             title={`Năm ${d.getFullYear()}`}
-            data={totalValue ? totalValue : 0}
             unit='VNĐ'
           />
         </div>
@@ -48,4 +45,4 @@ function StaticPage() {
   );
 }
 
-export default StaticPage;
+export default StatisticsPage;

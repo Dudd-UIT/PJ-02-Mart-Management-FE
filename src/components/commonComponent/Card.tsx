@@ -1,6 +1,6 @@
-import { StaticCardProps } from '@/types/commonType';
+import { StatisticsCardProps } from '@/types/commonType';
 
-function Card(props: StaticCardProps) {
+function Card(props: StatisticsCardProps) {
   function formatCurrency(value: number) {
     if (value < 1000000) {
       return value.toLocaleString('vi-VN');

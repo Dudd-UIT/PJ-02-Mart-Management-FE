@@ -18,12 +18,10 @@ import {
 import './style.css';
 import { RiEyeCloseLine, RiEyeFill } from 'react-icons/ri';
 import Link from 'next/link';
-import { useStaticContext } from '@/context/staticContext';
 
 function WarehousePage() {
   const current = 1;
   const pageSize = 10;
-  const { totalValue, setTotalValue } = useStaticContext();
   const [level, setLevel] = useState(1);
   const [showOption, setShowOption] = useState(0);
   const [searchSample, setSearchSample] = useState('');
@@ -90,19 +88,16 @@ function WarehousePage() {
       </div>
     );
 
-    console.log(data);  
+  console.log(data);
   const groupedProductData = groupProductData(data.productUnitsData.results);
   const groupedBatchData = groupBatch(data.batchData.results);
 
   console.log('groupedProductData:', groupedProductData);
   console.log('groupedBatchData:', groupedBatchData);
 
-  // const totalValue = getWarehouseValue(groupedBatchData);
+  const totalValue = getWarehouseValue(groupedBatchData);
 
-  // useEffect(() => {
-    setTotalValue(getWarehouseValue(groupedBatchData));
-    console.log('Tổng giá trị kho hàng:', totalValue);
-  // }, [groupedBatchData]);
+  console.log('Tổng giá trị kho hàng:', totalValue);
 
   const handleSearchClick = () => {
     setSearchProductUnitParams({
@@ -142,7 +137,7 @@ function WarehousePage() {
             onSelectedChange={(value) => {
               setLevel(value);
             }}
-            onClickIcon={handleSearchClick}
+            // onClickIcon={handleSearchClick}
             icon={<FaFilter />}
             options={[
               { label: 'Loại sản phẩm', value: 1 },
