@@ -36,10 +36,11 @@ function StaticPage() {
         </div>
 
         <div className="d-flex justify-content-between pb-3">
-          <Card title={`Ngày ${d.getDate()}`} />
+          <Card title={`Ngày ${d.getDate()}`} data={12345} unit='VNĐ' />
           <Card
             title={`Năm ${d.getFullYear()}`}
             data={totalValue ? totalValue : 0}
+            unit='VNĐ'
           />
         </div>
       </div>
