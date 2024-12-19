@@ -278,7 +278,7 @@ function SalePage() {
       const newTotal = totalPrice - discount; // Tổng tiền còn lại
       const newScore = 0; // Điểm sau khi sử dụng = 0
       handleOrderInfoChange('totalPrice', newTotal);
-      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString()} VND`);
+      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString('vi-VN')} VND`);
 
       // Gọi API cập nhật điểm (nếu cần)
       handleUpdateCustomerAction({ id: customer.id, score: newScore });
@@ -352,17 +352,17 @@ function SalePage() {
               style={{ cursor: 'pointer' }}
             >
               <div className="card">
-                <Image
+                {/* <Image
                   src={productUnit.image}
                   alt={productUnit.productSampleName || 'Product'}
                   width={100}
                   height={100}
                   className="card-img-top p-2"
-                />
+                /> */}
                 <div className="d-flex flex-column justify-content-center align-items-center">
                   <text className="p-0">{productUnit.productSampleName}</text>
                   <text className="text-danger p-1">
-                    {productUnit.sellPrice?.toLocaleString()} đ
+                    {productUnit.sellPrice?.toLocaleString('vi-VN')} đ
                   </text>
                 </div>
               </div>
@@ -539,7 +539,8 @@ function SalePage() {
           <Input
             size={3}
             title="Tích điểm"
-            value={formDataOrder.totalPrice / parameterData?.results[1].value}
+            value='1'
+            // value={formDataOrder.totalPrice / parameterData?.results[1].value}
             readOnly
           />
           <Input

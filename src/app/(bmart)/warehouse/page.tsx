@@ -88,12 +88,16 @@ function WarehousePage() {
       </div>
     );
 
-  // console.log(data)
+  console.log(data);
   const groupedProductData = groupProductData(data.productUnitsData.results);
   const groupedBatchData = groupBatch(data.batchData.results);
 
   console.log('groupedProductData:', groupedProductData);
   console.log('groupedBatchData:', groupedBatchData);
+
+  const totalValue = getWarehouseValue(groupedBatchData);
+
+  console.log('Tổng giá trị kho hàng:', totalValue);
 
   const handleSearchClick = () => {
     setSearchProductUnitParams({
@@ -108,10 +112,10 @@ function WarehousePage() {
 
   const onMutate = () => mutate(['', current, pageSize]);
 
-  function convertISOString(dateString : string) {
+  function convertISOString(dateString: string) {
     const date = new Date(dateString);
     return date.toISOString();
-}
+  }
 
   return (
     <>
@@ -133,7 +137,7 @@ function WarehousePage() {
             onSelectedChange={(value) => {
               setLevel(value);
             }}
-            onClickIcon={handleSearchClick}
+            // onClickIcon={handleSearchClick}
             icon={<FaFilter />}
             options={[
               { label: 'Loại sản phẩm', value: 1 },
@@ -344,4 +348,11 @@ function groupBatch(results: Batch[]): BatchGrouped[] {
     unit: item.productUnit.unit?.name || '',
     productSample: item.productUnit.productSample?.name || '',
   }));
+}
+
+function getWarehouseValue(data: BatchGrouped[]) {
+  return data.reduce(
+    (total, item) => total + item.inboundPrice * item.inventQuantity,
+    0,
+  );
 }
