@@ -18,10 +18,12 @@ import {
 import './style.css';
 import { RiEyeCloseLine, RiEyeFill } from 'react-icons/ri';
 import Link from 'next/link';
+import { useStaticContext } from '@/context/staticContext';
 
 function WarehousePage() {
   const current = 1;
   const pageSize = 10;
+  const { totalValue, setTotalValue } = useStaticContext();
   const [level, setLevel] = useState(1);
   const [showOption, setShowOption] = useState(0);
   const [searchSample, setSearchSample] = useState('');
@@ -88,12 +90,19 @@ function WarehousePage() {
       </div>
     );
 
-  // console.log(data)
+    console.log(data);  
   const groupedProductData = groupProductData(data.productUnitsData.results);
   const groupedBatchData = groupBatch(data.batchData.results);
 
   console.log('groupedProductData:', groupedProductData);
   console.log('groupedBatchData:', groupedBatchData);
+
+  // const totalValue = getWarehouseValue(groupedBatchData);
+
+  // useEffect(() => {
+    setTotalValue(getWarehouseValue(groupedBatchData));
+    console.log('Tổng giá trị kho hàng:', totalValue);
+  // }, [groupedBatchData]);
 
   const handleSearchClick = () => {
     setSearchProductUnitParams({
@@ -108,10 +117,10 @@ function WarehousePage() {
 
   const onMutate = () => mutate(['', current, pageSize]);
 
-  function convertISOString(dateString : string) {
+  function convertISOString(dateString: string) {
     const date = new Date(dateString);
     return date.toISOString();
-}
+  }
 
   return (
     <>
@@ -344,4 +353,11 @@ function groupBatch(results: Batch[]): BatchGrouped[] {
     unit: item.productUnit.unit?.name || '',
     productSample: item.productUnit.productSample?.name || '',
   }));
+}
+
+function getWarehouseValue(data: BatchGrouped[]) {
+  return data.reduce(
+    (total, item) => total + item.inboundPrice * item.inventQuantity,
+    0,
+  );
 }

@@ -89,3 +89,10 @@ interface GroupedProductData {
       [lineName: string]: Product[];
   };
 }
+
+export type StaticCardProps = {
+  title: string;
+  data?: string|number;
+  unit?: string;
+  onClick?: () => void;
+}

@@ -352,13 +352,13 @@ function SalePage() {
               style={{ cursor: 'pointer' }}
             >
               <div className="card">
-                <Image
+                {/* <Image
                   src={productUnit.image}
                   alt={productUnit.productSampleName || 'Product'}
                   width={100}
                   height={100}
                   className="card-img-top p-2"
-                />
+                /> */}
                 <div className="d-flex flex-column justify-content-center align-items-center">
                   <text className="p-0">{productUnit.productSampleName}</text>
                   <text className="text-danger p-1">
@@ -539,7 +539,8 @@ function SalePage() {
           <Input
             size={3}
             title="Tích điểm"
-            value={formDataOrder.totalPrice / parameterData?.results[1].value}
+            value='1'
+            // value={formDataOrder.totalPrice / parameterData?.results[1].value}
             readOnly
           />
           <Input
