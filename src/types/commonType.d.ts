@@ -102,3 +102,8 @@ type RevenueChartData = {
   income: number;
   expense: number;
 };
+type OrderChartData = {
+  time: string;
+  range: string;
+  orders: number;
+};

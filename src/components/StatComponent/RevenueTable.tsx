@@ -3,35 +3,11 @@
 import { RevenueChartData } from '@/types/commonType';
 import { formatCurrency } from '@/utils/format';
 import React, { useState } from 'react';
-import Card from '../commonComponent/Card';
 
 // Định nghĩa kiểu cho props
 interface RevenueTableProps {
   data: RevenueChartData[];
 }
-
-interface ProfitMetrics {
-  totalProfit: number;
-  averageProfit: number;
-}
-
-const calculateProfitMetrics = (data: RevenueChartData[]): ProfitMetrics => {
-  if (data.length === 0) {
-    return { totalProfit: 0, averageProfit: 0 };
-  }
-
-  const totalProfit = data.reduce(
-    (sum, row) => sum + (row.income - row.expense),
-    0,
-  );
-
-  const averageProfit = totalProfit / data.length;
-
-  return {
-    totalProfit,
-    averageProfit,
-  };
-};
 
 const RevenueTable: React.FC<RevenueTableProps> = ({ data }) => {
   const [highlight, setHighlight] = useState(false);
@@ -40,15 +16,9 @@ const RevenueTable: React.FC<RevenueTableProps> = ({ data }) => {
     setHighlight(!highlight);
   };
 
-  const dataMetric = calculateProfitMetrics(data);
 
   return (
     <div>
-      {/* <div className='d-flex'>
-        <Card title="Tổng lợi nhuận" data={dataMetric.totalProfit} />
-        <Card title="Lợi nhuận bình quân" data={dataMetric.averageProfit} />
-      </div> */}
-
       <div className="form-check form-check-reverse" style={{marginBottom: '-0.5rem'}}>
         <input
           className="form-check-input"
