@@ -18,6 +18,8 @@ import {
 import './style.css';
 import { RiEyeCloseLine, RiEyeFill } from 'react-icons/ri';
 import Link from 'next/link';
+import { Card } from '@/components/commonComponent/Card';
+import { formatCurrency } from '@/utils/format';
 
 function WarehousePage() {
   const current = 1;
@@ -119,165 +121,182 @@ function WarehousePage() {
 
   return (
     <>
-      <div className="col col-md-9">
-        <div className="row mb-3">
-          <Input
-            title="Mẫu sản phẩm"
-            size={6}
-            value={searchSample}
-            placeholder="Nhập mẫu sản phẩm"
-            onChange={(value) => setSearchSample(value)}
-            onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
-          />
-          <Input
-            title="Mức độ phân loại"
-            value={level}
-            size={6}
-            onSelectedChange={(value) => {
-              setLevel(value);
-            }}
-            // onClickIcon={handleSearchClick}
-            icon={<FaFilter />}
-            options={[
-              { label: 'Loại sản phẩm', value: 1 },
-              { label: 'Dòng sản phẩm', value: 2 },
-              { label: 'Mẫu sản phẩm', value: 3 },
-            ]}
-            keyObj="value"
-            showObj="label"
-          />
-        </div>
-        <div className="row mb-3">
-          <div className="col col-md-8">
-            <div className="row mb-3">
-              <Input
-                title="Loại sản phẩm"
-                size={6}
-                value={searchType}
-                placeholder="Chọn"
-                onChange={(value) => setSearchType(value)}
-                onClickIcon={handleSearchClick}
-                icon={<FaSearch />}
-              />
-              <Input
-                title="Dòng sản phẩm"
-                value={searchLine}
-                size={6}
-                placeholder="Chọn"
-                onChange={(value) => setSearchLine(value)}
-                onClickIcon={handleSearchClick}
-                icon={<FaSearch />}
-              />
+      <h2>Kho hàng</h2>
+
+      <div className='row'>
+        <div className="col col-md-9">
+          <div className="row mb-3">
+            <Input
+              title="Mẫu sản phẩm"
+              size={6}
+              value={searchSample}
+              placeholder="Nhập mẫu sản phẩm"
+              onChange={(value) => setSearchSample(value)}
+              onClickIcon={handleSearchClick}
+              icon={<FaSearch />}
+            />
+            <Input
+              title="Mức độ phân loại"
+              value={level}
+              size={6}
+              onSelectedChange={(value) => {
+                setLevel(value);
+              }}
+              // onClickIcon={handleSearchClick}
+              icon={<FaFilter />}
+              options={[
+                { label: 'Loại sản phẩm', value: 1 },
+                { label: 'Dòng sản phẩm', value: 2 },
+                { label: 'Mẫu sản phẩm', value: 3 },
+              ]}
+              keyObj="value"
+              showObj="label"
+            />
+          </div>
+          <div className="row mb-3">
+            <div className="col col-md-8">
+              <div className="row mb-3">
+                <Input
+                  title="Loại sản phẩm"
+                  size={6}
+                  value={searchType}
+                  placeholder="Chọn"
+                  onChange={(value) => setSearchType(value)}
+                  onClickIcon={handleSearchClick}
+                  icon={<FaSearch />}
+                />
+                <Input
+                  title="Dòng sản phẩm"
+                  value={searchLine}
+                  size={6}
+                  placeholder="Chọn"
+                  onChange={(value) => setSearchLine(value)}
+                  onClickIcon={handleSearchClick}
+                  icon={<FaSearch />}
+                />
+              </div>
+              <div className="row mb-3">
+                <Input
+                  title="Số lượng tồn"
+                  size={6}
+                  value={searchQuantity}
+                  placeholder="Chọn"
+                  onChange={(value) => setSearchQuantity(value)}
+                  onClickIcon={handleSearchClick}
+                  icon={<FaSearch />}
+                />
+                <Input
+                  title="Hạn sử dụng"
+                  value={searchExpDate.split('T')[0]}
+                  size={6}
+                  type="date"
+                  placeholder="Chọn"
+                  onChange={(value) => setSearchExpDate(convertISOString(value))}
+                  onClickIcon={handleSearchClick}
+                  icon={<FaSearch />}
+                />
+              </div>
             </div>
-            <div className="row mb-3">
-              <Input
-                title="Số lượng tồn"
-                size={6}
-                value={searchQuantity}
-                placeholder="Chọn"
-                onChange={(value) => setSearchQuantity(value)}
-                onClickIcon={handleSearchClick}
-                icon={<FaSearch />}
-              />
-              <Input
-                title="Hạn sử dụng"
-                value={searchExpDate.split('T')[0]}
-                size={6}
-                type="date"
-                placeholder="Chọn"
-                onChange={(value) => setSearchExpDate(convertISOString(value))}
-                onClickIcon={handleSearchClick}
-                icon={<FaSearch />}
-              />
+            <div className="col col-md-4 d-flex flex-column">
+              <label>Hiển thị nhanh</label>
+              <div
+                className="btn-group-vertical my-2"
+                role="group"
+                aria-label="Vertical button group"
+              >
+                <span className="d-flex justify-content-between w-100 align-items-center border rounded-top ps-2">
+                  <div className="mb-0">Lô sắp hết hạn sử dụng</div>
+                  {showOption == 1 ? (
+                    <button
+                      type="button"
+                      className="btn btn-group-custom  btn-group-custom-selected"
+                      style={{ borderTopRightRadius: '0.375rem' }}
+                      onClick={() => {
+                        setShowOption(0);
+                      }}
+                    >
+                      <RiEyeFill />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-group-custom"
+                      style={{ borderTopRightRadius: '0.375rem' }}
+                      onClick={() => {
+                        setShowOption(1);
+                      }}
+                    >
+                      <RiEyeCloseLine />
+                    </button>
+                  )}
+                </span>
+                <span className="d-flex justify-content-between w-100 align-items-center border-start border-end ps-2">
+                  <div className="mb-0">Mẫu SP sắp hết hàng</div>
+                  {showOption == 2 ? (
+                    <button
+                      type="button"
+                      className="btn btn-group-custom  btn-group-custom-selected"
+                      onClick={() => {
+                        setShowOption(0);
+                      }}
+                    >
+                      <RiEyeFill />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-group-custom"
+                      onClick={() => {
+                        setShowOption(2);
+                      }}
+                    >
+                      <RiEyeCloseLine />
+                    </button>
+                  )}
+                </span>
+                <span className="d-flex justify-content-between w-100 align-items-center border rounded-bottom ps-2">
+                  <div className="mb-0">Hàng mới nhập kho</div>
+                  {showOption == 3 ? (
+                    <button
+                      type="button"
+                      className="btn btn-group-custom  btn-group-custom-selected"
+                      style={{ borderBottomRightRadius: '0.375rem' }}
+                      onClick={() => {
+                        setShowOption(0);
+                      }}
+                    >
+                      <RiEyeFill />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-group-custom"
+                      style={{ borderBottomRightRadius: '0.375rem' }}
+                      onClick={() => {
+                        setShowOption(3);
+                      }}
+                    >
+                      <RiEyeCloseLine />
+                    </button>
+                  )}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="col col-md-4 d-flex flex-column">
-            <label>Hiển thị nhanh</label>
-            <div
-              className="btn-group-vertical my-2"
-              role="group"
-              aria-label="Vertical button group"
-            >
-              <span className="d-flex justify-content-between w-100 align-items-center border rounded-top ps-2">
-                <div className="mb-0">Lô sắp hết hạn sử dụng</div>
-                {showOption == 1 ? (
-                  <button
-                    type="button"
-                    className="btn btn-group-custom  btn-group-custom-selected"
-                    style={{ borderTopRightRadius: '0.375rem' }}
-                    onClick={() => {
-                      setShowOption(0);
-                    }}
-                  >
-                    <RiEyeFill />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-group-custom"
-                    style={{ borderTopRightRadius: '0.375rem' }}
-                    onClick={() => {
-                      setShowOption(1);
-                    }}
-                  >
-                    <RiEyeCloseLine />
-                  </button>
-                )}
-              </span>
-              <span className="d-flex justify-content-between w-100 align-items-center border-start border-end ps-2">
-                <div className="mb-0">Mẫu SP sắp hết hàng</div>
-                {showOption == 2 ? (
-                  <button
-                    type="button"
-                    className="btn btn-group-custom  btn-group-custom-selected"
-                    onClick={() => {
-                      setShowOption(0);
-                    }}
-                  >
-                    <RiEyeFill />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-group-custom"
-                    onClick={() => {
-                      setShowOption(2);
-                    }}
-                  >
-                    <RiEyeCloseLine />
-                  </button>
-                )}
-              </span>
-              <span className="d-flex justify-content-between w-100 align-items-center border rounded-bottom ps-2">
-                <div className="mb-0">Hàng mới nhập kho</div>
-                {showOption == 3 ? (
-                  <button
-                    type="button"
-                    className="btn btn-group-custom  btn-group-custom-selected"
-                    style={{ borderBottomRightRadius: '0.375rem' }}
-                    onClick={() => {
-                      setShowOption(0);
-                    }}
-                  >
-                    <RiEyeFill />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-group-custom"
-                    style={{ borderBottomRightRadius: '0.375rem' }}
-                    onClick={() => {
-                      setShowOption(3);
-                    }}
-                  >
-                    <RiEyeCloseLine />
-                  </button>
-                )}
-              </span>
-            </div>
-          </div>
         </div>
+    <div className="col col-md-3">
+      <div className="stat-card w-100 py-5 px-3 mt-5">
+        <h4 className="text-start">Tổng giá trị kho hàng</h4>
+        <h1 className="text-start fw-bold" style={{ display: 'inline' }}>
+          {typeof totalValue === 'string'
+            ? totalValue
+            : typeof totalValue === 'number'
+            ? formatCurrency(totalValue)
+            : '0'}{' '}
+        </h1>
+        <h5 style={{ display: 'inline' }}>VNĐ</h5>
+      </div>
+    </div>
       </div>
 
       {/* Button thêm */}
