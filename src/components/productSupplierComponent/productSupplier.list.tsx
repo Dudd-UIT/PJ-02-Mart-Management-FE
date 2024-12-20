@@ -46,7 +46,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
         current,
         pageSize,
         searchParams.name,
-        +searchParams.productLineId,
+        searchParams.productLineId,
       ),
   );
 
