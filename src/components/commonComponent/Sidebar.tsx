@@ -26,6 +26,8 @@ export default function Sidebar() {
   const togglePin = () => {
     setIsPinned(!isPinned);
     setIsSaleOpen(false);
+    setIsStatOpen(false);
+    setIsRuleOpen(false);
   };
   const toggleSale = () => {
     setIsSaleOpen(!isSaleOpen);

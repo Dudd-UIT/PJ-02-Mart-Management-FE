@@ -1,6 +1,6 @@
 'use client';
 
-import Card from '@/components/commonComponent/Card';
+import {Card} from '@/components/commonComponent/Card';
 
 function StatisticsPage() {
   const d = new Date();
