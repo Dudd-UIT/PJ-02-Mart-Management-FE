@@ -2,7 +2,7 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { handleCreateProductSampleAction } from '@/services/productSampleServices';
+import { handleCreateProductSampleAction, uploadImageToS3 } from '@/services/productSampleServices';
 import useSWR from 'swr';
 import { fetchProductLines } from '@/services/productLineServices';
 import { fetchUnits } from '@/services/unitServices';
@@ -71,27 +71,67 @@ function CreateProductSampleModal(props: CreateModalProps) {
     }
   };
 
+
+  const sanitizePayload = (payload: any) => {
+    return JSON.parse(JSON.stringify(payload));
+  };
+  
+
   const handleCreateProductSample = async () => {
-    const productUnitsDto = productUnits.map?.((productUnit) => ({
-      volumne: productUnit.volumne,
-      sellPrice: productUnit.sellPrice,
-      conversionRate: productUnit.conversionRate,
-      image: productUnit.image,
-      productSampleId: 0,
-      unitId: productUnit.unitId,
-    }));
-    const payload = { productSampleDto: formData, productUnitsDto };
-
-    const res = await handleCreateProductSampleAction(payload);
-
-    if (res?.data) {
-      handleCloseCreateModal();
-      toast.success(res.message);
-      onMutate();
-    } else {
-      toast.error(res.message);
+    try {
+      console.log("Hello from create:::", productUnits);
+      const productUnitsWithImageUrls = await Promise.all(
+        productUnits.map(async (productUnit) => {
+          console.log("Current productUnit:::", productUnit);
+    
+          if (productUnit.image instanceof File) {
+            console.log("Uploading image:::", productUnit.image);
+            const formDataImage = new FormData();
+            formDataImage.append('file', productUnit.image);
+            console.log('formDataImage::::', formDataImage);
+            const uploadedImageUrl = await uploadImageToS3(formDataImage);
+    
+            return {
+              ...productUnit,
+              image: uploadedImageUrl,
+            };
+          }
+    
+          console.log("No image upload required for:::", productUnit);
+          return productUnit;
+      }));
+  
+      // Tạo payload
+      const productUnitsDto = productUnitsWithImageUrls.map((productUnit) => ({
+        volumne: productUnit.volumne,
+        sellPrice: productUnit.sellPrice,
+        conversionRate: productUnit.conversionRate,
+        image: productUnit.image,
+        productSampleId: 0,
+        unitId: productUnit.unitId,
+      }));
+  
+      const payload = sanitizePayload({
+        productSampleDto: formData,
+        productUnitsDto,
+      });
+  
+      // Gửi payload xuống backend
+      const res = await handleCreateProductSampleAction(payload);
+  
+      if (res?.data) {
+        handleCloseCreateModal();
+        toast.success(res.message);
+        onMutate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      console.error('Error creating product sample:', error);
+      toast.error('Có lỗi xảy ra trong quá trình tạo mẫu sản phẩm.');
     }
   };
+  
 
   return (
     <>

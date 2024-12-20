@@ -14,7 +14,7 @@ type FormData = {
   conversionRate: number;
   compareUnitId: number;
   volumne: number;
-  image: string;
+  image: string | File;
 };
 
 function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
@@ -51,7 +51,7 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
   };
 
   const handleFormDataChange = useCallback(
-    (field: keyof typeof formData, value: number | string) => {
+    (field: keyof typeof formData, value: number | string | File) => {
       setFormData((prev) => ({ ...prev, [field]: value }));
     },
     [],
@@ -62,6 +62,7 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
   }, [productSampleData, handleFormDataChange]);
 
   const handleSave = async () => {
+    console.log('formData:::', formData);
     onAddUnit(formData);
     handleCloseProductUnitListModal();
     setIsProductSampleUnitsModalOpen(false);
@@ -80,14 +81,34 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
       <Modal.Body>
         <div className="container p-3">
           <div className="row g-3">
-            <div className="col-md-4 d-flex align-items-center justify-content-center">
-              <div
-                className="border rounded bg-light d-flex align-items-center justify-content-center"
-                style={{ width: '100%', height: '200px' }}
-              >
+          <div className="col-md-4 d-flex align-items-center justify-content-center">
+            <div
+              className="border rounded bg-light d-flex align-items-center justify-content-center"
+              style={{ width: '100%', height: '200px' }}
+            >
+              {formData.image instanceof File ? (
+                <img
+                  src={URL.createObjectURL(formData.image)}
+                  alt="Preview"
+                  style={{ maxWidth: '100%', maxHeight: '100%' }}
+                />
+              ) : (
                 <span className="text-muted">Ảnh sản phẩm</span>
-              </div>
+              )}
             </div>
+          </div>
+          <div className="mt-3">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleFormDataChange('image', e.target.files[0]);
+                }
+              }}
+            /> 
+          </div>
+
 
             <div className="col-md-8">
               <div className="mb-3">
