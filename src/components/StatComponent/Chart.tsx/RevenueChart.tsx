@@ -1,6 +1,6 @@
 'use client';
 
-import Card from '@/components/commonComponent/Card';
+import {Card} from '@/components/commonComponent/Card';
 import { RevenueChartData } from '@/types/commonType';
 import React from 'react';
 import {

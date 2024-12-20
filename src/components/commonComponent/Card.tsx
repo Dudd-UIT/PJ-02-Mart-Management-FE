@@ -1,18 +1,7 @@
 import { StatisticsCardProps } from '@/types/commonType';
+import { formatCurrency } from '@/utils/format';
 
-function Card(props: StatisticsCardProps) {
-  function formatCurrency(value: number) {
-    if (value < 1000000) {
-      return value.toLocaleString('vi-VN');
-    } else if (value < 1000000000) {
-      const millions = (value / 1000000).toFixed(1);
-      return `${millions}M`;
-    } else {
-      const billions = (value / 1000000000).toFixed(1);
-      return `${billions}B`;
-    }
-  }
-
+export function Card(props: StatisticsCardProps) {
   const { title, data, unit } = props;
   return (
     <div className="col col-md-4">
@@ -31,4 +20,21 @@ function Card(props: StatisticsCardProps) {
   );
 }
 
-export default Card;
+export function CardSmall(props: StatisticsCardProps) {
+  const { title, data, unit } = props;
+  return (
+    <div className="col col-md-5">
+      <button className="btn btn-outline w-100 ">
+        <h6 className="text-start">{title}</h6>
+        <h3 className="text-start fw-bold" style={{ display: 'inline' }}>
+          {typeof data === 'string'
+            ? data
+            : typeof data === 'number'
+            ? formatCurrency(data)
+            : '0'}{' '}
+        </h3>
+        <p style={{ display: 'inline' }}>{unit}</p>
+      </button>
+    </div>
+  );
+}
