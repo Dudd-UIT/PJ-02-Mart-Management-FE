@@ -89,3 +89,21 @@ interface GroupedProductData {
       [lineName: string]: Product[];
   };
 }
+
+export type StatisticsCardProps = {
+  title: string;
+  data?: string|number;
+  unit?: string;
+  onClick?: () => void;
+}
+
+type RevenueChartData = {
+  time: string;
+  income: number;
+  expense: number;
+};
+type OrderChartData = {
+  time: string;
+  range: string;
+  orders: number;
+};
