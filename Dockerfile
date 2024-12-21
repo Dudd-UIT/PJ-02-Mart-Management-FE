@@ -1,7 +1,7 @@
-# Dockerfile for Next.js frontend
-FROM node:18-alpine
+# Stage 1: Build the Next.js app
+FROM node:18 AS builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json package-lock.json ./
 
@@ -11,6 +11,10 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
+FROM nginx:alpine
 
-CMD ["npm", "run", "start"]
+COPY --from=builder /app/.next /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
