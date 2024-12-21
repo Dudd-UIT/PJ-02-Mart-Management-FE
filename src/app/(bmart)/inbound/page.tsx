@@ -1,8 +1,10 @@
 'use client';
 
 import { Input, SelectInput } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateInboundReceiptModal from '@/components/inboundReceiptComponent/inboundReceipt.create';
 import InboundReceiptTable from '@/components/inboundReceiptComponent/inboundReceipt.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchInboundReceipts } from '@/services/inboundReceiptServices';
 import {
   InboundReceipt,
@@ -167,15 +169,17 @@ const InboundReceiptPage = () => {
       </div>
 
       {/* button Thêm Supplier */}
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </button>
-      </div>
+      <ProtectedComponent requiredRoles={['create_inbound-receipt']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
 
       {/* Quản lý Supplier */}
       <InboundReceiptTable
@@ -225,4 +229,6 @@ const InboundReceiptPage = () => {
   );
 };
 
-export default InboundReceiptPage;
+export default withRoleAuthorization(InboundReceiptPage, [
+  'view_inbound-receipts',
+]);

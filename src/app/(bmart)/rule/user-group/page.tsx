@@ -1,8 +1,10 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateUserGroupModal from '@/components/groupComponent/group.create';
 import UserGroupTable from '@/components/groupComponent/group.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchGroups } from '@/services/groupServices';
 import { Group } from '@/types/group';
 import { useState } from 'react';
@@ -80,15 +82,19 @@ const UserGroupsPage = () => {
           icon={<FaSearch />}
         />
       </div>
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </button>
-      </div>
+
+      <ProtectedComponent requiredRoles={['create_group']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
+
       <UserGroupTable
         groups={data.results}
         columns={columns}
@@ -134,4 +140,4 @@ const UserGroupsPage = () => {
   );
 };
 
-export default UserGroupsPage;
+export default withRoleAuthorization(UserGroupsPage, ['view_groups']);

@@ -1,10 +1,10 @@
-// SupplierTable Component
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
 import { ProductType, ProductTypeTableType } from '@/types/productType';
 import DeleteProductTypeModal from './productType.delete';
 import UpdateProductTypeModal from './productType.update';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const ProductTypeTable = (props: ProductTypeTableType) => {
   const { productTypes, columns, onMutate } = props;
@@ -39,9 +39,13 @@ const ProductTypeTable = (props: ProductTypeTableType) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={['update_product-type', 'delete_product-type']}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -50,14 +54,22 @@ const ProductTypeTable = (props: ProductTypeTableType) => {
                 {columns.map((column, colIndex) => (
                   <td key={colIndex}>{row[column.key as keyof ProductType]}</td>
                 ))}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={['update_product-type', 'delete_product-type']}
+                >
+                  <td>
+                    <ProtectedComponent requiredRoles={['update_product-type']}>
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+                    <ProtectedComponent requiredRoles={['delete_product-type']}>
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

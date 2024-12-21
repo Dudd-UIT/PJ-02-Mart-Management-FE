@@ -4,6 +4,7 @@ import { useState } from 'react';
 import UpdateCustomerModal from './staff.update';
 import DeleteCustomerModal from './staff.delete';
 import { Staff, StaffTableType } from '@/types/staff';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const StaffTable = (props: StaffTableType) => {
   const { staffs, columns, onMutate } = props;
@@ -36,9 +37,13 @@ const StaffTable = (props: StaffTableType) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={['update_staff', 'delete_staff']}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -56,14 +61,23 @@ const StaffTable = (props: StaffTableType) => {
 
                   return <td key={colIndex}>{displayValue}</td>;
                 })}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={['update_staff', 'delete_staff']}
+                >
+                  <td>
+                    <ProtectedComponent requiredRoles={['update_staff']}>
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+
+                    <ProtectedComponent requiredRoles={['delete_staff']}>
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

@@ -5,11 +5,14 @@ import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { IoPersonOutline } from 'react-icons/io5';
 import InfoModal from './info.modal';
+import { useSessionContext } from '@/context/SessionContext';
 
 export default function Header(props: any) {
   const { session } = props;
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-
+  const { currentSession, setCurrentSession } = useSessionContext();
+  console.log('currentSession', currentSession);
+  setCurrentSession(session);
   return (
     <>
       <div className="d-flex justify-content-end px-4 pt-1">

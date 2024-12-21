@@ -1,8 +1,10 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateProductTypeModal from '@/components/productTypeComponent/productType.create';
 import ProductTypeTable from '@/components/productTypeComponent/productType.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchProductTypes } from '@/services/productTypeServices';
 import { ProductType } from '@/types/productType';
 import { useState } from 'react';
@@ -82,15 +84,17 @@ function ProductTypePage() {
       </div>
 
       {/* button Thêm Product Type */}
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </button>
-      </div>
+      <ProtectedComponent requiredRoles={['create_product-type']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
 
       {/* Quản lý Product Type */}
       <ProductTypeTable
@@ -139,4 +143,4 @@ function ProductTypePage() {
   );
 }
 
-export default ProductTypePage;
+export default withRoleAuthorization(ProductTypePage, ['view_product-types']);

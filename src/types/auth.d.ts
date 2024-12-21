@@ -8,6 +8,7 @@ interface User {
   phone: string;
   address: string;
   groupName: string;
+  roles: string[];
   access_token: string;
 }
 
