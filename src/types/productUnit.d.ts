@@ -13,7 +13,7 @@ export type ProductUnitTransform = {
   productSampleId?: number;
   unitName: string;
   unitId: number;
-  image: string;
+  image: string | File;
 };
 
 export type ProductUnit = {

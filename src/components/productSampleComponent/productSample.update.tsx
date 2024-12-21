@@ -10,7 +10,7 @@ import { ProductSample } from '@/types/productSample';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
 import { Input } from '../commonComponent/InputForm';
 import SelectedProductSampleUnitTable from './selectedProductSample.table';
-import { handleUpdateProductSampleAction } from '@/services/productSampleServices';
+import { handleUpdateProductSampleAction, uploadImageToS3 } from '@/services/productSampleServices';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị tính', key: 'unitName' },
@@ -115,7 +115,29 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
 
   const handleUpdateProductSample = async () => {
     const { id, ...rest } = formData;
-    const productUnitsDto = productUnits.map?.((productUnit) => ({
+
+    const productUnitsWithImageUrls = await Promise.all(
+            productUnits.map(async (productUnit) => {
+              console.log("Current productUnit:::", productUnit);
+        
+              if (productUnit.image instanceof File) {
+                console.log("Uploading image:::", productUnit.image);
+                const formDataImage = new FormData();
+                formDataImage.append('file', productUnit.image);
+                console.log('formDataImage::::', formDataImage);
+                const uploadedImageUrl = await uploadImageToS3(formDataImage);
+        
+                return {
+                  ...productUnit,
+                  image: uploadedImageUrl,
+                };
+              }
+        
+              console.log("No image upload required for:::", productUnit);
+              return productUnit;
+          }));
+
+    const productUnitsDto = productUnitsWithImageUrls.map?.((productUnit) => ({
       volumne: productUnit.volumne,
       sellPrice: productUnit.sellPrice,
       conversionRate: productUnit.conversionRate,
