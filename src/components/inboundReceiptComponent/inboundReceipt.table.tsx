@@ -9,6 +9,7 @@ import UpdateInboundReceiptModal from './inboundReceipt.update';
 import DeleteInboundReceiptModal from './inboundReceipt.delete';
 import { renderStatusBadge } from '../commonComponent/Status';
 import { formatDateDMY } from '@/utils/format';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
   const { inboundReceipts, columns, onMutate } = props;
@@ -29,7 +30,6 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
     setIsDeleteModalOpen(true);
   };
 
-
   return (
     <>
       <div className="container">
@@ -45,9 +45,16 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={[
+                  'update_inbound-receipt',
+                  'delete_inbound-receipt',
+                ]}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -90,14 +97,29 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
 
                   return <td key={colIndex}>{cellData}</td>;
                 })}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={[
+                    'update_inbound-receipt',
+                    'delete_inbound-receipt',
+                  ]}
+                >
+                  <td>
+                    <ProtectedComponent
+                      requiredRoles={['update_inbound-receipt']}
+                    >
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+                    <ProtectedComponent
+                      requiredRoles={['delete_inbound-receipt']}
+                    >
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

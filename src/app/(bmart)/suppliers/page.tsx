@@ -1,8 +1,10 @@
 'use client';
 
 import { Input, SelectInput } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateSupplierModal from '@/components/supplierComponent/supplier.create';
 import SupplierTable from '@/components/supplierComponent/supplier.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchSuppliers } from '@/services/supplierServices';
 import { Supplier } from '@/types/supplier';
 import { useState } from 'react';
@@ -101,15 +103,17 @@ const SuppliersPage = () => {
       </div>
 
       {/* button Thêm Supplier */}
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus className="align-middle" />
-          <text>Thêm</text>
-        </button>
-      </div>
+      <ProtectedComponent requiredRoles={['create_supplier']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus className="align-middle" />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
 
       {/* Quản lý Supplier */}
       <SupplierTable
@@ -158,5 +162,4 @@ const SuppliersPage = () => {
     </>
   );
 };
-
-export default SuppliersPage;
+export default withRoleAuthorization(SuppliersPage, ['view_suppliers']);

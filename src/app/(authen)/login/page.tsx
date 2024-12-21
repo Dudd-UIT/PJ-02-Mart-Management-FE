@@ -36,7 +36,7 @@ function LoginPage() {
         // }
         toast.error(res.message);
       } else {
-        router.replace('/suppliers');
+        router.replace('/static');
       }
     } catch (error) {
       console.log('Error:', error);

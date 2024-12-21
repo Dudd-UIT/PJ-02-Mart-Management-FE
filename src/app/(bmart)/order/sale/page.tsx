@@ -17,6 +17,8 @@ import { toast } from 'react-toastify';
 import { Customer } from '@/types/customer';
 import { handleCreatedOrderAction } from '@/services/orderServices';
 import Link from 'next/link';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 
 const columns: Column<OrderDetailTransform>[] = [
   { title: '#', key: 'id' },
@@ -416,15 +418,17 @@ function SalePage() {
             icon={<FaSearch />}
           />
           <Input size={4} title="Khách hàng" value={customer?.name} readOnly />
-          <div className="col-md-3 mb-1">
-            <Link
-              href="/customers"
-              className="btn d-flex align-items-center justify-content-center btn-primary w-100"
-            >
-              <FaPlus />
-              <text>Thêm KH</text>
-            </Link>
-          </div>
+          <ProtectedComponent requiredRoles={['create_customer']}>
+            <div className="col-md-3 mb-1">
+              <Link
+                href="/customers"
+                className="btn d-flex align-items-center justify-content-center btn-primary w-100"
+              >
+                <FaPlus />
+                <text>Thêm KH</text>
+              </Link>
+            </div>
+          </ProtectedComponent>
         </div>
 
         <table className="table table-bordered ">
@@ -599,4 +603,4 @@ function SalePage() {
   );
 }
 
-export default SalePage;
+export default withRoleAuthorization(SalePage, ['create_order']);

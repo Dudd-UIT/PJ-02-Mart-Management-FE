@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Customer, CustomerTableType } from '@/types/customer';
 import UpdateCustomerModal from './customer.update';
 import DeleteCustomerModal from './customer.delete';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const CustomerTable = (props: CustomerTableType) => {
   const { customers, columns, onMutate } = props;
@@ -39,9 +40,13 @@ const CustomerTable = (props: CustomerTableType) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={['update_customer', 'delete_customer']}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -50,14 +55,23 @@ const CustomerTable = (props: CustomerTableType) => {
                 {columns.map((column, colIndex) => (
                   <td key={colIndex}>{row[column.key as keyof Customer]}</td>
                 ))}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={['update_customer', 'delete_customer']}
+                >
+                  <td>
+                    <ProtectedComponent requiredRoles={['update_customer']}>
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+
+                    <ProtectedComponent requiredRoles={['delete_customer']}>
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

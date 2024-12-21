@@ -88,7 +88,7 @@ function WarehousePage() {
       </div>
     );
 
-  // console.log(data)
+  console.log(data);
   const groupedProductData = groupProductData(data.productUnitsData.results);
   const groupedBatchData = groupBatch(data.batchData.results);
 
@@ -108,10 +108,10 @@ function WarehousePage() {
 
   const onMutate = () => mutate(['', current, pageSize]);
 
-  function convertISOString(dateString : string) {
+  function convertISOString(dateString: string) {
     const date = new Date(dateString);
     return date.toISOString();
-}
+  }
 
   return (
     <>
@@ -306,13 +306,13 @@ function groupProductData(data: Product[]) {
   const result: GroupedProductData = {};
 
   data.forEach((item) => {
-    const typeName = item.productSample.productLine.productType.name;
-    const lineName = item.productSample.productLine.name;
+    const typeName = item?.productSample?.productLine?.productType?.name;
+    const lineName = item?.productSample?.productLine?.name;
     const sampleData = {
       id: item.productSample.id,
       name: item.productSample.name,
       description: item.productSample.description,
-      sell_price: item.sell_price,
+      sellPrice: item.sellPrice,
       // unit: item.unit.name,
       image: item.image,
     };

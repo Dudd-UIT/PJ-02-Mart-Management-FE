@@ -5,6 +5,7 @@ import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
 import UpdateSupplierModal from './supplier.update';
 import DeleteSupplierModal from './supplier.delete';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const SupplierTable = (props: SupplierTableType) => {
   const { suppliers, columns, onMutate } = props;
@@ -40,9 +41,13 @@ const SupplierTable = (props: SupplierTableType) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={['update_supplier', 'delete_supplier']}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -51,14 +56,22 @@ const SupplierTable = (props: SupplierTableType) => {
                 {columns.map((column, colIndex) => (
                   <td key={colIndex}>{row[column.key as keyof Supplier]}</td>
                 ))}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={['update_supplier', 'delete_supplier']}
+                >
+                  <td>
+                    <ProtectedComponent requiredRoles={['update_supplier']}>
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+                    <ProtectedComponent requiredRoles={['delete_supplier']}>
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

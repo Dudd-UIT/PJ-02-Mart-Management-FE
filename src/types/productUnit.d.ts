@@ -63,8 +63,8 @@ interface Unit {
 
 interface Product {
   id: number;
-  sell_price: number;
-  conversion_rate: number;
+  sellPrice: number;
+  conversionRate: number;
   image: string;
   volumne: string;
   productSample: ProductSample;

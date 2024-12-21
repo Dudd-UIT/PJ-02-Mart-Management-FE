@@ -80,21 +80,6 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
 
   const { data: groups, error } = useSWR([url], () => fetchGroups());
 
-  if (error)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load groups: {error.message}</div>
-      </div>
-    );
-
-  if (!groups)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div className="spinner-grow text-success" role="status"></div>
-        <span className="sr-only text-success">Loading...</span>
-      </div>
-    );
-
   return (
     <>
       <Modal
