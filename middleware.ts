@@ -24,6 +24,7 @@ export default auth((req: any) => {
   return NextResponse.next()
 })
 
+// Cấu hình những route cần check
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 }

@@ -66,9 +66,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return session;
     },
-    authorized: async ({ auth }) => {
-      return !!auth;
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnLoginPage = nextUrl.pathname === '/login';
+      const isOnPublicPage = ['/register', '/forgot-password'].includes(nextUrl.pathname);
+
+      if (isOnLoginPage || isOnPublicPage) {
+        return true;
+      }
+
+      return isLoggedIn;
     },
+    
   },
   session: {
     strategy: 'jwt',
