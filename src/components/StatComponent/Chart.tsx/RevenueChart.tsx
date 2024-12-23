@@ -1,6 +1,6 @@
 'use client';
 
-import {Card} from '@/components/commonComponent/Card';
+import { Card } from '@/components/commonComponent/Card';
 import { RevenueChartData } from '@/types/commonType';
 import React from 'react';
 import {
@@ -13,8 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
   LabelList,
-} from "recharts";
-
+} from 'recharts';
 
 // Hàm formatCurrency để rút gọn biểu diễn tiền
 const formatCurrency = (value: number): string => {
@@ -26,8 +25,6 @@ const formatCurrency = (value: number): string => {
     return value.toLocaleString('vi-VN');
   }
 };
-
-
 
 interface RevenueChartProps {
   data: RevenueChartData[];
@@ -56,16 +53,20 @@ const calculateProfitMetrics = (data: RevenueChartData[]): ProfitMetrics => {
   };
 };
 
-const RevenueChart: React.FC<RevenueChartProps> = ( {data} ) => {
+const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
   const dataMetric = calculateProfitMetrics(data);
   return (
     <div>
-            <div className='row justify-content-md-center'>
-        <Card title="Tổng lợi nhuận" data={dataMetric.totalProfit} unit='VNĐ'/>
-        <Card title="Lợi nhuận bình quân" data={dataMetric.averageProfit} unit='VNĐ'/>
+      <div className="row justify-content-md-center">
+        <Card title="Tổng lợi nhuận" data={dataMetric.totalProfit} unit="VNĐ" />
+        <Card
+          title="Lợi nhuận bình quân"
+          data={dataMetric.averageProfit}
+          unit="VNĐ"
+        />
       </div>
-      <ResponsiveContainer width={"100%"} height={300}>
-        <LineChart data={data} margin={{ top: 20, left: 30, right: 30 }} >
+      <ResponsiveContainer width={'100%'} height={300}>
+        <LineChart data={data} margin={{ top: 20, left: 30, right: 30 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" padding={{ left: 50, right: 30 }} />
           <YAxis tickFormatter={formatCurrency} />
