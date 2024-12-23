@@ -1,8 +1,10 @@
 'use client';
 
 import { Input, SelectInput } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateCustomerModal from '@/components/customerComponent/customer.create';
 import CustomerTable from '@/components/customerComponent/customer.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchCustomers } from '@/services/customerServices';
 import { Customer } from '@/types/customer';
 import { useState } from 'react';
@@ -120,15 +122,17 @@ const CustomersPage = () => {
       </div>
 
       {/* button Thêm Customer */}
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </button>
-      </div>
+      <ProtectedComponent requiredRoles={['create_customer']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
 
       {/* Quản lý Customer */}
       <CustomerTable
@@ -178,4 +182,4 @@ const CustomersPage = () => {
   );
 };
 
-export default CustomersPage;
+export default withRoleAuthorization(CustomersPage, ['view_customers']);

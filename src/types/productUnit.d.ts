@@ -13,7 +13,7 @@ export type ProductUnitTransform = {
   productSampleId?: number;
   unitName: string;
   unitId: number;
-  image: string;
+  image: string | File;
 };
 
 export type ProductUnit = {
@@ -63,8 +63,8 @@ interface Unit {
 
 interface Product {
   id: number;
-  sell_price: number;
-  conversion_rate: number;
+  sellPrice: number;
+  conversionRate: number;
   image: string;
   volumne: string;
   productSample: ProductSample;

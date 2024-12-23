@@ -1,8 +1,10 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateProductSampleModal from '@/components/productSampleComponent/productSample.create';
 import ProductSampleUnitTable from '@/components/productSampleComponent/productSample.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchProductLines } from '@/services/productLineServices';
 import { fetchProductSamples } from '@/services/productSampleServices';
 import { fetchProductTypes } from '@/services/productTypeServices';
@@ -121,15 +123,17 @@ function ProductSamplePage() {
         />
       </div>
 
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </button>
-      </div>
+      <ProtectedComponent requiredRoles={['create_product-sample']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
 
       {transformedProductSamplesData?.results?.length > 0 ? (
         <>
@@ -192,4 +196,6 @@ function ProductSamplePage() {
   );
 }
 
-export default ProductSamplePage;
+export default withRoleAuthorization(ProductSamplePage, [
+  'view_product-samples',
+]);

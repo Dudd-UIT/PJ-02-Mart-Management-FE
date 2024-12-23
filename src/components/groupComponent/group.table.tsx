@@ -8,6 +8,7 @@ import { Group, UserGroupTableType } from '@/types/group';
 import UpdateUserGroupModal from './group.update';
 import DeleteUserGroupModal from './group.delete';
 import AssignRoleModal from './group.asignRole';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const UserGroupTable = (props: UserGroupTableType) => {
   const { groups, columns, onMutate } = props;
@@ -47,9 +48,13 @@ const UserGroupTable = (props: UserGroupTableType) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={['assign-roles', 'update_group', 'delete_group']}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -69,17 +74,33 @@ const UserGroupTable = (props: UserGroupTableType) => {
 
                   return <td key={colIndex}>{displayValue}</td>;
                 })}
-                <td>
-                  <button onClick={() => handleOpenAssignRoleModal(row)}>
-                    <HiOutlineUserGroup size={18} />
-                  </button>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={[
+                    'assign-roles',
+                    'update_group',
+                    'delete_group',
+                  ]}
+                >
+                  <td>
+                    <ProtectedComponent requiredRoles={['assign-roles']}>
+                      <button onClick={() => handleOpenAssignRoleModal(row)}>
+                        <HiOutlineUserGroup size={18} />
+                      </button>
+                    </ProtectedComponent>
+
+                    <ProtectedComponent requiredRoles={['update_group']}>
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+
+                    <ProtectedComponent requiredRoles={['delete_group']}>
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

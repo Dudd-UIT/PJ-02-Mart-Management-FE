@@ -6,6 +6,7 @@ import { OrderTableModalProps, OrderTransform } from '@/types/order';
 import UpdateOrderModal from './order.update';
 import DeleteOrderModal from './order.delete';
 import { renderStatusBadge } from '../commonComponent/Status';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const OrderTable = (props: OrderTableModalProps) => {
   const { orders, columns, onMutate } = props;
@@ -41,9 +42,13 @@ const OrderTable = (props: OrderTableModalProps) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={['update_order', 'delete_order']}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -83,14 +88,22 @@ const OrderTable = (props: OrderTableModalProps) => {
 
                   return <td key={colIndex}>{cellData}</td>;
                 })}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={['update_order', 'delete_order']}
+                >
+                  <td>
+                    <ProtectedComponent requiredRoles={['update_order']}>
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+                    <ProtectedComponent requiredRoles={['delete_order']}>
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

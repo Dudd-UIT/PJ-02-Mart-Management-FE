@@ -86,3 +86,19 @@ export const handleDeleteProductSampleAction = async (id: any) => {
   });
   return res;
 };
+
+
+export const uploadImageToS3 = async (data: any) => {
+  console.log("Uploading file to S3:::", data);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/upload`, {
+    method: 'POST',
+    body: data,
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to upload image');
+  }
+
+  const result = await response.json();
+  return result.data.url;
+};

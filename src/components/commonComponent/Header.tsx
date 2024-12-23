@@ -1,14 +1,29 @@
 'use client';
 
-import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { IoPersonOutline } from 'react-icons/io5';
 import InfoModal from './info.modal';
+import { useSessionContext } from '@/context/SessionContext';
+import { signOut } from 'next-auth/react';
 
 export default function Header(props: any) {
   const { session } = props;
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const { currentSession, setCurrentSession } = useSessionContext();
+
+  // Đặt session hiện tại
+  if (session) {
+    setCurrentSession(session);
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut({ redirect: true, callbackUrl: '/login' });
+    } catch (error) {
+      console.error('Error during sign out:', error);
+    }
+  };
 
   return (
     <>
@@ -27,7 +42,7 @@ export default function Header(props: any) {
             <Dropdown.Item onClick={() => setIsInfoModalOpen(true)}>
               Thông tin
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => signOut()}>Đăng xuất</Dropdown.Item>
+            <Dropdown.Item onClick={handleSignOut}>Đăng xuất</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>

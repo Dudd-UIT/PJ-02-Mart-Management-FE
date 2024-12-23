@@ -8,6 +8,7 @@ import {
   ProductSampleUnitTableType,
 } from '@/types/productSample';
 import { ProductLine } from '@/types/productLine';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const ProductSampleUnitTable = (props: ProductSampleUnitTableType) => {
   const { productUnits, columns, onMutate } = props;
@@ -43,9 +44,16 @@ const ProductSampleUnitTable = (props: ProductSampleUnitTableType) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={[
+                  'update_product-sample',
+                  'delete_product-sample',
+                ]}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -62,14 +70,29 @@ const ProductSampleUnitTable = (props: ProductSampleUnitTableType) => {
 
                   return <td key={colIndex}>{formattedData}</td>;
                 })}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={[
+                    'update_product-sample',
+                    'delete_product-sample',
+                  ]}
+                >
+                  <td>
+                    <ProtectedComponent
+                      requiredRoles={['update_product-sample']}
+                    >
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+                    <ProtectedComponent
+                      requiredRoles={['delete_product-sample']}
+                    >
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>
