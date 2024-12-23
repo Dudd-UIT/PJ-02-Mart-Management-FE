@@ -38,8 +38,3 @@ export async function authenticate(formData: FormDataLogin) {
     }
   }
 }
-
-export async function fetchSession() {
-  const session = await auth();
-  return session?.user;
-}

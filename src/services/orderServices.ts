@@ -32,7 +32,6 @@ export const fetchOrders = async (
         Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
-    console.log('res', res);
 
     if (res?.data) {
       return res.data;

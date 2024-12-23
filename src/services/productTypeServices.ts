@@ -2,7 +2,6 @@
 
 import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
-import { revalidateTag } from 'next/cache';
 
 export const fetchProductTypes = async (
   current?: number,
