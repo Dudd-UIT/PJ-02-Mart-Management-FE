@@ -89,14 +89,17 @@ export const fetchInbounds = async (searchDate?: string) => {
 
 export const fetchRevenueDetail = async (
   level: string,
-  searchDate?: string,
+  startDate?: string,
+  endDate?: string,
 ) => {
   const session = await auth();
 
   const queryParams: { [key: string]: any } = {
     level,
-    date: searchDate,
   };
+
+  if (startDate) queryParams.startDate = startDate;
+  if (endDate) queryParams.endDate = endDate;
 
   try {
     const res = await sendRequest<IBackendRes<any>>({
@@ -125,7 +128,6 @@ export const fetchRevenueDetail = async (
 
 export const fetchOrderStatistic = async (
   level: string,
-  date: string,
   startDate?: string,
   endDate?: string,
 ) => {
@@ -133,7 +135,6 @@ export const fetchOrderStatistic = async (
 
   const queryParams: { [key: string]: any } = {
     level,
-    date,
   };
 
   if (startDate) queryParams.startDate = startDate;
@@ -162,7 +163,6 @@ export const fetchOrderStatistic = async (
 
 export const fetchOrderValueDistribution = async (
   level: string,
-  date: string,
   startDate?: string,
   endDate?: string,
 ) => {
@@ -170,7 +170,6 @@ export const fetchOrderValueDistribution = async (
 
   const queryParams: { [key: string]: any } = {
     level,
-    date,
   };
 
   if (startDate) queryParams.startDate = startDate;

@@ -13,7 +13,6 @@ import useSWR from 'swr';
 
 function OrderStat() {
   const [level, setLevel] = useState(1);
-  const [date, setDate] = useState(new Date().toISOString());
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -21,15 +20,16 @@ function OrderStat() {
   const urlDistribution = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/statistics/order-value-distribution`;
 
   const { data: orderStats, error: orderStatsError } = useSWR(
-    [url, level, date, startDate, endDate],
-    () => fetchOrderStatistic(level.toString(), date, startDate, endDate),
+    [url, level, startDate, endDate],
+    () => fetchOrderStatistic(level.toString(), startDate, endDate),
   );
 
   const { data: orderDistributions, error: orderDistributionsError } = useSWR(
-    [urlDistribution, level, date, startDate, endDate],
-    () =>
-      fetchOrderValueDistribution(level.toString(), date, startDate, endDate),
+    [urlDistribution, level, startDate, endDate],
+    () => fetchOrderValueDistribution(level.toString(), startDate, endDate),
   );
+
+  console.log('orderDistributions', orderDistributions);
 
   if (orderStatsError)
     return (

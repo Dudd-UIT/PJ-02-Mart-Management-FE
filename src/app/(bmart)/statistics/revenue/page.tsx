@@ -2,7 +2,7 @@
 
 import { Input } from '@/components/commonComponent/InputForm';
 import { useState } from 'react';
-import { FaFilter } from 'react-icons/fa';
+import { FaArrowRight, FaFilter } from 'react-icons/fa';
 import useSWR from 'swr';
 import RevenueChart from '@/components/StatComponent/Chart.tsx/RevenueChart';
 import RevenueTable from '@/components/StatComponent/RevenueTable';
@@ -10,15 +10,14 @@ import { fetchRevenueDetail } from '@/services/statisticServices';
 
 function RevenuePage() {
   const [level, setLevel] = useState<string>('1');
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0],
-  );
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/statistics/revenue-detail`;
 
   const { data, error } = useSWR<RevenueDataItem[], Error>(
-    [url, level, selectedDate],
-    () => fetchRevenueDetail(level, selectedDate),
+    [url, level, startDate, endDate],
+    () => fetchRevenueDetail(level, startDate, endDate),
   );
 
   if (error)
@@ -59,12 +58,23 @@ function RevenuePage() {
 
         <div className="col col-md-8 d-flex align-items-center">
           <Input
-            title="Chọn ngày"
+            title="Từ ngày"
             size={4}
             type="date"
-            placeholder="Chọn ngày"
-            value={selectedDate}
-            onChange={(value: string) => setSelectedDate(value)}
+            value={startDate}
+            placeholder="Chọn"
+            onChange={(value: string) => setStartDate(value)}
+          />
+          <div style={{ padding: '1rem 1rem 0 0.5rem' }}>
+            <FaArrowRight />
+          </div>
+          <Input
+            title="Đến ngày"
+            size={4}
+            type="date"
+            placeholder="Chọn"
+            value={endDate}
+            onChange={(value: string) => setEndDate(value)}
           />
         </div>
       </div>
