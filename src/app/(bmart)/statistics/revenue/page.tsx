@@ -2,35 +2,11 @@
 
 import { Input } from '@/components/commonComponent/InputForm';
 import { useState } from 'react';
-import { FaArrowRight, FaFilter } from 'react-icons/fa';
+import { FaFilter } from 'react-icons/fa';
 import useSWR from 'swr';
 import RevenueChart from '@/components/StatComponent/Chart.tsx/RevenueChart';
 import RevenueTable from '@/components/StatComponent/RevenueTable';
-
-// Định nghĩa kiểu cho dữ liệu được trả về từ API
-type RevenueDataItem = {
-  time: string;
-  income: number;
-  expense: number;
-};
-
-// Định nghĩa fetcher với kiểu chính xác
-const fetcher = async (
-  url: string,
-  level: string,
-  date: string,
-): Promise<RevenueDataItem[]> => {
-  const response = await fetch(`${url}?level=${level}&date=${date}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch revenue data');
-  }
-  const data = await response.json();
-  return data?.data.map((item: any) => ({
-    time: item.time,
-    income: item.income || 0, // Giá trị mặc định là 0 nếu không có dữ liệu
-    expense: item.expense || 0,
-  }));
-};
+import { fetchRevenueDetail } from '@/services/statisticServices';
 
 function RevenuePage() {
   const [level, setLevel] = useState<string>('1');
@@ -40,20 +16,25 @@ function RevenuePage() {
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/statistics/revenue-detail`;
 
-  // Sử dụng fetcher và truyền key dưới dạng chuỗi
   const { data, error } = useSWR<RevenueDataItem[], Error>(
-    [url, level, selectedDate].join('|'),
-    () => fetcher(url, level, selectedDate), // Truyền tham số rõ ràng vào fetcher
+    [url, level, selectedDate],
+    () => fetchRevenueDetail(level, selectedDate),
   );
 
-  if (error) {
-    console.error('Error fetching data:', error);
-    return <div>Error loading data</div>;
-  }
+  if (error)
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div>{error.message}</div>
+      </div>
+    );
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+  if (!data)
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="spinner-grow text-success" role="status"></div>
+        <span className="sr-only text-success">Loading...</span>
+      </div>
+    );
 
   return (
     <div>

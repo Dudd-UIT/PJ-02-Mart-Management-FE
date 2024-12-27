@@ -46,7 +46,6 @@ function ProductSamplePage() {
     [urlProductSample, current, pageSize, '', searchProductLineId],
     () => fetchProductSamples(current, pageSize, '', searchProductLineId),
   );
-  console.log('Original productSampleData:', productSamplesData);
 
   const transformedProductSamplesData = {
     ...productSamplesData,
@@ -65,7 +64,6 @@ function ProductSamplePage() {
     }),
   };
 
-  console.log('Transformed productSampleData:', transformedProductSamplesData);
   const onMutate = () => {
     mutate([urlProductSample, current, pageSize, '', searchProductLineId]);
   };

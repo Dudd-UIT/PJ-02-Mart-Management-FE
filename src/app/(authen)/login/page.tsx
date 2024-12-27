@@ -27,7 +27,6 @@ function LoginPage() {
   };
 
   const handleLogin = async () => {
-    console.log(formLogin);
     try {
       const res = await authenticate(formLogin);
       if (res?.message) {

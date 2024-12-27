@@ -14,7 +14,6 @@ function StatisticsPage() {
   const { data: revenue } = useSWR([urlRevenue], () =>
     fetchRevenue(date.toDateString()),
   );
-  console.log('revenue', revenue);
   const urlOrders = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/statistics/orders`;
   const { data: orders } = useSWR([urlOrders], () =>
     fetchOrders(date.toDateString()),

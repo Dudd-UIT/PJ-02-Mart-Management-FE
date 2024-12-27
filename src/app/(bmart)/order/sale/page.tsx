@@ -92,7 +92,7 @@ function SalePage() {
   if (productUnitsError)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load products: {productUnitsError.message}</div>
+        <div>{productUnitsError.message}</div>
       </div>
     );
 

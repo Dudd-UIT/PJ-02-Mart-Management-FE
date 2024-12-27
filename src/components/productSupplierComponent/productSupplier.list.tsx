@@ -34,7 +34,10 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
   const [searchName, setSearchName] = useState('');
   const [searchCategory, setSearchCategory] = useState('');
-  const [searchParams, setSearchParams] = useState({ name: '', productLineId: '' });
+  const [searchParams, setSearchParams] = useState({
+    name: '',
+    productLineId: '',
+  });
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
@@ -53,7 +56,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load suppliers: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
