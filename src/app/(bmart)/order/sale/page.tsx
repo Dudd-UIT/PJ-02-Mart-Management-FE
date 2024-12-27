@@ -17,6 +17,8 @@ import { toast } from 'react-toastify';
 import { Customer } from '@/types/customer';
 import { handleCreatedOrderAction } from '@/services/orderServices';
 import Link from 'next/link';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 
 const columns: Column<OrderDetailTransform>[] = [
   { title: '#', key: 'id' },
@@ -278,7 +280,7 @@ function SalePage() {
       const newTotal = totalPrice - discount; // Tổng tiền còn lại
       const newScore = 0; // Điểm sau khi sử dụng = 0
       handleOrderInfoChange('totalPrice', newTotal);
-      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString()} VND`);
+      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString('vi-VN')} VND`);
 
       // Gọi API cập nhật điểm (nếu cần)
       handleUpdateCustomerAction({ id: customer.id, score: newScore });
@@ -352,17 +354,17 @@ function SalePage() {
               style={{ cursor: 'pointer' }}
             >
               <div className="card">
-                <Image
+                {/* <Image
                   src={productUnit.image}
                   alt={productUnit.productSampleName || 'Product'}
                   width={100}
                   height={100}
                   className="card-img-top p-2"
-                />
+                /> */}
                 <div className="d-flex flex-column justify-content-center align-items-center">
                   <text className="p-0">{productUnit.productSampleName}</text>
                   <text className="text-danger p-1">
-                    {productUnit.sellPrice?.toLocaleString()} đ
+                    {productUnit.sellPrice?.toLocaleString('vi-VN')} đ
                   </text>
                 </div>
               </div>
@@ -416,15 +418,17 @@ function SalePage() {
             icon={<FaSearch />}
           />
           <Input size={4} title="Khách hàng" value={customer?.name} readOnly />
-          <div className="col-md-3 mb-1">
-            <Link
-              href="/customers"
-              className="btn d-flex align-items-center justify-content-center btn-primary w-100"
-            >
-              <FaPlus />
-              <text>Thêm KH</text>
-            </Link>
-          </div>
+          <ProtectedComponent requiredRoles={['create_customer']}>
+            <div className="col-md-3 mb-1">
+              <Link
+                href="/customers"
+                className="btn d-flex align-items-center justify-content-center btn-primary w-100"
+              >
+                <FaPlus />
+                <text>Thêm KH</text>
+              </Link>
+            </div>
+          </ProtectedComponent>
         </div>
 
         <table className="table table-bordered ">
@@ -539,7 +543,8 @@ function SalePage() {
           <Input
             size={3}
             title="Tích điểm"
-            value={formDataOrder.totalPrice / parameterData?.results[1].value}
+            value='1'
+            // value={formDataOrder.totalPrice / parameterData?.results[1].value}
             readOnly
           />
           <Input
@@ -599,4 +604,4 @@ function SalePage() {
   );
 }
 
-export default SalePage;
+export default withRoleAuthorization(SalePage, ['create_order']);

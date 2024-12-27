@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SessionProvider } from 'next-auth/react';
 import ImportBsJS from '@/components/nullComponent/importBsJS';
+import { SessionProvider as CustomSessionProvider } from '@/context/SessionContext';
 
 const josefin = Josefin_Sans({
   subsets: ['vietnamese'],
@@ -29,7 +30,8 @@ export default function RootLayout({
       <body className={josefin.className}>
         <SessionProvider>
           <SelectedProductUnitsProvider>
-            {children}
+            <CustomSessionProvider>{children}</CustomSessionProvider>
+            {/* {children} */}
           </SelectedProductUnitsProvider>
         </SessionProvider>
         <ToastContainer position="top-right" autoClose={3000} />

@@ -1,8 +1,10 @@
 'use client';
 
 import { Input, SelectInput } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateStaffModal from '@/components/staffComponent/staff.create';
 import StaffTable from '@/components/staffComponent/staff.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchStaffs } from '@/services/staffServices';
 import { Staff } from '@/types/staff';
 import { useState } from 'react';
@@ -120,15 +122,17 @@ const StaffsPage = () => {
       </div>
 
       {/* button Thêm Nhân viên */}
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </button>
-      </div>
+      <ProtectedComponent requiredRoles={['create_staff']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
 
       {/* Quản lý Nhân viên */}
       <StaffTable staffs={data.results} columns={columns} onMutate={onMutate} />
@@ -174,4 +178,4 @@ const StaffsPage = () => {
   );
 };
 
-export default StaffsPage;
+export default withRoleAuthorization(StaffsPage, ['view_staffs']);

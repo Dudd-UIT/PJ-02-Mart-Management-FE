@@ -75,9 +75,11 @@ export function Input({
             required={required}
             value={value}
           >
-            <option value={0} disabled>
-              {placeholder}
-            </option>
+            {placeholder && (
+              <option value={0} disabled>
+                {placeholder}
+              </option>
+            )}
             {options.map((optionValue, index) => (
               <option
                 key={index}

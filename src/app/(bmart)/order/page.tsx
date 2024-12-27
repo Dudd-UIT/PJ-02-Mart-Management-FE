@@ -1,7 +1,9 @@
 'use client';
 
 import { Input, SelectInput } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import OrderTable from '@/components/orderComponent/order.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchOrders } from '@/services/orderServices';
 import { Order, OrderTransform } from '@/types/order';
 import Link from 'next/link';
@@ -57,6 +59,8 @@ const OrdersPage = () => {
         searchParams.endDate,
       ),
   );
+
+  console.log('data', data);
 
   if (error)
     return (
@@ -165,16 +169,18 @@ const OrdersPage = () => {
         />
       </div>
 
-      {/* button Thêm Supplier */}
-      <div className="d-flex justify-content-end mx-3">
-        <Link
-          href="/order/sale"
-          className="btn d-flex align-items-center btn-primary"
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </Link>
-      </div>
+      {/* button Thêm hóa đơn */}
+      <ProtectedComponent requiredRoles={['create_order']}>
+        <div className="d-flex justify-content-end mx-3">
+          <Link
+            href="/order/sale"
+            className="btn d-flex align-items-center btn-primary"
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </Link>
+        </div>
+      </ProtectedComponent>
 
       {/* Quản lý Supplier */}
       <OrderTable orders={orders} columns={columns} onMutate={onMutate} />
@@ -213,4 +219,4 @@ const OrdersPage = () => {
   );
 };
 
-export default OrdersPage;
+export default withRoleAuthorization(OrdersPage, ['view_orders']);

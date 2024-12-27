@@ -27,6 +27,7 @@ function LoginPage() {
   };
 
   const handleLogin = async () => {
+    console.log(formLogin);
     try {
       const res = await authenticate(formLogin);
       if (res?.message) {
@@ -35,7 +36,7 @@ function LoginPage() {
         // }
         toast.error(res.message);
       } else {
-        router.replace('/suppliers');
+        router.replace('/statistics');
       }
     } catch (error) {
       console.log('Error:', error);

@@ -9,6 +9,7 @@ import {
 } from '@/types/productLine';
 import DeleteProductLineModal from './productLine.delete';
 import UpdateProductLineModal from './productLine.update';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const ProductLineTable = (props: ProductLineTableType) => {
   const { productLines, columns, onMutate } = props;
@@ -43,9 +44,13 @@ const ProductLineTable = (props: ProductLineTableType) => {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
-                Thao tác
-              </th>
+              <ProtectedComponent
+                requiredRoles={['update_product-line', 'delete_product-line']}
+              >
+                <th scope="col" className="text-center align-middle">
+                  Thao tác
+                </th>
+              </ProtectedComponent>
             </tr>
           </thead>
           <tbody>
@@ -58,14 +63,22 @@ const ProductLineTable = (props: ProductLineTableType) => {
                       : row[column.key as keyof ProductLineTransform]}
                   </td>
                 ))}
-                <td>
-                  <button onClick={() => handleOpenUpdateModal(row)}>
-                    <FaEye size={18} />
-                  </button>
-                  <button onClick={() => handleOpenDeleteModal(row)}>
-                    <HiOutlineTrash size={18} />
-                  </button>
-                </td>
+                <ProtectedComponent
+                  requiredRoles={['update_product-line', 'delete_product-line']}
+                >
+                  <td>
+                    <ProtectedComponent requiredRoles={['update_product-line']}>
+                      <button onClick={() => handleOpenUpdateModal(row)}>
+                        <FaEye size={18} />
+                      </button>
+                    </ProtectedComponent>
+                    <ProtectedComponent requiredRoles={['delete_product-line']}>
+                      <button onClick={() => handleOpenDeleteModal(row)}>
+                        <HiOutlineTrash size={18} />
+                      </button>
+                    </ProtectedComponent>
+                  </td>
+                </ProtectedComponent>
               </tr>
             ))}
           </tbody>

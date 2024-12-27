@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-
 import { IoStatsChart, IoPeople } from 'react-icons/io5';
 import {
   FaShoppingCart,
@@ -16,17 +15,26 @@ import {
 import { LuImport } from 'react-icons/lu';
 import { TbShieldStar } from 'react-icons/tb';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import ProtectedComponent from './ProtectedComponent';
 
 export default function Sidebar() {
   const [isPinned, setIsPinned] = useState(false);
   const [isSaleOpen, setIsSaleOpen] = useState(false);
+  const [isStatOpen, setIsStatOpen] = useState(false);
   const [isRuleOpen, setIsRuleOpen] = useState(false);
   const pathname = usePathname();
   const togglePin = () => {
     setIsPinned(!isPinned);
+    setIsSaleOpen(false);
+    setIsStatOpen(false);
+    setIsRuleOpen(false);
   };
   const toggleSale = () => {
     setIsSaleOpen(!isSaleOpen);
+  };
+  const toggleStat = () => {
+    setIsStatOpen(!isStatOpen);
   };
   const toggleRule = () => {
     setIsRuleOpen(!isRuleOpen);
@@ -37,7 +45,8 @@ export default function Sidebar() {
       className={`sidebar col-md-2 col-sm-4 ${isPinned ? 'pinned' : ''}`}
       id="side_nav"
       style={{
-        height: '100vh',
+        height: 'auto',
+        minHeight: '100vh',
         width: isPinned ? '230px' : '60px',
         transition: 'width 0.3s',
       }}
@@ -63,24 +72,16 @@ export default function Sidebar() {
           setIsPinned(true);
         }}
       >
-        <li className={pathname == '/static' ? 'active' : ''}>
-          <Link href="/static" className="btn btn-sc">
+        <li>
+          <div
+            className={`btn btn-sc ${
+              pathname.startsWith('/statistics') ? 'active' : ''
+            }`}
+            onClick={toggleStat}
+          >
             <div style={{ padding: '0.2rem 0' }}>
               <IoStatsChart />
             </div>
-            {isPinned && <text>Thống kê</text>}
-          </Link>
-        </li>
-        <li>
-          <div
-            className={`btn btn-sc ${
-              pathname.startsWith('/sale') ? 'active' : ''
-            }`}
-            onClick={toggleSale}
-          >
-            <div style={{ padding: '0.2rem 0' }}>
-              <FaShoppingCart />
-            </div>
             {isPinned && (
               <div
                 style={{
@@ -90,119 +91,222 @@ export default function Sidebar() {
                   alignItems: 'center',
                 }}
               >
-                <text>Bán Hàng</text>{' '}
-                {isSaleOpen ? <FaAngleUp /> : <FaAngleDown />}
+                <text>Thống kê</text>{' '}
+                {isStatOpen ? <FaAngleUp /> : <FaAngleDown />}
               </div>
             )}
           </div>
-          {isSaleOpen && (
+          {isStatOpen && (
             <ul className="list-unstyled ps-5 gap-4">
-              <li className={pathname == '/order/sale' ? 'active' : ''}>
-                <Link href="/order/sale" className="btn btn-sc">
-                  {isPinned && <text className="small">Bán hàng</text>}
+              <li className={pathname == '/statistics' ? 'active' : ''}>
+                <Link href="/statistics" className="btn btn-sc">
+                  {isPinned && <text className="small">Tổng quan hệ thống</text>}
                 </Link>
               </li>
-              <li className={pathname == '/order' ? 'active' : ''}>
-                <Link href="/order" className="btn btn-sc">
-                  {isPinned && <text className="small">Quản lý hóa đơn</text>}
+              <li className={pathname == '/statistics/revenue' ? 'active' : ''}>
+                <Link href="/statistics/revenue" className="btn btn-sc">
+                  {isPinned && <text className="small">Doanh thu</text>}
+                </Link>
+              </li>
+              <li className={pathname == '/statistics/best-sale' ? 'active' : ''}>
+                <Link href="/statistics/best-sale" className="btn btn-sc">
+                  {isPinned && <text className="small">Sản phẩm thịnh hành</text>}
+                </Link>
+              </li>
+              <li className={pathname == '/statistics/order-statistics' ? 'active' : ''}>
+                <Link href="/statistics/order-statistics" className="btn btn-sc">
+                  {isPinned && <text className="small">Thống kê đơn hàng</text>}
                 </Link>
               </li>
             </ul>
           )}
         </li>
-        <li className={pathname == '/inbound' ? 'active' : ''}>
-          <Link href="/inbound" className="btn btn-sc">
-            <div style={{ padding: '0.2rem 0' }}>
-              <LuImport />
-            </div>
-            {isPinned && <text>Đơn nhập hàng</text>}
-          </Link>
-        </li>
-        <li className={pathname == '/suppliers' ? 'active' : ''}>
-          <Link href="/suppliers" className="btn btn-sc">
-            <div style={{ padding: '0.2rem 0' }}>
-              <FaRegHandshake />
-            </div>
-            {isPinned && <text>Nhà cung cấp</text>}
-          </Link>
-        </li>
-        <li className={pathname == '/warehouse' ? 'active' : ''}>
-          <Link href="/warehouse" className="btn btn-sc">
-            <div style={{ padding: '0.2rem 0' }}>
-              <FaWarehouse />
-            </div>
-            {isPinned && <text>Kho hàng</text>}
-          </Link>
-        </li>
-        <li className={pathname == '/customers' ? 'active' : ''}>
-          <Link href="/customers" className="btn btn-sc">
-            <div style={{ padding: '0.2rem 0' }}>
-              <IoPeople />
-            </div>
-            {isPinned && <text>Khách hàng</text>}
-          </Link>
-        </li>
-        <li>
-          <div
-            className={`btn btn-sc ${
-              pathname.startsWith('/rule') ? 'active' : ''
-            }`}
-            onClick={toggleRule}
-          >
-            <div style={{ padding: '0.2rem 0' }}>
-              <TbShieldStar />
-            </div>
-            {isPinned && (
-              <div
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <text>Quy định</text>{' '}
-                {isRuleOpen ? <FaAngleUp /> : <FaAngleDown />}
+        <ProtectedComponent requiredRoles={['create_order', 'view_orders']}>
+          <li>
+            <div
+              className={`btn btn-sc ${
+                pathname.startsWith('/sale') ? 'active' : ''
+              }`}
+              onClick={toggleSale}
+            >
+              <div style={{ padding: '0.2rem 0' }}>
+                <FaShoppingCart />
               </div>
+              {isPinned && (
+                <div
+                  style={{
+                    display: 'flex',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <text>Bán Hàng</text>{' '}
+                  {isSaleOpen ? <FaAngleUp /> : <FaAngleDown />}
+                </div>
+              )}
+            </div>
+            {isSaleOpen && (
+              <ul className="list-unstyled ps-5 gap-4">
+                <ProtectedComponent requiredRoles={['create_order']}>
+                  <li className={pathname == '/order/sale' ? 'active' : ''}>
+                    <Link href="/order/sale" className="btn btn-sc">
+                      {isPinned && <text className="small">Bán hàng</text>}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+
+                <ProtectedComponent requiredRoles={['view_orders']}>
+                  <li className={pathname == '/order' ? 'active' : ''}>
+                    <Link href="/order" className="btn btn-sc">
+                      {isPinned && (
+                        <text className="small">Quản lý hóa đơn</text>
+                      )}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+              </ul>
             )}
-          </div>
-          {isRuleOpen && (
-            <ul className="list-unstyled ps-5 gap-4">
-              <li className={pathname == '/rule/product-type' ? 'active' : ''}>
-                <Link href="/rule/product-type" className="btn btn-sc">
-                  {isPinned && <text className="small">Loại sản phẩm</text>}
-                </Link>
-              </li>
-              <li className={pathname == '/rule/product-line' ? 'active' : ''}>
-                <Link href="/rule/product-line" className="btn btn-sc">
-                  {isPinned && <text className="small">Dòng sản phẩm</text>}
-                </Link>
-              </li>
-              <li
-                className={pathname == '/rule/product-sample' ? 'active' : ''}
-              >
-                <Link href="/rule/product-sample" className="btn btn-sc">
-                  {isPinned && <text className="small">Mẫu sản phẩm</text>}
-                </Link>
-              </li>
-              <li className={pathname == '/rule/point-convert' ? 'active' : ''}>
-                <Link href="/rule/point-convert" className="btn btn-sc">
-                  {isPinned && <text className="small">Quy đổi điểm</text>}
-                </Link>
-              </li>
-              <li className={pathname == '/rule/user-group' ? 'active' : ''}>
-                <Link href="/rule/user-group" className="btn btn-sc">
-                  {isPinned && <text className="small">Nhóm người dùng</text>}
-                </Link>
-              </li>
-              <li className={pathname == '/rule/staff' ? 'active' : ''}>
-                <Link href="/rule/staff" className="btn btn-sc">
-                  {isPinned && <text className="small">Nhân viên</text>}
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
+          </li>
+        </ProtectedComponent>
+        <ProtectedComponent requiredRoles={['view_inbound-receipts']}>
+          <li className={pathname == '/inbound' ? 'active' : ''}>
+            <Link href="/inbound" className="btn btn-sc">
+              <div style={{ padding: '0.2rem 0' }}>
+                <LuImport />
+              </div>
+              {isPinned && <text>Đơn nhập hàng</text>}
+            </Link>
+          </li>
+        </ProtectedComponent>
+        <ProtectedComponent requiredRoles={['view_suppliers']}>
+          <li className={pathname == '/suppliers' ? 'active' : ''}>
+            <Link href="/suppliers" className="btn btn-sc">
+              <div style={{ padding: '0.2rem 0' }}>
+                <FaRegHandshake />
+              </div>
+              {isPinned && <text>Nhà cung cấp</text>}
+            </Link>
+          </li>
+        </ProtectedComponent>
+        <ProtectedComponent requiredRoles={['view_batchs']}>
+          <li className={pathname == '/warehouse' ? 'active' : ''}>
+            <Link href="/warehouse" className="btn btn-sc">
+              <div style={{ padding: '0.2rem 0' }}>
+                <FaWarehouse />
+              </div>
+              {isPinned && <text>Kho hàng</text>}
+            </Link>
+          </li>
+        </ProtectedComponent>
+        <ProtectedComponent requiredRoles={['view_customers']}>
+          <li className={pathname == '/customers' ? 'active' : ''}>
+            <Link href="/customers" className="btn btn-sc">
+              <div style={{ padding: '0.2rem 0' }}>
+                <IoPeople />
+              </div>
+              {isPinned && <text>Khách hàng</text>}
+            </Link>
+          </li>
+        </ProtectedComponent>
+        <ProtectedComponent
+          requiredRoles={[
+            'view_product-types',
+            'view_product-lines',
+            'view_product-samples',
+            'view_parameters',
+            'view_groups',
+            'view_staffs',
+          ]}
+        >
+          <li>
+            <div
+              className={`btn btn-sc ${
+                pathname.startsWith('/rule') ? 'active' : ''
+              }`}
+              onClick={toggleRule}
+            >
+              <div style={{ padding: '0.2rem 0' }}>
+                <TbShieldStar />
+              </div>
+              {isPinned && (
+                <div
+                  style={{
+                    display: 'flex',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <text>Quy định</text>{' '}
+                  {isRuleOpen ? <FaAngleUp /> : <FaAngleDown />}
+                </div>
+              )}
+            </div>
+            {isRuleOpen && (
+              <ul className="list-unstyled ps-5 gap-4">
+                <ProtectedComponent requiredRoles={['view_product-types']}>
+                  <li
+                    className={pathname == '/rule/product-type' ? 'active' : ''}
+                  >
+                    <Link href="/rule/product-type" className="btn btn-sc">
+                      {isPinned && <text className="small">Loại sản phẩm</text>}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+                <ProtectedComponent requiredRoles={['view_product-lines']}>
+                  <li
+                    className={pathname == '/rule/product-line' ? 'active' : ''}
+                  >
+                    <Link href="/rule/product-line" className="btn btn-sc">
+                      {isPinned && <text className="small">Dòng sản phẩm</text>}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+                <ProtectedComponent requiredRoles={['view_product-samples']}>
+                  <li
+                    className={
+                      pathname == '/rule/product-sample' ? 'active' : ''
+                    }
+                  >
+                    <Link href="/rule/product-sample" className="btn btn-sc">
+                      {isPinned && <text className="small">Mẫu sản phẩm</text>}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+                <ProtectedComponent requiredRoles={['view_parameters']}>
+                  <li
+                    className={
+                      pathname == '/rule/point-convert' ? 'active' : ''
+                    }
+                  >
+                    <Link href="/rule/point-convert" className="btn btn-sc">
+                      {isPinned && <text className="small">Quy đổi điểm</text>}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+                <ProtectedComponent requiredRoles={['view_groups']}>
+                  <li
+                    className={pathname == '/rule/user-group' ? 'active' : ''}
+                  >
+                    <Link href="/rule/user-group" className="btn btn-sc">
+                      {isPinned && (
+                        <text className="small">Nhóm người dùng</text>
+                      )}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+                <ProtectedComponent requiredRoles={['view_staffs']}>
+                  <li className={pathname == '/rule/staff' ? 'active' : ''}>
+                    <Link href="/rule/staff" className="btn btn-sc">
+                      {isPinned && <text className="small">Nhân viên</text>}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+              </ul>
+            )}
+          </li>
+        </ProtectedComponent>
       </ul>
 
       <hr className="h-color mx-2" />

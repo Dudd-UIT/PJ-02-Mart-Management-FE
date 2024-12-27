@@ -23,7 +23,7 @@ export type OrderDetailTransform = {
   id: number;
   quantity: number;
   currentPrice: number;
-  productSampleName: string;
+  productSampleName: string | undefined;
   unitName: string;
 };
 

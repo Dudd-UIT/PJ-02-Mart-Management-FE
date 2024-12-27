@@ -19,13 +19,37 @@ export type InboundReceiptCreate = {
 export type Batch = {
   id: number;
   inboundPrice: number;
+  sellPrice?: number;
   discount: number;
   inventQuantity: number;
   inboundQuantity: number;
   expiredAt: string;
   createdAt: string;
+  inboundReceipt?: {
+    id: number;
+  };
   productUnit: ProductUnit;
 };
+
+export type BatchGrouped = {
+  id: number;
+  inboundPrice: number;
+  sellPrice: number;
+  discount: number;
+  inventQuantity: number;
+  inboundQuantity: number;
+  expiredAt: string; 
+  inboundReceiptId: number; 
+  unit: string;
+  productSample: string;
+};
+
+export interface BatchTableType {
+  batches: BatchGrouped[];
+  columns: Column<BatchGrouped>[];
+  onMutate: () => void;
+}
+
 
 // export type InboundReceipt = {
 //   id: number;

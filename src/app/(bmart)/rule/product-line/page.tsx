@@ -1,8 +1,10 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
+import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import CreateProductLineModal from '@/components/productLineComponent/productLine.create';
 import ProductLineTable from '@/components/productLineComponent/productLine.table';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import { fetchProductLines } from '@/services/productLineServices';
 import { ProductLine, ProductLineTransform } from '@/types/productLine';
 import { useState } from 'react';
@@ -96,15 +98,17 @@ function ProductLinePage() {
       </div>
 
       {/* button Thêm Product Line */}
-      <div className="d-flex justify-content-end mx-3">
-        <button
-          className="btn d-flex align-items-center btn-primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FaPlus />
-          <text>Thêm</text>
-        </button>
-      </div>
+      <ProtectedComponent requiredRoles={['create_product-line']}>
+        <div className="d-flex justify-content-end mx-3">
+          <button
+            className="btn d-flex align-items-center btn-primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <FaPlus />
+            <text>Thêm</text>
+          </button>
+        </div>
+      </ProtectedComponent>
 
       {/* Quản lý Product Line */}
       <ProductLineTable
@@ -153,4 +157,4 @@ function ProductLinePage() {
   );
 }
 
-export default ProductLinePage;
+export default withRoleAuthorization(ProductLinePage, ['view_product-lines']);

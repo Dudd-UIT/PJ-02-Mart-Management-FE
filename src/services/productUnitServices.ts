@@ -7,6 +7,9 @@ export const fetchProductUnits = async (
   current: number,
   pageSize: number,
   searchName?: string,
+  searchCategory?: string,
+  searchLine?: string,
+  searchType?: string,
   searchProuductLineId?: number,
 ) => {
   const session = await auth();
@@ -17,6 +20,9 @@ export const fetchProductUnits = async (
   };
 
   if (searchName) queryParams.name = searchName;
+  if (searchLine) queryParams.productLineName = searchLine;
+  if (searchType) queryParams.productTypeName = searchType;
+  if (searchCategory) queryParams.productLine = searchCategory;
   if (searchProuductLineId) queryParams.productLineId = searchProuductLineId;
 
   try {

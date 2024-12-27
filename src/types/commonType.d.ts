@@ -36,6 +36,7 @@ declare global {
       phone: string;
       address: string;
       groupName: string;
+      roles: string[];
     };
     access_token: string;
   }
@@ -83,3 +84,27 @@ declare global {
     onMutate: () => void;
   }
 }
+
+interface GroupedProductData {
+  [typeName: string]: {
+      [lineName: string]: Product[];
+  };
+}
+
+export type StatisticsCardProps = {
+  title: string;
+  data?: string|number;
+  unit?: string;
+  onClick?: () => void;
+}
+
+type RevenueChartData = {
+  time: string;
+  income: number;
+  expense: number;
+};
+type OrderChartData = {
+  time: string;
+  range: string;
+  orders: number;
+};

@@ -14,3 +14,18 @@ export const parseDateDMYtoYMD = (dateString: string) => {
   const [day, month, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
+
+export const formatCurrency = (value: number): string => {
+  const absValue = Math.abs(value); // Lấy giá trị tuyệt đối của số
+  let formattedValue: string;
+
+  if (absValue >= 1_000_000_000) {
+    formattedValue = `${(absValue / 1_000_000_000).toFixed(1)}B`;
+  } else if (absValue >= 1_000_000) {
+    formattedValue = `${(absValue / 1_000_000).toFixed(1)}M`;
+  } else {
+    formattedValue = absValue.toLocaleString('vi-VN');
+  }
+
+  return value < 0 ? `-${formattedValue}` : formattedValue;
+};
