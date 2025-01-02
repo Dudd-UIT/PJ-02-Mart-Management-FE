@@ -9,6 +9,7 @@ import { fetchProductUnitByIds } from '@/services/productUnitServices';
 import { Input } from '../commonComponent/InputForm';
 import { BatchGrouped } from '@/types/batch';
 import { handleUpdateWarehouseAction } from '@/services/batchServices';
+import Image from 'next/image';
 
 type FormData = {
   id: number;
@@ -55,7 +56,6 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
 
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  // console.log(warehouseData);
 
   useEffect(() => {
     if (warehouseData) {
@@ -104,7 +104,7 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load Warehouses: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
@@ -143,11 +143,10 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
     if (current < meta.pages) setCurrent(current + 1);
   };
 
-  function convertISOString(dateString : string) {
+  function convertISOString(dateString: string) {
     const date = new Date(dateString);
     return date.toISOString();
-}
-  // console.log('formdata', formData);
+  }
 
   return (
     <>
@@ -165,17 +164,19 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
           <div className="container mb-4">
             <div className="row">
               <div className="col col-md-4 pt-2">
-                <img
+                <Image
                   className="img-fluid img-thumbnail"
                   src={imgURL ? imgURL : altImg}
-                  alt="..."
+                  alt="Warehouse"
+                  width={200}
+                  height={200}
                 />
               </div>
               <div className="col col-md-8">
                 <div className="row mb-3">
                   <Input
                     title="Mẫu sản phẩm"
-                    value={props.data?.productSample|| ''}
+                    value={props.data?.productSample || ''}
                     size={12}
                     // onChange={(value) =>
                     //   handleFormDataChange('productSample', value)
@@ -221,12 +222,7 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
                   handleFormDataChange('inboundPrice', value)
                 }
               />
-              <Input
-                title="Ngày nhập"
-                value={''}
-                size={6}
-                type="date"
-              />
+              <Input title="Ngày nhập" value={''} size={6} type="date" />
             </div>
 
             <div className="row mb-3">

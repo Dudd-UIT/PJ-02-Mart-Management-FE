@@ -65,7 +65,7 @@ const OrdersPage = () => {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load orders: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 

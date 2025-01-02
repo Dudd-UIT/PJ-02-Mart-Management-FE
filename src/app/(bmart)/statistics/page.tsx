@@ -11,18 +11,13 @@ import useSWR from 'swr';
 function StatisticsPage() {
   const date = new Date();
   const urlRevenue = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/statistics/revenue`;
-  const { data: revenue } = useSWR([urlRevenue], () =>
-    fetchRevenue(date.toDateString()),
-  );
-  console.log('revenue', revenue);
+  const { data: revenue } = useSWR([urlRevenue], () => fetchRevenue());
   const urlOrders = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/statistics/orders`;
-  const { data: orders } = useSWR([urlOrders], () =>
-    fetchOrders(date.toDateString()),
-  );
+  const { data: orders } = useSWR([urlOrders], () => fetchOrders());
 
   const urlInboundReceipts = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/statistics/inbound-cost`;
   const { data: inboundReceipt } = useSWR([urlInboundReceipts], () =>
-    fetchInbounds(date.toDateString()),
+    fetchInbounds(),
   );
   return (
     <>

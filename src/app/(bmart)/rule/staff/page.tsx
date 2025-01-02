@@ -44,7 +44,7 @@ const StaffsPage = () => {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load staff: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
