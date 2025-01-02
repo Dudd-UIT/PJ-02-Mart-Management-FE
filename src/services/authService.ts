@@ -15,7 +15,6 @@ export async function authenticate(formData: FormDataLogin) {
       redirect: false,
     });
 
-    const session = await auth();
     return res;
   } catch (error) {
     if ((error as any).name === 'InvalidEmailPasswordError') {
@@ -30,7 +29,7 @@ export async function authenticate(formData: FormDataLogin) {
       };
     } else {
       return {
-        message: 'Lỗi đăng nhập. Vui lòng thử lại sau...',
+        message: (error as any).type,
         code: 0,
       };
     }

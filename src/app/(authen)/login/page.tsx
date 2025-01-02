@@ -27,6 +27,10 @@ function LoginPage() {
   };
 
   const handleLogin = async () => {
+    console.log(
+      '${process.env.NEXT_PUBLIC_BACKEND_URL}',
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
+    );
     try {
       const res = await authenticate(formLogin);
       if (res?.message) {
