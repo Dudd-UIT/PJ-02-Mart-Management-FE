@@ -37,6 +37,42 @@ export const fetchGroups = async (
   }
 };
 
+export const fetchEmployees = async (
+  current?: number,
+  pageSize?: number,
+  searchName?: string,
+) => {
+  const session = await auth();
+  const queryParams: { [key: string]: any } = {
+    current,
+    pageSize,
+  };
+
+  if (searchName) queryParams.name = searchName;
+
+  try {
+    const res = await sendRequest<IBackendRes<any>>({
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups/employees`,
+      method: 'GET',
+      queryParams,
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
+      },
+    });
+
+    if (res?.data) {
+      return res.data;
+    } else {
+      throw new Error(res.message);
+    }
+  } catch (error) {
+    console.error('Fetch employees failed:', error);
+    throw error;
+  }
+};
+
+
+
 export const handleCreateGroupAction = async (data: any) => {
   const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
