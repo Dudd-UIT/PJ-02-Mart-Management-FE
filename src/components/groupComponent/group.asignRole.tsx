@@ -80,21 +80,6 @@ function AssignRoleModal(props: AssignRoleModalProps) {
     () => fetchRoles(current, pageSize, searchParams.description),
   );
 
-  if (error)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>{error.message}</div>
-      </div>
-    );
-
-  if (!data)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div className="spinner-grow text-success" role="status"></div>
-        <span className="sr-only text-success">Loading...</span>
-      </div>
-    );
-
   const meta: MetaData = {
     current,
     pageSize,
