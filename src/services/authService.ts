@@ -14,10 +14,7 @@ export async function authenticate(formData: FormDataLogin) {
       password: formData.password,
       redirect: false,
     });
-    console.log('res', res);
 
-    const session = await auth();
-    console.log('session1', session);
     return res;
   } catch (error) {
     if ((error as any).name === 'InvalidEmailPasswordError') {
@@ -32,14 +29,9 @@ export async function authenticate(formData: FormDataLogin) {
       };
     } else {
       return {
-        message: 'Lỗi đăng nhập. Vui lòng thử lại sau...',
+        message: (error as any).type,
         code: 0,
       };
     }
   }
-}
-
-export async function fetchSession() {
-  const session = await auth();
-  return session?.user;
 }

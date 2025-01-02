@@ -25,7 +25,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: credentials.password,
           },
         });
-        console.log('>>>> res authorize', res);
         if (res.statusCode === 201) {
           const user = res.data?.user;
           if (user) {
@@ -45,7 +44,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } else if (+res.statusCode === 400) {
           throw new InvalidActiveAccountError();
         } else {
-          console.log('error', res.statusCode);
           throw new Error('Lỗi đăng nhập. Vui lòng thử lại sau...');
         }
 

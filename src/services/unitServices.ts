@@ -1,3 +1,6 @@
+'use server';
+
+import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 
 export const fetchUnits = async (
@@ -6,6 +9,8 @@ export const fetchUnits = async (
   pageSize?: number,
   searchName?: string,
 ) => {
+  const session = await auth();
+
   const queryParams: { [key: string]: any } = {
     current,
     pageSize,
@@ -20,8 +25,8 @@ export const fetchUnits = async (
       url,
       method: 'GET',
       queryParams,
-      nextOption: {
-        next: { tags: ['list-units'] },
+      headers: {
+        Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
 

@@ -82,7 +82,7 @@ function CreateWarehouseModal(props: CreateModalProps) {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load Warehouses: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 

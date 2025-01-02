@@ -92,7 +92,7 @@ function SalePage() {
   if (productUnitsError)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load products: {productUnitsError.message}</div>
+        <div>{productUnitsError.message}</div>
       </div>
     );
 
@@ -280,7 +280,9 @@ function SalePage() {
       const newTotal = totalPrice - discount; // Tổng tiền còn lại
       const newScore = 0; // Điểm sau khi sử dụng = 0
       handleOrderInfoChange('totalPrice', newTotal);
-      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString('vi-VN')} VND`);
+      toast.success(
+        `Qúy khách đã được giảm ${discount.toLocaleString('vi-VN')} VND`,
+      );
 
       // Gọi API cập nhật điểm (nếu cần)
       handleUpdateCustomerAction({ id: customer.id, score: newScore });
@@ -354,13 +356,18 @@ function SalePage() {
               style={{ cursor: 'pointer' }}
             >
               <div className="card">
-                {/* <Image
-                  src={productUnit.image}
+                <Image
+                  src={
+                    typeof productUnit.image === 'string'
+                      ? productUnit.image
+                      : URL.createObjectURL(productUnit.image)
+                  }
                   alt={productUnit.productSampleName || 'Product'}
                   width={100}
                   height={100}
                   className="card-img-top p-2"
-                /> */}
+                />
+
                 <div className="d-flex flex-column justify-content-center align-items-center">
                   <text className="p-0">{productUnit.productSampleName}</text>
                   <text className="text-danger p-1">
@@ -543,7 +550,7 @@ function SalePage() {
           <Input
             size={3}
             title="Tích điểm"
-            value='1'
+            value="1"
             // value={formDataOrder.totalPrice / parameterData?.results[1].value}
             readOnly
           />
