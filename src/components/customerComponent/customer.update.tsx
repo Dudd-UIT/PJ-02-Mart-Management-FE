@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Customer } from '@/types/customer';
 import { handleUpdateCustomerAction } from '@/services/customerServices';
 import { Input } from '../commonComponent/InputForm';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 type FormData = {
   id: number;
@@ -105,9 +106,11 @@ function UpdateCustomerModal(props: UpdateModalProps<Customer>) {
           <Button variant="secondary" onClick={handleCloseModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateCustomer}>
-            Lưu
-          </Button>
+          <ProtectedComponent requiredRoles={['u_cus']}>
+            <Button variant="danger" onClick={handleUpdateCustomer}>
+              Lưu
+            </Button>
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
     </>

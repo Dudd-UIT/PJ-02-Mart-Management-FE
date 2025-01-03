@@ -44,7 +44,7 @@ const CustomersPage = () => {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load customers: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
@@ -122,7 +122,7 @@ const CustomersPage = () => {
       </div>
 
       {/* button Thêm Customer */}
-      <ProtectedComponent requiredRoles={['create_customer']}>
+      <ProtectedComponent requiredRoles={['c_cus']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -182,4 +182,4 @@ const CustomersPage = () => {
   );
 };
 
-export default withRoleAuthorization(CustomersPage, ['view_customers']);
+export default withRoleAuthorization(CustomersPage, ['v_cus']);

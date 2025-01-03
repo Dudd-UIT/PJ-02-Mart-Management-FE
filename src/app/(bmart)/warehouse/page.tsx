@@ -18,6 +18,7 @@ import {
 import './style.css';
 import { RiEyeCloseLine, RiEyeFill } from 'react-icons/ri';
 import Link from 'next/link';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 
 function WarehousePage() {
   const current = 1;
@@ -76,7 +77,7 @@ function WarehousePage() {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load suppliers: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
@@ -88,12 +89,8 @@ function WarehousePage() {
       </div>
     );
 
-  console.log(data);
   const groupedProductData = groupProductData(data.productUnitsData.results);
   const groupedBatchData = groupBatch(data.batchData.results);
-
-  console.log('groupedProductData:', groupedProductData);
-  console.log('groupedBatchData:', groupedBatchData);
 
   const totalValue = getWarehouseValue(groupedBatchData);
 
@@ -106,8 +103,6 @@ function WarehousePage() {
       productLineName: searchLine,
     });
     setSearchBatchParams({ quantity: searchQuantity, expDate: searchExpDate });
-    // console.log(searchProductUnitParams)
-    console.log('SearchBatchParams', searchBatchParams);
   };
 
   const onMutate = () => mutate(['', current, pageSize]);
@@ -304,7 +299,7 @@ function WarehousePage() {
   );
 }
 
-export default WarehousePage;
+export default withRoleAuthorization(WarehousePage, ['v_batchs']);
 
 function groupProductData(data: Product[]) {
   const result: GroupedProductData = {};

@@ -12,6 +12,7 @@ import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { toast } from 'react-toastify';
 import { fetchProductUnitByIds } from '@/services/productUnitServices';
 import { Input } from '../commonComponent/InputForm';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
@@ -103,7 +104,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load suppliers: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
@@ -188,20 +189,23 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
 
           <h5>Quản lý mặt hàng được cung cấp</h5>
           {/* Button Cập nhật danh sách sản phẩm được cung cấp */}
-          <div className="d-flex justify-content-end mx-3">
-            <button
-              className="btn d-flex align-items-center btn-primary"
-              onClick={() => setIsProductSupplierModalOpen(true)}
-            >
-              <FaPlus className="align-middle" />
-              <span
-                className="ms-1"
-                style={{ position: 'relative', top: '2px' }}
+          <ProtectedComponent requiredRoles={['u_sup']}>
+            <div className="d-flex justify-content-end mx-3">
+              <button
+                className="btn d-flex align-items-center btn-primary"
+                onClick={() => setIsProductSupplierModalOpen(true)}
               >
-                Thêm
-              </span>
-            </button>
-          </div>
+                <FaPlus className="align-middle" />
+                <span
+                  className="ms-1"
+                  style={{ position: 'relative', top: '2px' }}
+                >
+                  Thêm
+                </span>
+              </button>
+            </div>
+          </ProtectedComponent>
+
           {/* Quản lý sản phẩm được cung cấp */}
           {productUnits.length > 0 && (
             <>
@@ -252,9 +256,11 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
           <Button variant="secondary" onClick={handleCloseUpdateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateSupplier}>
-            Lưu
-          </Button>
+          <ProtectedComponent requiredRoles={['u_sup']}>
+            <Button variant="danger" onClick={handleUpdateSupplier}>
+              Lưu
+            </Button>
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
       <ProductSupplierModal

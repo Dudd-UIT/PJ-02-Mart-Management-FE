@@ -19,7 +19,7 @@ export const fetchOrders = async (
   };
 
   if (searchStaffName) queryParams.staffName = searchStaffName;
-  if (searchCustomerName) queryParams.supplierName = searchCustomerName;
+  if (searchCustomerName) queryParams.customerName = searchCustomerName;
   if (searchStartDate) queryParams.startDate = searchStartDate;
   if (searchEndDate) queryParams.endDate = searchEndDate;
 
@@ -32,7 +32,6 @@ export const fetchOrders = async (
         Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
-    console.log('res', res);
 
     if (res?.data) {
       return res.data;

@@ -7,6 +7,7 @@ import {
 } from '@/types/order';
 import { formatDate } from '@/utils/format';
 import { renderStatusBadge } from '../commonComponent/Status';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const columns: Column<OrderDetailTransform>[] = [
   { title: '#', key: 'id' },
@@ -152,9 +153,11 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
         <Button variant="secondary" onClick={handleCloseModal}>
           Thoát
         </Button>
-        <Button variant="primary" onClick={handleSaveChanges}>
-          Lưu
-        </Button>
+        <ProtectedComponent requiredRoles={['u_order']}>
+          <Button variant="primary" onClick={handleSaveChanges}>
+            Lưu
+          </Button>
+        </ProtectedComponent>
       </Modal.Footer>
     </Modal>
   );

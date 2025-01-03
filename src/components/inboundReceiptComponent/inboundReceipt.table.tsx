@@ -46,10 +46,7 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
                 </th>
               ))}
               <ProtectedComponent
-                requiredRoles={[
-                  'update_inbound-receipt',
-                  'delete_inbound-receipt',
-                ]}
+                requiredRoles={['v_inbounds', 'd_inbound']}
               >
                 <th scope="col" className="text-center align-middle">
                   Thao tác
@@ -97,23 +94,14 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
 
                   return <td key={colIndex}>{cellData}</td>;
                 })}
-                <ProtectedComponent
-                  requiredRoles={[
-                    'update_inbound-receipt',
-                    'delete_inbound-receipt',
-                  ]}
-                >
+                <ProtectedComponent requiredRoles={['v_inbounds', 'd_inbound']}>
                   <td>
-                    <ProtectedComponent
-                      requiredRoles={['update_inbound-receipt']}
-                    >
+                    <ProtectedComponent requiredRoles={['v_inbounds']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
-                    <ProtectedComponent
-                      requiredRoles={['delete_inbound-receipt']}
-                    >
+                    <ProtectedComponent requiredRoles={['d_inbound']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>

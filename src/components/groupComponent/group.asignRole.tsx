@@ -80,26 +80,11 @@ function AssignRoleModal(props: AssignRoleModalProps) {
     () => fetchRoles(current, pageSize, searchParams.description),
   );
 
-  if (error)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load roles: {error.message}</div>
-      </div>
-    );
-
-  if (!data)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div className="spinner-grow text-success" role="status"></div>
-        <span className="sr-only text-success">Loading...</span>
-      </div>
-    );
-
   const meta: MetaData = {
     current,
     pageSize,
-    pages: data.meta.pages,
-    total: data.meta.total,
+    pages: data?.meta.pages,
+    total: data?.meta.total,
   };
 
   return (
@@ -131,7 +116,7 @@ function AssignRoleModal(props: AssignRoleModalProps) {
             </div>
           </Form>
           {/* ProductUnit Table */}
-          <RoleTable columns={columns} roles={data.results} />
+          <RoleTable columns={columns} roles={data?.results} />
           {/* Navigate Control */}
           <nav aria-label="Page navigation example" className="mt-3">
             <ul className="pagination justify-content-center">

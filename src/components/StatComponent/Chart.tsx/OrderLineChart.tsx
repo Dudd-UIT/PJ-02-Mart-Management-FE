@@ -1,7 +1,8 @@
 'use client';
 
-import {Card, CardSmall} from '@/components/commonComponent/Card';
+import { Card, CardSmall } from '@/components/commonComponent/Card';
 import { OrderChartData } from '@/types/commonType';
+import { downloadExcel } from '@/utils/downloadExcel';
 import { formatCurrency } from '@/utils/format';
 import React from 'react';
 import {
@@ -39,7 +40,7 @@ const calculateProfitMetrics = (data: LineChartDataPoint[]): ProfitMetrics => {
 
   const timeOrders = data.reduce((sum, row) => sum + row.totalOrders, 0);
 
-  const averageOrder = Math.round(timeOrders / data.length) ;
+  const averageOrder = Math.round(timeOrders / data.length);
 
   return {
     timeOrders,
@@ -53,7 +54,7 @@ const OrderLineChart: React.FC<OrderLineChartProps> = ({ data }) => {
   ): LineChartDataPoint[] => {
     const groupedData: Record<string, number> = {};
 
-    data.forEach(({ time, orders }) => {
+    data?.forEach(({ time, orders }) => {
       if (!groupedData[time]) {
         groupedData[time] = 0;
       }
@@ -68,15 +69,38 @@ const OrderLineChart: React.FC<OrderLineChartProps> = ({ data }) => {
   };
 
   const lineChartData = groupDataForLineChart(data);
-  console.log('lineChartData', lineChartData);
+
+
+  const handleExport = (): void => {
+        const formattedData = lineChartData.map(row => {
+          const rate = (
+            (row.totalOrders / dataMetric.timeOrders) *
+            100
+          ).toFixed(2);
+          
+          return ({
+          'Thời gian': row.time,
+          'Số đơn hàng': formatCurrency(row.totalOrders),
+          'Tỉ lệ': `${rate}%`,
+        })});
+        downloadExcel(formattedData);
+      };
 
   const dataMetric = calculateProfitMetrics(lineChartData);
 
   return (
     <div>
-                  <div className='row justify-content-md-center'>
-        <CardSmall title="Tổng số đơn" data={dataMetric.timeOrders} unit='đơn'/>
-        <CardSmall title="Số đơn hàng trung bình" data={dataMetric.averageOrder} unit='đơn'/>
+      <div className="row justify-content-md-center">
+        <CardSmall
+          title="Tổng số đơn"
+          data={dataMetric.timeOrders}
+          unit="đơn"
+        />
+        <CardSmall
+          title="Số đơn hàng trung bình"
+          data={dataMetric.averageOrder}
+          unit="đơn"
+        />
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={lineChartData} margin={{ top: 20 }}>
@@ -94,30 +118,35 @@ const OrderLineChart: React.FC<OrderLineChartProps> = ({ data }) => {
         </LineChart>
       </ResponsiveContainer>
 
-            <table className="table px-5 mt-3">
-              <thead>
-                <tr className="text-center align-middle">
-                  <th>Thời gian</th>
-                  <th>Số đơn hàng</th>
-                  <th>Tỉ lệ</th>
+      <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+      <button onClick={handleExport} className="btn btn-primary">
+          Xuất số liệu
+        </button>
+        <table className="table px-5 mt-3">
+          <thead>
+            <tr className="text-center align-middle">
+              <th>Thời gian</th>
+              <th>Số đơn hàng</th>
+              <th>Tỉ lệ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lineChartData.map((row, index) => {
+              const rate = (
+                (row.totalOrders / dataMetric.timeOrders) *
+                100
+              ).toFixed(2);
+              return (
+                <tr key={index} className={`text-center align-middle`}>
+                  <td>{row.time}</td>
+                  <td>{formatCurrency(row.totalOrders)}</td>
+                  <td>{`${rate}%`}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {lineChartData.map((row, index) => {
-                  const rate = ((row.totalOrders/dataMetric.timeOrders)*100).toFixed(2);
-                  return (
-                    <tr
-                      key={index}
-                      className={`text-center align-middle`}
-                    >
-                      <td>{row.time}</td>
-                      <td>{formatCurrency(row.totalOrders)}</td>
-                      <td>{`${rate}%`}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

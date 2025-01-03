@@ -13,7 +13,7 @@ import {
 import { sendRequest } from '@/utils/api';
 import useSWR from 'swr';
 import { Input } from '../commonComponent/InputForm';
-import { fetchProductUnits } from '@/services/productUnitServices';
+import { fetchProductUnits, fetchProductUnitsBySupplier } from '@/services/productUnitServices';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
@@ -29,31 +29,35 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
     setIsProductSupplierModalOpen,
     selectedProductUnitIds,
     onSelectedProductUnitsChange,
+    supplierId
   } = props;
 
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
   const [searchName, setSearchName] = useState('');
   const [searchCategory, setSearchCategory] = useState('');
-  const [searchParams, setSearchParams] = useState({ name: '', productLineId: '' });
+  const [searchParams, setSearchParams] = useState({
+    name: '',
+    productLineId: '',
+  });
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units/supplier/${supplierId}`;
   const { data, error } = useSWR(
     [url, current, pageSize, searchParams.name, searchParams.productLineId],
     () =>
-      fetchProductUnits(
+      fetchProductUnitsBySupplier(
         current,
         pageSize,
         searchParams.name,
-        searchParams.productLineId,
+        supplierId,
       ),
   );
 
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load suppliers: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 

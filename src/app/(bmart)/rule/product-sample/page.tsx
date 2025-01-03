@@ -43,10 +43,25 @@ function ProductSamplePage() {
 
   const urlProductSample = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`;
   const { data: productSamplesData, error: productSamplesError } = useSWR(
-    [urlProductSample, current, pageSize, '', searchProductLineId],
-    () => fetchProductSamples(current, pageSize, '', searchProductLineId),
+    [
+      urlProductSample,
+      current,
+      pageSize,
+      '',
+      searchProductLineId,
+      searchProductTypeId,
+    ],
+    () =>
+      fetchProductSamples(
+        current,
+        pageSize,
+        '',
+        searchProductLineId,
+        searchProductTypeId,
+      ),
   );
-  console.log('Original productSampleData:', productSamplesData);
+
+  console.log('productSamplesData', productSamplesData);
 
   const transformedProductSamplesData = {
     ...productSamplesData,
@@ -65,7 +80,6 @@ function ProductSamplePage() {
     }),
   };
 
-  console.log('Transformed productSampleData:', transformedProductSamplesData);
   const onMutate = () => {
     mutate([urlProductSample, current, pageSize, '', searchProductLineId]);
   };
@@ -115,6 +129,7 @@ function ProductSamplePage() {
         <Input
           title="Dòng sản phẩm"
           size={4}
+          readOnly={searchProductTypeId === 0}
           value={searchProductLineId}
           onSelectedChange={(value) => setSearchProductLineId(+value)}
           icon={<FaFilter />}
@@ -123,7 +138,7 @@ function ProductSamplePage() {
         />
       </div>
 
-      <ProtectedComponent requiredRoles={['create_product-sample']}>
+      <ProtectedComponent requiredRoles={['c_pdsam']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -135,7 +150,7 @@ function ProductSamplePage() {
         </div>
       </ProtectedComponent>
 
-      {transformedProductSamplesData?.results?.length > 0 ? (
+      {transformedProductSamplesData ? (
         <>
           <ProductSampleUnitTable
             productUnits={
@@ -196,6 +211,4 @@ function ProductSamplePage() {
   );
 }
 
-export default withRoleAuthorization(ProductSamplePage, [
-  'view_product-samples',
-]);
+export default withRoleAuthorization(ProductSamplePage, ['v_pdsams']);

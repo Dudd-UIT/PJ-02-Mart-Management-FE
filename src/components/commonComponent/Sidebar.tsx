@@ -100,7 +100,9 @@ export default function Sidebar() {
             <ul className="list-unstyled ps-5 gap-4">
               <li className={pathname == '/statistics' ? 'active' : ''}>
                 <Link href="/statistics" className="btn btn-sc">
-                  {isPinned && <text className="small">Tổng quan hệ thống</text>}
+                  {isPinned && (
+                    <text className="small">Tổng quan hệ thống</text>
+                  )}
                 </Link>
               </li>
               <li className={pathname == '/statistics/revenue' ? 'active' : ''}>
@@ -108,20 +110,31 @@ export default function Sidebar() {
                   {isPinned && <text className="small">Doanh thu</text>}
                 </Link>
               </li>
-              <li className={pathname == '/statistics/best-sale' ? 'active' : ''}>
+              <li
+                className={pathname == '/statistics/best-sale' ? 'active' : ''}
+              >
                 <Link href="/statistics/best-sale" className="btn btn-sc">
-                  {isPinned && <text className="small">Sản phẩm thịnh hành</text>}
+                  {isPinned && (
+                    <text className="small">Sản phẩm thịnh hành</text>
+                  )}
                 </Link>
               </li>
-              <li className={pathname == '/statistics/order-statistics' ? 'active' : ''}>
-                <Link href="/statistics/order-statistics" className="btn btn-sc">
+              <li
+                className={
+                  pathname == '/statistics/order-statistics' ? 'active' : ''
+                }
+              >
+                <Link
+                  href="/statistics/order-statistics"
+                  className="btn btn-sc"
+                >
                   {isPinned && <text className="small">Thống kê đơn hàng</text>}
                 </Link>
               </li>
             </ul>
           )}
         </li>
-        <ProtectedComponent requiredRoles={['create_order', 'view_orders']}>
+        <ProtectedComponent requiredRoles={['c_order', 'v_orders']}>
           <li>
             <div
               className={`btn btn-sc ${
@@ -148,7 +161,7 @@ export default function Sidebar() {
             </div>
             {isSaleOpen && (
               <ul className="list-unstyled ps-5 gap-4">
-                <ProtectedComponent requiredRoles={['create_order']}>
+                <ProtectedComponent requiredRoles={['c_order']}>
                   <li className={pathname == '/order/sale' ? 'active' : ''}>
                     <Link href="/order/sale" className="btn btn-sc">
                       {isPinned && <text className="small">Bán hàng</text>}
@@ -156,7 +169,7 @@ export default function Sidebar() {
                   </li>
                 </ProtectedComponent>
 
-                <ProtectedComponent requiredRoles={['view_orders']}>
+                <ProtectedComponent requiredRoles={['v_orders']}>
                   <li className={pathname == '/order' ? 'active' : ''}>
                     <Link href="/order" className="btn btn-sc">
                       {isPinned && (
@@ -169,7 +182,7 @@ export default function Sidebar() {
             )}
           </li>
         </ProtectedComponent>
-        <ProtectedComponent requiredRoles={['view_inbound-receipts']}>
+        <ProtectedComponent requiredRoles={['v_inbounds']}>
           <li className={pathname == '/inbound' ? 'active' : ''}>
             <Link href="/inbound" className="btn btn-sc">
               <div style={{ padding: '0.2rem 0' }}>
@@ -179,7 +192,7 @@ export default function Sidebar() {
             </Link>
           </li>
         </ProtectedComponent>
-        <ProtectedComponent requiredRoles={['view_suppliers']}>
+        <ProtectedComponent requiredRoles={['v_sups']}>
           <li className={pathname == '/suppliers' ? 'active' : ''}>
             <Link href="/suppliers" className="btn btn-sc">
               <div style={{ padding: '0.2rem 0' }}>
@@ -189,7 +202,7 @@ export default function Sidebar() {
             </Link>
           </li>
         </ProtectedComponent>
-        <ProtectedComponent requiredRoles={['view_batchs']}>
+        <ProtectedComponent requiredRoles={['v_batchs']}>
           <li className={pathname == '/warehouse' ? 'active' : ''}>
             <Link href="/warehouse" className="btn btn-sc">
               <div style={{ padding: '0.2rem 0' }}>
@@ -199,7 +212,7 @@ export default function Sidebar() {
             </Link>
           </li>
         </ProtectedComponent>
-        <ProtectedComponent requiredRoles={['view_customers']}>
+        <ProtectedComponent requiredRoles={['v_cus']}>
           <li className={pathname == '/customers' ? 'active' : ''}>
             <Link href="/customers" className="btn btn-sc">
               <div style={{ padding: '0.2rem 0' }}>
@@ -211,12 +224,12 @@ export default function Sidebar() {
         </ProtectedComponent>
         <ProtectedComponent
           requiredRoles={[
-            'view_product-types',
-            'view_product-lines',
-            'view_product-samples',
-            'view_parameters',
-            'view_groups',
-            'view_staffs',
+            'v_pdtypes',
+            'v_pdlines',
+            'v_pdsams',
+            'u_param',
+            'v_groups',
+            'v_staffs',
           ]}
         >
           <li>
@@ -245,7 +258,7 @@ export default function Sidebar() {
             </div>
             {isRuleOpen && (
               <ul className="list-unstyled ps-5 gap-4">
-                <ProtectedComponent requiredRoles={['view_product-types']}>
+                <ProtectedComponent requiredRoles={['v_pdtypes']}>
                   <li
                     className={pathname == '/rule/product-type' ? 'active' : ''}
                   >
@@ -254,7 +267,7 @@ export default function Sidebar() {
                     </Link>
                   </li>
                 </ProtectedComponent>
-                <ProtectedComponent requiredRoles={['view_product-lines']}>
+                <ProtectedComponent requiredRoles={['v_pdlines']}>
                   <li
                     className={pathname == '/rule/product-line' ? 'active' : ''}
                   >
@@ -263,7 +276,7 @@ export default function Sidebar() {
                     </Link>
                   </li>
                 </ProtectedComponent>
-                <ProtectedComponent requiredRoles={['view_product-samples']}>
+                <ProtectedComponent requiredRoles={['v_pdsams']}>
                   <li
                     className={
                       pathname == '/rule/product-sample' ? 'active' : ''
@@ -274,7 +287,7 @@ export default function Sidebar() {
                     </Link>
                   </li>
                 </ProtectedComponent>
-                <ProtectedComponent requiredRoles={['view_parameters']}>
+                <ProtectedComponent requiredRoles={['u_param']}>
                   <li
                     className={
                       pathname == '/rule/point-convert' ? 'active' : ''
@@ -285,7 +298,7 @@ export default function Sidebar() {
                     </Link>
                   </li>
                 </ProtectedComponent>
-                <ProtectedComponent requiredRoles={['view_groups']}>
+                <ProtectedComponent requiredRoles={['v_groups']}>
                   <li
                     className={pathname == '/rule/user-group' ? 'active' : ''}
                   >
@@ -296,7 +309,7 @@ export default function Sidebar() {
                     </Link>
                   </li>
                 </ProtectedComponent>
-                <ProtectedComponent requiredRoles={['view_staffs']}>
+                <ProtectedComponent requiredRoles={['v_staffs']}>
                   <li className={pathname == '/rule/staff' ? 'active' : ''}>
                     <Link href="/rule/staff" className="btn btn-sc">
                       {isPinned && <text className="small">Nhân viên</text>}

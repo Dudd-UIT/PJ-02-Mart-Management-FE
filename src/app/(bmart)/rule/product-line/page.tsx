@@ -47,7 +47,7 @@ function ProductLinePage() {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load product lines: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
@@ -98,7 +98,7 @@ function ProductLinePage() {
       </div>
 
       {/* button Thêm Product Line */}
-      <ProtectedComponent requiredRoles={['create_product-line']}>
+      <ProtectedComponent requiredRoles={['c_pdline']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -157,4 +157,4 @@ function ProductLinePage() {
   );
 }
 
-export default withRoleAuthorization(ProductLinePage, ['view_product-lines']);
+export default withRoleAuthorization(ProductLinePage, ['v_pdlines']);

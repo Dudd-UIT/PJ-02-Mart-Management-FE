@@ -1,5 +1,6 @@
 'use client';
 import { Input } from '@/components/commonComponent/InputForm';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import {
   fetchParameters,
   handleUpdateParameterAction,
@@ -31,7 +32,7 @@ function PointConvertPage() {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load data: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
@@ -121,4 +122,4 @@ function PointConvertPage() {
   );
 }
 
-export default PointConvertPage;
+export default withRoleAuthorization(PointConvertPage, ['u_param']);

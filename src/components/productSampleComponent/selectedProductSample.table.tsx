@@ -8,6 +8,13 @@ function SelectedProductSampleUnitTable(
 ) {
   const { columns, productSampleUnits, onDeleteUnit } = props;
 
+  const getImageName = (cellData: string | File) => {
+    if (typeof cellData === 'object' && cellData instanceof File) {
+      return cellData.name;
+    }
+    return cellData;
+  };
+
   return (
     <div className="container">
       <table className="table table-hover">
@@ -41,6 +48,11 @@ function SelectedProductSampleUnitTable(
                     </td>
                   );
                 }
+
+                if (column.key === 'image') {
+                  return <td key={colIndex}>{getImageName(cellData)}</td>;
+                }
+                
                 return <td key={colIndex}>{cellData}</td>;
               })}
               <td>

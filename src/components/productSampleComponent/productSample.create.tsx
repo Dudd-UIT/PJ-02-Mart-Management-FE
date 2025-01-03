@@ -2,7 +2,10 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { handleCreateProductSampleAction, uploadImageToS3 } from '@/services/productSampleServices';
+import {
+  handleCreateProductSampleAction,
+  uploadImageToS3,
+} from '@/services/productSampleServices';
 import useSWR from 'swr';
 import { fetchProductLines } from '@/services/productLineServices';
 import { fetchUnits } from '@/services/unitServices';
@@ -14,6 +17,7 @@ import ProductSampleUnitModal from '../productSampleUnitComponent/productSampleU
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị tính', key: 'unitName' },
+  { title: 'Ảnh sản phẩm', key: 'image' },
   { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
   { title: 'Giá bán', key: 'sellPrice' },
   { title: 'Khối lượng', key: 'volumne' },
@@ -71,36 +75,29 @@ function CreateProductSampleModal(props: CreateModalProps) {
     }
   };
 
-
   const sanitizePayload = (payload: any) => {
     return JSON.parse(JSON.stringify(payload));
   };
-  
 
   const handleCreateProductSample = async () => {
     try {
-      console.log("Hello from create:::", productUnits);
       const productUnitsWithImageUrls = await Promise.all(
         productUnits.map(async (productUnit) => {
-          console.log("Current productUnit:::", productUnit);
-    
           if (productUnit.image instanceof File) {
-            console.log("Uploading image:::", productUnit.image);
             const formDataImage = new FormData();
             formDataImage.append('file', productUnit.image);
-            console.log('formDataImage::::', formDataImage);
             const uploadedImageUrl = await uploadImageToS3(formDataImage);
-    
+
             return {
               ...productUnit,
               image: uploadedImageUrl,
             };
           }
-    
-          console.log("No image upload required for:::", productUnit);
+
           return productUnit;
-      }));
-  
+        }),
+      );
+
       // Tạo payload
       const productUnitsDto = productUnitsWithImageUrls.map((productUnit) => ({
         volumne: productUnit.volumne,
@@ -110,15 +107,15 @@ function CreateProductSampleModal(props: CreateModalProps) {
         productSampleId: 0,
         unitId: productUnit.unitId,
       }));
-  
+
       const payload = sanitizePayload({
         productSampleDto: formData,
         productUnitsDto,
       });
-  
+
       // Gửi payload xuống backend
       const res = await handleCreateProductSampleAction(payload);
-  
+
       if (res?.data) {
         handleCloseCreateModal();
         toast.success(res.message);
@@ -131,7 +128,6 @@ function CreateProductSampleModal(props: CreateModalProps) {
       toast.error('Có lỗi xảy ra trong quá trình tạo mẫu sản phẩm.');
     }
   };
-  
 
   return (
     <>
