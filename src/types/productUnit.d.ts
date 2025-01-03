@@ -48,6 +48,7 @@ export interface ProductSupplierModalProps {
   setIsProductSupplierModalOpen: (v: boolean) => void;
   onSelectedProductUnitsChange?: (v: number[]) => void;
   selectedProductUnitIds?: number[];
+  supplierId?: number;
 }
 
 export interface SelectedProductUnitTableProps {

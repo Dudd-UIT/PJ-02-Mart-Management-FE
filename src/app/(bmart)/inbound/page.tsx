@@ -32,6 +32,8 @@ const InboundReceiptPage = () => {
     'staffName' | 'supplierName' | 'startDate' | 'endDate'
   >('staffName');
   const [searchValue, setSearchValue] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [searchParams, setSearchParams] = useState({
     staffName: '',
     supplierName: '',
@@ -101,11 +103,10 @@ const InboundReceiptPage = () => {
 
   const handleSearchClick = () => {
     setSearchParams({
-      ...searchParams,
       staffName: searchType === 'staffName' ? searchValue : '',
       supplierName: searchType === 'supplierName' ? searchValue : '',
-      startDate: searchType === 'startDate' ? searchValue : '',
-      endDate: searchType === 'endDate' ? searchValue : '',
+      startDate,
+      endDate,
     });
     setCurrent(1);
   };
@@ -141,8 +142,6 @@ const InboundReceiptPage = () => {
           options={[
             { label: 'Tên nhân viên', value: 'staffName' },
             { label: 'Tên nhà cung cấp', value: 'supplierName' },
-            { label: 'Từ ngày', value: 'startDate' },
-            { label: 'Đến ngày', value: 'endDate' },
           ]}
           onChange={(value) => setSearchType(value as typeof searchType)}
         />
@@ -153,18 +152,27 @@ const InboundReceiptPage = () => {
           placeholder={`Nhập ${
             searchType === 'staffName'
               ? 'tên nhân viên'
-              : searchType === 'supplierName'
-              ? 'tên nhà cung cấp'
-              : 'ngày'
+              : 'tên nhà cung cấp'
           }`}
-          type={
-            searchType === 'startDate' || searchType === 'endDate'
-              ? 'date'
-              : 'text'
-          }
           onChange={(value) => setSearchValue(value)}
           onClickIcon={handleSearchClick}
           icon={<FaSearch />}
+        />
+        <Input
+          title="Từ ngày"
+          size={3}
+          value={startDate}
+          placeholder="Chọn ngày bắt đầu"
+          type="date"
+          onChange={(value) => setStartDate(value)}
+        />
+        <Input
+          title="Đến ngày"
+          size={3}
+          value={endDate}
+          placeholder="Chọn ngày kết thúc"
+          type="date"
+          onChange={(value) => setEndDate(value)}
         />
       </div>
 
