@@ -11,7 +11,10 @@ import { InboundReceiptCreate } from '@/types/batch';
 import { Input } from '../commonComponent/InputForm';
 import { fetchSuppliers } from '@/services/supplierServices';
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
-import { handleCreatedInboundReceiptAction } from '@/services/inboundReceiptServices';
+import {
+  handleCreatedInboundReceiptAction,
+  handleSendEmailAction,
+} from '@/services/inboundReceiptServices';
 import { fetchProductUnitByIds } from '@/services/productUnitServices';
 
 type FormDataBatch = {
@@ -177,6 +180,40 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
       batchsDto,
     };
     const res = await handleCreatedInboundReceiptAction(payload);
+    if (res?.data) {
+      toast.success(res.message);
+      handleCloseModal();
+      onMutate();
+    } else {
+      toast.error(res.message);
+    }
+  };
+
+  const handleSendEmail = async () => {
+    const inboundReceiptDto = {
+      staffName: '',
+      supplierId: inboundReceiptInfo.supplierId,
+      totalPrice: inboundReceiptInfo.totalPrice,
+      discount: inboundReceiptInfo.discount,
+      vat: inboundReceiptInfo.vat,
+      createdAt: inboundReceiptInfo.createdAt,
+    };
+
+    const batchsDto = formBatchData.map((item) => ({
+      inboundPrice: item.inboundPrice,
+      inboundQuantity: item.inboundQuantity,
+      expiredAt: item.expiredAt,
+      productSampleName: item.productSampleName,
+      unitName: item.unitName,
+    }));
+
+    const payload = {
+      inboundReceiptDto,
+      batchsDto,
+    };
+
+    console.log('payload', payload);
+    const res = await handleSendEmailAction(payload);
     if (res?.data) {
       toast.success(res.message);
       handleCloseModal();
@@ -364,6 +401,9 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
           </Button>
           <Button variant="primary" onClick={handleCreateInboundReceipt}>
             Lưu
+          </Button>
+          <Button variant="primary" onClick={handleSendEmail}>
+            Gửi Email
           </Button>
         </Modal.Footer>
       </Modal>
