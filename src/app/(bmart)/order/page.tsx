@@ -168,7 +168,7 @@ const OrdersPage = () => {
       </div>
 
       {/* button Thêm hóa đơn */}
-      <ProtectedComponent requiredRoles={['create_order']}>
+      <ProtectedComponent requiredRoles={['c_order']}>
         <div className="d-flex justify-content-end mx-3">
           <Link
             href="/order/sale"
@@ -217,4 +217,4 @@ const OrdersPage = () => {
   );
 };
 
-export default withRoleAuthorization(OrdersPage, ['view_orders']);
+export default withRoleAuthorization(OrdersPage, ['v_orders']);

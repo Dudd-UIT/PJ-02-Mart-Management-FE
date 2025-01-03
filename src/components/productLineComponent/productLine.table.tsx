@@ -44,9 +44,7 @@ const ProductLineTable = (props: ProductLineTableType) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent
-                requiredRoles={['update_product-line', 'delete_product-line']}
-              >
+              <ProtectedComponent requiredRoles={['v_pdlines', 'd_pdline']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -63,16 +61,14 @@ const ProductLineTable = (props: ProductLineTableType) => {
                       : row[column.key as keyof ProductLineTransform]}
                   </td>
                 ))}
-                <ProtectedComponent
-                  requiredRoles={['update_product-line', 'delete_product-line']}
-                >
+                <ProtectedComponent requiredRoles={['v_pdlines', 'd_pdline']}>
                   <td>
-                    <ProtectedComponent requiredRoles={['update_product-line']}>
+                    <ProtectedComponent requiredRoles={['v_pdlines']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
-                    <ProtectedComponent requiredRoles={['delete_product-line']}>
+                    <ProtectedComponent requiredRoles={['d_pdline']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>

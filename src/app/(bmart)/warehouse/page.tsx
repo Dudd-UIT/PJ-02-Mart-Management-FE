@@ -18,6 +18,7 @@ import {
 import './style.css';
 import { RiEyeCloseLine, RiEyeFill } from 'react-icons/ri';
 import Link from 'next/link';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 
 function WarehousePage() {
   const current = 1;
@@ -298,7 +299,7 @@ function WarehousePage() {
   );
 }
 
-export default WarehousePage;
+export default withRoleAuthorization(WarehousePage, ['v_batchs']);
 
 function groupProductData(data: Product[]) {
   const result: GroupedProductData = {};

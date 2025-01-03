@@ -7,6 +7,7 @@ import useSWR from 'swr';
 import RevenueChart from '@/components/StatComponent/Chart.tsx/RevenueChart';
 import RevenueTable from '@/components/StatComponent/RevenueTable';
 import { fetchRevenueDetail } from '@/services/statisticServices';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 
 function RevenuePage() {
   const [level, setLevel] = useState<string>('1');
@@ -92,4 +93,4 @@ function RevenuePage() {
   );
 }
 
-export default RevenuePage;
+export default withRoleAuthorization(RevenuePage, ['v_statis']);

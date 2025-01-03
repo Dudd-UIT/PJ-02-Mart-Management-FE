@@ -14,6 +14,7 @@ import {
   handleUpdateProductSampleAction,
   uploadImageToS3,
 } from '@/services/productSampleServices';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị tính', key: 'unitName' },
@@ -226,9 +227,11 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
           <Button variant="secondary" onClick={handleCloseCreateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateProductSample}>
-            Lưu
-          </Button>
+          <ProtectedComponent requiredRoles={['u_pdsam']}>
+            <Button variant="danger" onClick={handleUpdateProductSample}>
+              Lưu
+            </Button>
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
       <ProductSampleUnitModal

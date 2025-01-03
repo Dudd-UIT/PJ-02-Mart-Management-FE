@@ -425,7 +425,7 @@ function SalePage() {
             icon={<FaSearch />}
           />
           <Input size={4} title="Khách hàng" value={customer?.name} readOnly />
-          <ProtectedComponent requiredRoles={['create_customer']}>
+          <ProtectedComponent requiredRoles={['c_cus']}>
             <div className="col-md-3 mb-1">
               <Link
                 href="/customers"
@@ -611,4 +611,4 @@ function SalePage() {
   );
 }
 
-export default withRoleAuthorization(SalePage, ['create_order']);
+export default withRoleAuthorization(SalePage, ['c_order']);

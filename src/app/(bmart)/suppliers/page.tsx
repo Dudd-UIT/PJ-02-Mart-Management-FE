@@ -103,7 +103,7 @@ const SuppliersPage = () => {
       </div>
 
       {/* button Thêm Supplier */}
-      <ProtectedComponent requiredRoles={['create_supplier']}>
+      <ProtectedComponent requiredRoles={['c_sup']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -162,4 +162,4 @@ const SuppliersPage = () => {
     </>
   );
 };
-export default withRoleAuthorization(SuppliersPage, ['view_suppliers']);
+export default withRoleAuthorization(SuppliersPage, ['v_sups']);

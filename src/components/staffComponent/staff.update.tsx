@@ -7,6 +7,7 @@ import { handleUpdateStaffAction } from '@/services/staffServices';
 import { Input } from '../commonComponent/InputForm';
 import useSWR from 'swr';
 import { fetchGroups } from '@/services/groupServices';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 type FormData = {
   id: number;
@@ -149,9 +150,11 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
           <Button variant="secondary" onClick={handleCloseUpdateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateStaff}>
-            Lưu
-          </Button>
+          <ProtectedComponent requiredRoles={['u_staff']}>
+            <Button variant="danger" onClick={handleUpdateStaff}>
+              Lưu
+            </Button>
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
     </>

@@ -39,9 +39,7 @@ const ProductTypeTable = (props: ProductTypeTableType) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent
-                requiredRoles={['update_product-type', 'delete_product-type']}
-              >
+              <ProtectedComponent requiredRoles={['v_pdtypes', 'd_pdtype']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -54,16 +52,14 @@ const ProductTypeTable = (props: ProductTypeTableType) => {
                 {columns.map((column, colIndex) => (
                   <td key={colIndex}>{row[column.key as keyof ProductType]}</td>
                 ))}
-                <ProtectedComponent
-                  requiredRoles={['update_product-type', 'delete_product-type']}
-                >
+                <ProtectedComponent requiredRoles={['v_pdtypes', 'd_pdtype']}>
                   <td>
-                    <ProtectedComponent requiredRoles={['update_product-type']}>
+                    <ProtectedComponent requiredRoles={['v_pdtypes']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
-                    <ProtectedComponent requiredRoles={['delete_product-type']}>
+                    <ProtectedComponent requiredRoles={['d_pdtype']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>

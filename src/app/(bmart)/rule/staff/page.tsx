@@ -122,7 +122,7 @@ const StaffsPage = () => {
       </div>
 
       {/* button Thêm Nhân viên */}
-      <ProtectedComponent requiredRoles={['create_staff']}>
+      <ProtectedComponent requiredRoles={['c_staff']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -178,4 +178,4 @@ const StaffsPage = () => {
   );
 };
 
-export default withRoleAuthorization(StaffsPage, ['view_staffs']);
+export default withRoleAuthorization(StaffsPage, ['v_staffs']);
