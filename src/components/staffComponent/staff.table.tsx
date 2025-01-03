@@ -51,9 +51,13 @@ const StaffTable = (props: StaffTableType) => {
                   const cellValue = row[column.key as keyof Staff];
 
                   const displayValue =
-                    cellValue &&
-                    typeof cellValue === 'object' &&
-                    'name' in cellValue
+                    column.key === 'isActive'
+                      ? cellValue === 1
+                        ? 'Đã kích hoạt'
+                        : 'Chưa kích hoạt'
+                      : cellValue &&
+                        typeof cellValue === 'object' &&
+                        'name' in cellValue
                       ? cellValue.name
                       : cellValue;
 
