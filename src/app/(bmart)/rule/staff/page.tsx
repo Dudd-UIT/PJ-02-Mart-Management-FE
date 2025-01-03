@@ -17,6 +17,7 @@ const columns: Column<Staff>[] = [
   { title: 'Số điện thoại', key: 'phone' },
   { title: 'Địa chỉ', key: 'address' },
   { title: 'Email', key: 'email' },
+  { title: 'Tình trạng', key: 'isActive' },
 ];
 
 const StaffsPage = () => {
@@ -40,6 +41,8 @@ const StaffsPage = () => {
         searchParams.phone,
       ),
   );
+
+  console.log('data', data);
 
   if (error)
     return (
