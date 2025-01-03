@@ -98,7 +98,7 @@ function ProductLinePage() {
       </div>
 
       {/* button Thêm Product Line */}
-      <ProtectedComponent requiredRoles={['create_product-line']}>
+      <ProtectedComponent requiredRoles={['c_pdline']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -157,4 +157,4 @@ function ProductLinePage() {
   );
 }
 
-export default withRoleAuthorization(ProductLinePage, ['view_product-lines']);
+export default withRoleAuthorization(ProductLinePage, ['v_pdlines']);

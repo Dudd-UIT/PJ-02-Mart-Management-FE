@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { handleUpdateProductTypeAction } from '@/services/productTypeServices';
 import { ProductType } from '@/types/productType';
 import { Input } from '../commonComponent/InputForm';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
   const {
@@ -76,9 +77,11 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
           <Button variant="secondary" onClick={handleCloseUpdateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateProductType}>
-            Lưu
-          </Button>
+          <ProtectedComponent requiredRoles={['u_pdtype']}>
+            <Button variant="danger" onClick={handleUpdateProductType}>
+              Lưu
+            </Button>
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
     </>

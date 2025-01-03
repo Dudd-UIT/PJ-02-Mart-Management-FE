@@ -7,6 +7,7 @@ import useSWR from 'swr';
 import { fetchBestSeller } from '@/services/statisticServices';
 import { fetchProductTypes } from '@/services/productTypeServices';
 import { fetchProductLines } from '@/services/productLineServices';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 
 function BestSalePage() {
   const [level, setLevel] = useState(1);
@@ -95,6 +96,7 @@ function BestSalePage() {
           title="Dòng sản phẩm"
           size={3}
           value={searchProductLineId}
+          readOnly={searchProductTypeId === 0}
           onSelectedChange={(value) => setSearchProductLineId(+value)}
           icon={<FaFilter />}
           options={productLinesData?.results}
@@ -155,4 +157,4 @@ function BestSalePage() {
   );
 }
 
-export default BestSalePage;
+export default withRoleAuthorization(BestSalePage, ['v_statis']);

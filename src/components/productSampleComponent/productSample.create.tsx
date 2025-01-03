@@ -17,6 +17,7 @@ import ProductSampleUnitModal from '../productSampleUnitComponent/productSampleU
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị tính', key: 'unitName' },
+  { title: 'Ảnh sản phẩm', key: 'image' },
   { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
   { title: 'Giá bán', key: 'sellPrice' },
   { title: 'Khối lượng', key: 'volumne' },

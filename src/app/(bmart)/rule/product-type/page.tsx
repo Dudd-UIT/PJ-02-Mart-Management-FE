@@ -84,7 +84,7 @@ function ProductTypePage() {
       </div>
 
       {/* button Thêm Product Type */}
-      <ProtectedComponent requiredRoles={['create_product-type']}>
+      <ProtectedComponent requiredRoles={['c_pdtype']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -143,4 +143,4 @@ function ProductTypePage() {
   );
 }
 
-export default withRoleAuthorization(ProductTypePage, ['view_product-types']);
+export default withRoleAuthorization(ProductTypePage, ['v_pdtypes']);

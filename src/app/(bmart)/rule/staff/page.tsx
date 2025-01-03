@@ -17,6 +17,7 @@ const columns: Column<Staff>[] = [
   { title: 'Số điện thoại', key: 'phone' },
   { title: 'Địa chỉ', key: 'address' },
   { title: 'Email', key: 'email' },
+  { title: 'Tình trạng', key: 'isActive' },
 ];
 
 const StaffsPage = () => {
@@ -40,6 +41,8 @@ const StaffsPage = () => {
         searchParams.phone,
       ),
   );
+
+  console.log('data', data);
 
   if (error)
     return (
@@ -122,7 +125,7 @@ const StaffsPage = () => {
       </div>
 
       {/* button Thêm Nhân viên */}
-      <ProtectedComponent requiredRoles={['create_staff']}>
+      <ProtectedComponent requiredRoles={['c_staff']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -178,4 +181,4 @@ const StaffsPage = () => {
   );
 };
 
-export default withRoleAuthorization(StaffsPage, ['view_staffs']);
+export default withRoleAuthorization(StaffsPage, ['v_staffs']);

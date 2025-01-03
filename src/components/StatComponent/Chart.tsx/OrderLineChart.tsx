@@ -2,6 +2,7 @@
 
 import { Card, CardSmall } from '@/components/commonComponent/Card';
 import { OrderChartData } from '@/types/commonType';
+import { downloadExcel } from '@/utils/downloadExcel';
 import { formatCurrency } from '@/utils/format';
 import React from 'react';
 import {
@@ -69,6 +70,22 @@ const OrderLineChart: React.FC<OrderLineChartProps> = ({ data }) => {
 
   const lineChartData = groupDataForLineChart(data);
 
+
+  const handleExport = (): void => {
+        const formattedData = lineChartData.map(row => {
+          const rate = (
+            (row.totalOrders / dataMetric.timeOrders) *
+            100
+          ).toFixed(2);
+          
+          return ({
+          'Thời gian': row.time,
+          'Số đơn hàng': formatCurrency(row.totalOrders),
+          'Tỉ lệ': `${rate}%`,
+        })});
+        downloadExcel(formattedData);
+      };
+
   const dataMetric = calculateProfitMetrics(lineChartData);
 
   return (
@@ -102,6 +119,9 @@ const OrderLineChart: React.FC<OrderLineChartProps> = ({ data }) => {
       </ResponsiveContainer>
 
       <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+      <button onClick={handleExport} className="btn btn-primary">
+          Xuất số liệu
+        </button>
         <table className="table px-5 mt-3">
           <thead>
             <tr className="text-center align-middle">

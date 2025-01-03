@@ -6,6 +6,7 @@ import { handleUpdateCustomerAction } from '@/services/customerServices';
 import { Group } from '@/types/group';
 import { handleUpdateGroupAction } from '@/services/groupServices';
 import { Input } from '../commonComponent/InputForm';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 type FormData = {
   id: number;
@@ -92,9 +93,11 @@ function UpdateUserGroupModal(props: UpdateModalProps<Group>) {
           <Button variant="secondary" onClick={handleCloseCreateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateGroup}>
-            Lưu
-          </Button>
+          <ProtectedComponent requiredRoles={['u_group']}>
+            <Button variant="danger" onClick={handleUpdateGroup}>
+              Lưu
+            </Button>
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
     </>

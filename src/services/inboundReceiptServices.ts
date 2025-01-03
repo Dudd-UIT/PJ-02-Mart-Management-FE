@@ -44,6 +44,28 @@ export const fetchInboundReceipts = async (
   }
 };
 
+export const handleSendEmailAction = async (data: any) => {
+  const session = await auth();
+  const { inboundReceiptDto, batchsDto } = data;
+  const { staffName, ...rest } = inboundReceiptDto;
+  const updatedInboundReceiptDto = { staffName: session?.user.name, ...rest };
+  const updatedData = {
+    inboundReceiptDto: updatedInboundReceiptDto,
+    batchsDto,
+  };
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/inbound-receipt/send-mail`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+    body: { ...updatedData },
+  });
+
+  return res;
+};
+
 export const handleCreatedInboundReceiptAction = async (data: any) => {
   const session = await auth();
   const { inboundReceiptDto, batchsDto } = data;
