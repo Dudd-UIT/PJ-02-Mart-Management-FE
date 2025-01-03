@@ -49,7 +49,7 @@ const UserGroupTable = (props: UserGroupTableType) => {
                 </th>
               ))}
               <ProtectedComponent
-                requiredRoles={['assign-roles', 'update_group', 'delete_group']}
+                requiredRoles={['assign-roles', 'v_groups', 'd_group']}
               >
                 <th scope="col" className="text-center align-middle">
                   Thao tác
@@ -77,8 +77,8 @@ const UserGroupTable = (props: UserGroupTableType) => {
                 <ProtectedComponent
                   requiredRoles={[
                     'assign-roles',
-                    'update_group',
-                    'delete_group',
+                    'v_groups',
+                    'd_group',
                   ]}
                 >
                   <td>
@@ -88,13 +88,13 @@ const UserGroupTable = (props: UserGroupTableType) => {
                       </button>
                     </ProtectedComponent>
 
-                    <ProtectedComponent requiredRoles={['update_group']}>
+                    <ProtectedComponent requiredRoles={['v_groups']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
 
-                    <ProtectedComponent requiredRoles={['delete_group']}>
+                    <ProtectedComponent requiredRoles={['d_group']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>

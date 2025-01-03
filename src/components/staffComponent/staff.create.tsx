@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { handleCreateStaffAction } from '@/services/staffServices';
 import { Input } from '../commonComponent/InputForm';
 import { FaSearch } from 'react-icons/fa';
-import { fetchGroups } from '@/services/groupServices';
+import { fetchEmployees } from '@/services/groupServices';
 import useSWR from 'swr';
 
 type FormData = {
@@ -54,9 +54,11 @@ function CreateStaffModal(props: CreateModalProps) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups/employees`;
 
-  const { data: groups, error } = useSWR([url], () => fetchGroups());
+  const { data: groups, error } = useSWR([url], () => fetchEmployees());
+
+  console.log('groups:::', groups);
 
   return (
     <>

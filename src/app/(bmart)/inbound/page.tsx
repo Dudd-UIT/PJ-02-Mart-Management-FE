@@ -149,11 +149,8 @@ const InboundReceiptPage = () => {
           title="Tìm kiếm"
           size={4}
           value={searchValue}
-          placeholder={`Nhập ${
-            searchType === 'staffName'
-              ? 'tên nhân viên'
-              : 'tên nhà cung cấp'
-          }`}
+          placeholder={`Nhập ${searchType === 'staffName' ? 'Tên nhân viên' : 'Tên nhà cung cấp'}`}
+          type="text"
           onChange={(value) => setSearchValue(value)}
           onClickIcon={handleSearchClick}
           icon={<FaSearch />}
@@ -177,7 +174,7 @@ const InboundReceiptPage = () => {
       </div>
 
       {/* button Thêm Supplier */}
-      <ProtectedComponent requiredRoles={['create_inbound-receipt']}>
+      <ProtectedComponent requiredRoles={['c_inbound']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -237,6 +234,4 @@ const InboundReceiptPage = () => {
   );
 };
 
-export default withRoleAuthorization(InboundReceiptPage, [
-  'view_inbound-receipts',
-]);
+export default withRoleAuthorization(InboundReceiptPage, ['v_inbounds']);

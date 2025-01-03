@@ -41,9 +41,7 @@ const SupplierTable = (props: SupplierTableType) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent
-                requiredRoles={['update_supplier', 'delete_supplier']}
-              >
+              <ProtectedComponent requiredRoles={['v_sups', 'd_sup']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -56,16 +54,14 @@ const SupplierTable = (props: SupplierTableType) => {
                 {columns.map((column, colIndex) => (
                   <td key={colIndex}>{row[column.key as keyof Supplier]}</td>
                 ))}
-                <ProtectedComponent
-                  requiredRoles={['update_supplier', 'delete_supplier']}
-                >
+                <ProtectedComponent requiredRoles={['v_sups', 'd_sup']}>
                   <td>
-                    <ProtectedComponent requiredRoles={['update_supplier']}>
+                    <ProtectedComponent requiredRoles={['v_sups']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
-                    <ProtectedComponent requiredRoles={['delete_supplier']}>
+                    <ProtectedComponent requiredRoles={['d_sup']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>

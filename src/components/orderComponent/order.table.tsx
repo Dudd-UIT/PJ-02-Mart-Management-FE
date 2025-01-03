@@ -42,9 +42,7 @@ const OrderTable = (props: OrderTableModalProps) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent
-                requiredRoles={['update_order', 'delete_order']}
-              >
+              <ProtectedComponent requiredRoles={['v_orders', 'd_order']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -88,16 +86,14 @@ const OrderTable = (props: OrderTableModalProps) => {
 
                   return <td key={colIndex}>{cellData}</td>;
                 })}
-                <ProtectedComponent
-                  requiredRoles={['update_order', 'delete_order']}
-                >
+                <ProtectedComponent requiredRoles={['v_orders', 'd_order']}>
                   <td>
-                    <ProtectedComponent requiredRoles={['update_order']}>
+                    <ProtectedComponent requiredRoles={['v_orders']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
-                    <ProtectedComponent requiredRoles={['delete_order']}>
+                    <ProtectedComponent requiredRoles={['d_order']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>
