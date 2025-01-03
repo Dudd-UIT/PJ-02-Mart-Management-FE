@@ -1,5 +1,6 @@
 'use client';
 import { Input } from '@/components/commonComponent/InputForm';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import {
   fetchParameters,
   handleUpdateParameterAction,
@@ -121,4 +122,4 @@ function PointConvertPage() {
   );
 }
 
-export default PointConvertPage;
+export default withRoleAuthorization(PointConvertPage, ['u_param']);

@@ -44,12 +44,7 @@ const ProductSampleUnitTable = (props: ProductSampleUnitTableType) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent
-                requiredRoles={[
-                  'update_product-sample',
-                  'delete_product-sample',
-                ]}
-              >
+              <ProtectedComponent requiredRoles={['v_pdsams', 'd_pdsam']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -70,23 +65,14 @@ const ProductSampleUnitTable = (props: ProductSampleUnitTableType) => {
 
                   return <td key={colIndex}>{formattedData}</td>;
                 })}
-                <ProtectedComponent
-                  requiredRoles={[
-                    'update_product-sample',
-                    'delete_product-sample',
-                  ]}
-                >
+                <ProtectedComponent requiredRoles={['v_pdsams', 'd_pdsam']}>
                   <td>
-                    <ProtectedComponent
-                      requiredRoles={['update_product-sample']}
-                    >
+                    <ProtectedComponent requiredRoles={['v_pdsams']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
-                    <ProtectedComponent
-                      requiredRoles={['delete_product-sample']}
-                    >
+                    <ProtectedComponent requiredRoles={['d_pdsam']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>

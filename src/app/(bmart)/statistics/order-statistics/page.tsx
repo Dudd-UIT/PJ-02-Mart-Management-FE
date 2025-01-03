@@ -3,6 +3,7 @@
 import { Input } from '@/components/commonComponent/InputForm';
 import OrderBarChart from '@/components/StatComponent/Chart.tsx/OrderBarChart';
 import OrderLineChart from '@/components/StatComponent/Chart.tsx/OrderLineChart';
+import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import {
   fetchOrderStatistic,
   fetchOrderValueDistribution,
@@ -129,4 +130,4 @@ function OrderStat() {
   );
 }
 
-export default OrderStat;
+export default withRoleAuthorization(OrderStat, ['v_statis']);

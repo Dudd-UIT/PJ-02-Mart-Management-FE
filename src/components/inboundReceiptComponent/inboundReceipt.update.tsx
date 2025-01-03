@@ -19,6 +19,7 @@ import {
   handleUpdatedStatusInboundReceiptAction,
 } from '@/services/inboundReceiptServices';
 import { fetchProductUnitByIds } from '@/services/productUnitServices';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 type FormDataBatch = {
   id?: number;
@@ -510,13 +511,15 @@ function UpdateInboundReceiptModal(
           <Button variant="secondary" onClick={handleCloseModal}>
             Thoát
           </Button>
-          {+inboundReceiptInfo.isPaid === 1 ? (
-            <></>
-          ) : (
-            <Button variant="primary" onClick={handleSubmit}>
-              Lưu
-            </Button>
-          )}
+          <ProtectedComponent requiredRoles={['u_inbound']}>
+            {+inboundReceiptInfo.isPaid === 1 ? (
+              <></>
+            ) : (
+              <Button variant="primary" onClick={handleSubmit}>
+                Lưu
+              </Button>
+            )}
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
 

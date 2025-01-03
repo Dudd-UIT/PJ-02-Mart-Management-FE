@@ -8,6 +8,7 @@ import { handleUpdateProductLineAction } from '@/services/productLineServices';
 import useSWR from 'swr';
 import { fetchProductTypes } from '@/services/productTypeServices';
 import { Input } from '../commonComponent/InputForm';
+import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 type FormData = {
   id: number;
@@ -110,9 +111,11 @@ function UpdateProductLineModal(props: UpdateModalProps<ProductLineTransform>) {
           <Button variant="secondary" onClick={handleCloseModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleUpdateProductLine}>
-            Lưu
-          </Button>
+          <ProtectedComponent requiredRoles={['u_pdline']}>
+            <Button variant="danger" onClick={handleUpdateProductLine}>
+              Lưu
+            </Button>
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
     </>

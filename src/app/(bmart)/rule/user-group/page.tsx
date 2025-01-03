@@ -83,7 +83,7 @@ const UserGroupsPage = () => {
         />
       </div>
 
-      <ProtectedComponent requiredRoles={['create_group']}>
+      <ProtectedComponent requiredRoles={['c_group']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -140,4 +140,4 @@ const UserGroupsPage = () => {
   );
 };
 
-export default withRoleAuthorization(UserGroupsPage, ['view_groups']);
+export default withRoleAuthorization(UserGroupsPage, ['v_groups']);

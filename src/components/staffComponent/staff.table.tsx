@@ -37,9 +37,7 @@ const StaffTable = (props: StaffTableType) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent
-                requiredRoles={['update_staff', 'delete_staff']}
-              >
+              <ProtectedComponent requiredRoles={['v_staffs', 'd_staff']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -61,17 +59,15 @@ const StaffTable = (props: StaffTableType) => {
 
                   return <td key={colIndex}>{displayValue}</td>;
                 })}
-                <ProtectedComponent
-                  requiredRoles={['update_staff', 'delete_staff']}
-                >
+                <ProtectedComponent requiredRoles={['v_staffs', 'd_staff']}>
                   <td>
-                    <ProtectedComponent requiredRoles={['update_staff']}>
+                    <ProtectedComponent requiredRoles={['v_staffs']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
 
-                    <ProtectedComponent requiredRoles={['delete_staff']}>
+                    <ProtectedComponent requiredRoles={['d_staff']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>
