@@ -3,6 +3,7 @@
 import { CardSmall } from '@/components/commonComponent/Card';
 import { Input } from '@/components/commonComponent/InputForm';
 import { OrderChartData } from '@/types/commonType';
+import { downloadExcel } from '@/utils/downloadExcel';
 import { formatCurrency } from '@/utils/format';
 import React, { useEffect, useState } from 'react';
 import {
@@ -72,6 +73,18 @@ const OrderBarChart: React.FC<OrderBarChartProps> = ({ data, target }) => {
       ?.map(({ range, orders }) => ({ range, orders }));
   };
 
+  const handleExport = (): void => {
+      const formattedData = barChartData.map(row => {
+        const rate = ((row.orders / dataMetric.timeOrders) * 100).toFixed(2);
+        
+        return ({
+        'Giá trị đơn hàng': row.range,
+        'Số đơn hàng': formatCurrency(row.orders),
+        'Tỉ lệ': `${rate}%`,
+      })});
+      downloadExcel(formattedData);
+    };
+
   // Dữ liệu cho BarChart dựa trên thời gian được chọn
   const barChartData = selectedTime
     ? groupDataForBarChart(data, selectedTime)
@@ -120,6 +133,9 @@ const OrderBarChart: React.FC<OrderBarChartProps> = ({ data, target }) => {
       </ResponsiveContainer>
 
       <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+      <button onClick={handleExport} className="btn btn-primary">
+          Xuất số liệu
+        </button>
         <table className="table px-5 mt-3">
           <thead>
             <tr className="text-center align-middle">
