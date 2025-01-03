@@ -65,6 +65,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
     isPaid: 0,
   };
   const [formBatchData, setFormBatchData] = useState<FormDataBatch[]>([]);
+  const [supplierId, setSupplierId] = useState(0);
   const [inboundReceiptInfo, setInboundReceiptInfo] =
     useState<FormDataInboundReceipt>(initialInboundReceipt);
 
@@ -141,6 +142,8 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
   };
 
   const handleSupplierChange = (value: number) => {
+    console.log('value:::', value);
+    setSupplierId(value);
     handleInboundReceiptInfoChange('supplierId', value);
   };
 
@@ -223,6 +226,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
                 <button
                   className="btn d-flex align-items-center btn-primary"
                   onClick={() => setIsProductSupplierModalOpen(true)}
+                  disabled={!inboundReceiptInfo.supplierId}
                 >
                   <FaPlus className="align-middle" />
                   <text>Thêm</text>
@@ -368,6 +372,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
         isProductSupplierModalOpen={isProductSupplierModalOpen}
         setIsProductSupplierModalOpen={setIsProductSupplierModalOpen}
         onSelectedProductUnitsChange={setSelectedProductUnitIds}
+        supplierId={supplierId}
       />
     </>
   );

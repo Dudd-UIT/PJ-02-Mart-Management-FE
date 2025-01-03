@@ -103,7 +103,6 @@ const InboundReceiptPage = () => {
 
   const handleSearchClick = () => {
     setSearchParams({
-      ...searchParams,
       staffName: searchType === 'staffName' ? searchValue : '',
       supplierName: searchType === 'supplierName' ? searchValue : '',
       startDate,
