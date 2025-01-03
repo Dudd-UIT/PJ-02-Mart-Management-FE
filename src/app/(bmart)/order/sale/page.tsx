@@ -54,6 +54,9 @@ function SalePage() {
 
   const pageSizeCart = 4;
   const [currentCartPage, setCurrentCartPage] = useState(1);
+  const [pointsToUse, setPointsToUse] = useState<number>(0);
+  const [pointsUsed, setPointsUsed] = useState<number>(0);
+  const [initialCustomerScore, setInitialCustomerScore] = useState<number>(0);
 
   const initialOrder = {
     staffId: 0,
@@ -116,6 +119,10 @@ function SalePage() {
       unitName: item.unit?.name,
     }),
   );
+
+  const handlePointsToUseChange = (value: number) => {
+    setPointsToUse(Math.min(value, customer?.score || 0));
+  };
 
   const handleSearchClick = () => {
     setSearchParams({
@@ -210,6 +217,7 @@ function SalePage() {
         const data = await fetchCustomers(1, 1, 3, '', customerPhone);
         if (data.results.length > 0) {
           setCustomer(data.results[0]);
+          setInitialCustomerScore(data.results[0].score); // Lưu điểm ban đầu
           handleOrderInfoChange('customerId', data.results[0].id);
         } else {
           setCustomer(undefined);
@@ -247,13 +255,24 @@ function SalePage() {
 
     const res = await handleCreatedOrderAction(payload);
     if (res?.data) {
+      // Cập nhật điểm trong cơ sở dữ liệu
+      const newScore = initialCustomerScore - pointsUsed;
+      await handleUpdateCustomerAction({ id: customer?.id, score: newScore });
+
       toast.success(res.message);
       setFormDataOrder(initialOrder);
       setCustomerPhone('');
       setCustomer(undefined);
       setCart([]);
+      setPointsToUse(0); // Reset điểm muốn sử dụng
+      setPointsUsed(0); // Reset điểm đã sử dụng
     } else {
       toast.error(res.message);
+
+      // Khôi phục điểm về trạng thái ban đầu nếu thất bại
+      setCustomer((prev) =>
+        prev ? { ...prev, score: initialCustomerScore } : prev,
+      );
     }
   };
 
@@ -264,31 +283,26 @@ function SalePage() {
     }
 
     const pointConversionRate = parameterData.results[0].value; // Tỷ lệ đổi điểm sang VND
-    const availableDiscount = customer.score / pointConversionRate; // Số tiền có thể giảm
+    const availableDiscount = pointsToUse / pointConversionRate; // Số tiền giảm tương ứng
     const totalPrice = formDataOrder.totalPrice;
 
-    if (availableDiscount >= totalPrice) {
-      const newScore = customer.score - totalPrice * pointConversionRate;
-      handleOrderInfoChange('totalPrice', 0); // Tổng tiền = 0
-      toast.success(`Qúy khách đã được giảm toàn bộ hóa đơn!`);
+    if (availableDiscount > 0 && pointsToUse > 0) {
+      const newTotal = Math.max(totalPrice - availableDiscount, 0); // Tổng tiền không được âm
+      const newScore = Math.max(customer.score - pointsToUse, 0); // Trừ điểm tạm thời
+      const accPointUsed = pointsUsed + pointsToUse;
 
-      // Gọi API cập nhật điểm (nếu cần)
-      handleUpdateCustomerAction({ id: customer.id, score: newScore });
-    } else if (availableDiscount > 0) {
-      // Trường hợp điểm không đủ để giảm toàn bộ hóa đơn
-      const discount = availableDiscount; // Giảm số tiền tương ứng với số điểm
-      const newTotal = totalPrice - discount; // Tổng tiền còn lại
-      const newScore = 0; // Điểm sau khi sử dụng = 0
+      setCustomer((prev) => (prev ? { ...prev, score: newScore } : prev)); // Cập nhật điểm tạm thời
       handleOrderInfoChange('totalPrice', newTotal);
+      setPointsUsed(accPointUsed); // Cộng dồn điểm đã sử dụng
       toast.success(
-        `Qúy khách đã được giảm ${discount.toLocaleString('vi-VN')} VND`,
+        `Qúy khách đã được giảm ${availableDiscount.toLocaleString(
+          'vi-VN',
+        )} VND`,
       );
 
-      // Gọi API cập nhật điểm (nếu cần)
-      handleUpdateCustomerAction({ id: customer.id, score: newScore });
+      setPointsToUse(0); // Reset điểm muốn sử dụng
     } else {
-      // Trường hợp điểm không đủ hoặc bằng 0
-      toast.info('Quý khách không đủ điểm để giảm giá');
+      toast.info('Số điểm không hợp lệ hoặc không đủ để giảm giá');
     }
   };
 
@@ -317,6 +331,16 @@ function SalePage() {
 
   const handleNextPage = () => {
     if (current < meta.pages) setCurrent(current + 1);
+  };
+
+  const handleCancelOrder = () => {
+    setCart([]);
+    setCustomer(undefined);
+    setCustomerPhone('');
+    setPointsToUse(0);
+    setPointsUsed(0);
+    setFormDataOrder(initialOrder);
+    toast.info('Đã hủy tạo đơn hàng');
   };
 
   return (
@@ -424,7 +448,12 @@ function SalePage() {
             onClickIcon={handleSearchCustomer}
             icon={<FaSearch />}
           />
-          <Input size={4} title="Khách hàng" value={customer?.name} readOnly />
+          <Input
+            size={4}
+            title="Khách hàng"
+            value={customer?.name || ''}
+            readOnly
+          />
           <ProtectedComponent requiredRoles={['c_cus']}>
             <div className="col-md-3 mb-1">
               <Link
@@ -550,29 +579,18 @@ function SalePage() {
           <Input
             size={3}
             title="Tích điểm"
-            value="1"
-            // value={formDataOrder.totalPrice / parameterData?.results[1].value}
+            // value="0"
+            value={formDataOrder.totalPrice / parameterData?.results[1].value}
             readOnly
           />
           <Input
             size={3}
             title="Điểm đã tích"
-            value={customer?.score}
+            value={customer?.score || 0}
             readOnly
           />
-          <div className="col-md-3 mb-2">
-            <button
-              className="btn btn-primary w-100"
-              onClick={handleUsePoint}
-              disabled={
-                customer?.score && formDataOrder.totalPrice > 0 ? false : true
-              }
-            >
-              Dùng điểm
-            </button>
-          </div>
         </div>
-        <div className="row ">
+        <div className="row align-items-end">
           <Input
             size={5}
             title="Phương thức thanh toán"
@@ -588,11 +606,32 @@ function SalePage() {
               { id: 'Chuyển khoản', method: 'Chuyển khoản' },
             ]}
           />
+
+          <Input
+            size={4}
+            title="Điểm muốn sử dụng"
+            value={pointsToUse}
+            placeholder="Nhập số điểm"
+            onChange={(value) => handlePointsToUseChange(+value)}
+            readOnly={!customer?.score}
+          />
+
+          <div className="col-md-3 mb-2">
+            <button
+              className="btn btn-primary w-100"
+              onClick={handleUsePoint}
+              disabled={
+                customer?.score && formDataOrder.totalPrice > 0 ? false : true
+              }
+            >
+              Dùng điểm
+            </button>
+          </div>
         </div>
 
         <div className="row align-items-end">
           <Input
-            size={8}
+            size={6}
             title="Thành tiền"
             value={`${formDataOrder.totalPrice} đ`}
             readOnly
@@ -603,6 +642,14 @@ function SalePage() {
               onClick={handleCreateOrder}
             >
               Tạo đơn hàng
+            </button>
+          </div>
+          <div className="col-md-2 mb-2">
+            <button
+              className="btn btn-danger w-100"
+              onClick={handleCancelOrder}
+            >
+              Hủy
             </button>
           </div>
         </div>
