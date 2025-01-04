@@ -9,6 +9,8 @@ import { fetchProductLines } from '@/services/productLineServices';
 import { fetchProductSamples } from '@/services/productSampleServices';
 import { fetchProductTypes } from '@/services/productTypeServices';
 import { ProductSample } from '@/types/productSample';
+import { ProductUnitTransform } from '@/types/productUnit';
+import Image from 'next/image';
 import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { FaFilter, FaPlus } from 'react-icons/fa';
@@ -43,10 +45,25 @@ function ProductSamplePage() {
 
   const urlProductSample = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`;
   const { data: productSamplesData, error: productSamplesError } = useSWR(
-    [urlProductSample, current, pageSize, '', searchProductLineId],
-    () => fetchProductSamples(current, pageSize, '', searchProductLineId),
+    [
+      urlProductSample,
+      current,
+      pageSize,
+      '',
+      searchProductLineId,
+      searchProductTypeId,
+    ],
+    () =>
+      fetchProductSamples(
+        current,
+        pageSize,
+        '',
+        searchProductLineId,
+        searchProductTypeId,
+      ),
   );
-  console.log('Original productSampleData:', productSamplesData);
+
+  console.log('productSamplesData', productSamplesData);
 
   const transformedProductSamplesData = {
     ...productSamplesData,
@@ -65,7 +82,6 @@ function ProductSamplePage() {
     }),
   };
 
-  console.log('Transformed productSampleData:', transformedProductSamplesData);
   const onMutate = () => {
     mutate([urlProductSample, current, pageSize, '', searchProductLineId]);
   };
@@ -115,6 +131,7 @@ function ProductSamplePage() {
         <Input
           title="Dòng sản phẩm"
           size={4}
+          readOnly={searchProductTypeId === 0}
           value={searchProductLineId}
           onSelectedChange={(value) => setSearchProductLineId(+value)}
           icon={<FaFilter />}
@@ -123,7 +140,7 @@ function ProductSamplePage() {
         />
       </div>
 
-      <ProtectedComponent requiredRoles={['create_product-sample']}>
+      <ProtectedComponent requiredRoles={['c_pdsam']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -135,7 +152,7 @@ function ProductSamplePage() {
         </div>
       </ProtectedComponent>
 
-      {transformedProductSamplesData?.results?.length > 0 ? (
+      {transformedProductSamplesData ? (
         <>
           <ProductSampleUnitTable
             productUnits={
@@ -146,6 +163,37 @@ function ProductSamplePage() {
             columns={columns}
             onMutate={onMutate}
           />
+          {/* <div className="row">
+            {transformedProductSamplesData.map((productUnit: ProductUnitTransform) => (
+              <div
+                key={productUnit.id}
+                className="col-md-3 p-2"
+                onClick={() => {}}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="card">
+                  <Image
+                    src={
+                      typeof productUnit.image === 'string'
+                        ? productUnit.image
+                        : URL.createObjectURL(productUnit.image)
+                    }
+                    alt={productUnit.productSampleName || 'Product'}
+                    width={60}
+                    height={100}
+                    className="card-img-top p-2"
+                  />
+  
+                  <div className="d-flex flex-column justify-content-center align-items-center">
+                    <text className="p-0">{productUnit.productSampleName}</text>
+                    <text className="text-danger p-1">
+                      {productUnit.sellPrice?.toLocaleString('vi-VN')} đ
+                    </text>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div> */}
         </>
       ) : (
         <>
@@ -196,6 +244,4 @@ function ProductSamplePage() {
   );
 }
 
-export default withRoleAuthorization(ProductSamplePage, [
-  'view_product-samples',
-]);
+export default withRoleAuthorization(ProductSamplePage, ['v_pdsams']);

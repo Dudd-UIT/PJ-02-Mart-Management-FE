@@ -72,7 +72,7 @@ export default function Sidebar2() {
           setIsPinned(true);
         }}
       >
-        <ProtectedComponent requiredRoles={['view_product-samples']}>
+        <ProtectedComponent requiredRoles={['v_pdsams']}>
           <li className={pathname == '/product-sale' ? 'active' : ''}>
             <Link href="/product-sale" className="btn btn-sc">
               <div style={{ padding: '0.2rem 0' }}>
@@ -82,7 +82,7 @@ export default function Sidebar2() {
             </Link>
           </li>
         </ProtectedComponent>
-        <ProtectedComponent requiredRoles={['view_product-samples']}>
+        <ProtectedComponent requiredRoles={['v_pdsams']}>
           <li className={pathname == '/cart' ? 'active' : ''}>
             <Link href="/cart" className="btn btn-sc">
               <div style={{ padding: '0.2rem 0' }}>
@@ -92,7 +92,7 @@ export default function Sidebar2() {
             </Link>
           </li>
         </ProtectedComponent>
-        <ProtectedComponent requiredRoles={['view_orders']}>
+        <ProtectedComponent requiredRoles={['c_order', 'v_orders']}>
           <li className={pathname == '/order-history' ? 'active' : ''}>
             <Link href="/order-history" className="btn btn-sc">
               <div style={{ padding: '0.2rem 0' }}>

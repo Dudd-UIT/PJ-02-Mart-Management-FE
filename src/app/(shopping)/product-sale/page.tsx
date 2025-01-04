@@ -19,8 +19,6 @@ import { handleCreatedOrderAction } from '@/services/orderServices';
 import Link from 'next/link';
 import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
-import { ProductSample } from '@/types/productSample';
-import UpdateProductSampleModal from '@/components/productSampleComponent/productSample.update';
 
 const columns: Column<OrderDetailTransform>[] = [
   { title: '#', key: 'id' },
@@ -47,9 +45,6 @@ function SalePage() {
   const [searchValue, setSearchValue] = useState('');
   const [searchType, setSearchType] = useState<'name' | 'id'>('name');
   const [searchParams, setSearchParams] = useState({ name: '', id: '' });
-
-  const [customerPhone, setCustomerPhone] = useState('');
-  const [customer, setCustomer] = useState<Customer>();
 
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(12);
@@ -94,7 +89,7 @@ function SalePage() {
   if (productUnitsError)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load products: {productUnitsError.message}</div>
+        <div>{productUnitsError.message}</div>
       </div>
     );
 
@@ -169,21 +164,6 @@ function SalePage() {
     });
   };
 
-  const removeFromCart = (productId: number) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== productId);
-
-      // Tính toán tổng ngay khi cập nhật giỏ hàng
-      const newTotal = updatedCart.reduce(
-        (acc, item) => acc + item.currentPrice * (item.quantity || 0),
-        0,
-      );
-      handleOrderInfoChange('totalPrice', newTotal);
-
-      return updatedCart;
-    });
-  };
-
   const updateQuantity = (productId: number, increment: number) => {
     setCart((prevCart) => {
       const updatedCart = prevCart.map((item) =>
@@ -204,92 +184,6 @@ function SalePage() {
 
       return updatedCart;
     });
-  };
-
-  const handleSearchCustomer = async () => {
-    try {
-      if (customerPhone) {
-        const data = await fetchCustomers(1, 1, 3, '', customerPhone);
-        if (data.results.length > 0) {
-          setCustomer(data.results[0]);
-          handleOrderInfoChange('customerId', data.results[0].id);
-        } else {
-          setCustomer(undefined);
-          toast.warning('Không tìm thấy khách hàng');
-        }
-      }
-    } catch (error) {
-      setCustomer(undefined);
-      toast.error('Lỗi khi tìm kiếm khách hàng');
-    }
-  };
-
-  const handleCreateOrder = async () => {
-    const orderDto = {
-      staffId: formDataOrder.staffId,
-      customerId: formDataOrder.customerId,
-      totalPrice: formDataOrder.totalPrice,
-      paymentMethod: formDataOrder.paymentMethod,
-      paymentTime: formDataOrder.paymentTime,
-      isReceived: formDataOrder.isReceived,
-      isPaid: formDataOrder.paymentMethod === 'Tiền mặt' ? 1 : 0,
-      orderType: formDataOrder.orderType,
-    };
-
-    const orderDetailsDto = cart?.map((formDataOrderDetail) => ({
-      productUnitId: formDataOrderDetail.id,
-      quantity: formDataOrderDetail.quantity,
-      currentPrice: formDataOrderDetail.currentPrice,
-    }));
-
-    const payload = {
-      orderDto,
-      orderDetailsDto,
-    };
-
-    const res = await handleCreatedOrderAction(payload);
-    if (res?.data) {
-      toast.success(res.message);
-      setFormDataOrder(initialOrder);
-      setCustomerPhone('');
-      setCustomer(undefined);
-      setCart([]);
-    } else {
-      toast.error(res.message);
-    }
-  };
-
-  const handleUsePoint = () => {
-    if (!customer?.score || !parameterData?.results[0]?.value) {
-      toast.error('Không đủ thông tin để sử dụng điểm');
-      return;
-    }
-
-    const pointConversionRate = parameterData.results[0].value; // Tỷ lệ đổi điểm sang VND
-    const availableDiscount = customer.score / pointConversionRate; // Số tiền có thể giảm
-    const totalPrice = formDataOrder.totalPrice;
-
-    if (availableDiscount >= totalPrice) {
-      const newScore = customer.score - totalPrice * pointConversionRate;
-      handleOrderInfoChange('totalPrice', 0); // Tổng tiền = 0
-      toast.success(`Qúy khách đã được giảm toàn bộ hóa đơn!`);
-
-      // Gọi API cập nhật điểm (nếu cần)
-      handleUpdateCustomerAction({ id: customer.id, score: newScore });
-    } else if (availableDiscount > 0) {
-      // Trường hợp điểm không đủ để giảm toàn bộ hóa đơn
-      const discount = availableDiscount; // Giảm số tiền tương ứng với số điểm
-      const newTotal = totalPrice - discount; // Tổng tiền còn lại
-      const newScore = 0; // Điểm sau khi sử dụng = 0
-      handleOrderInfoChange('totalPrice', newTotal);
-      toast.success(`Qúy khách đã được giảm ${discount.toLocaleString('vi-VN')} VND`);
-
-      // Gọi API cập nhật điểm (nếu cần)
-      handleUpdateCustomerAction({ id: customer.id, score: newScore });
-    } else {
-      // Trường hợp điểm không đủ hoặc bằng 0
-      toast.info('Quý khách không đủ điểm để giảm giá');
-    }
   };
 
   const paginatedCart = cart.slice(
@@ -317,20 +211,6 @@ function SalePage() {
 
   const handleNextPage = () => {
     if (current < meta.pages) setCurrent(current + 1);
-  };
-
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
-
-  const [selectedProductUnit, setSelectedProductUnit] = useState<
-    ProductSample | undefined
-  >();
-
-  const onMutate = () => {
-  };
-
-  const handleOpenUpdateModal = (productUnit: ProductSample) => {
-    setSelectedProductUnit(productUnit);
-    setIsUpdateModalOpen(true);
   };
 
   return (
@@ -365,18 +245,23 @@ function SalePage() {
           {productUnits.map((productUnit: ProductUnitTransform) => (
             <div
               key={productUnit.id}
-              className="col-md-3 p-1"
-              onClick={() => {}}
+              className="col-md-3 p-2"
+              onClick={() => addToCart(productUnit)}
               style={{ cursor: 'pointer' }}
             >
               <div className="card">
-                {/* <Image
-                  src={productUnit.image}
+                <Image
+                  src={
+                    typeof productUnit.image === 'string'
+                      ? productUnit.image
+                      : URL.createObjectURL(productUnit.image)
+                  }
                   alt={productUnit.productSampleName || 'Product'}
-                  width={100}
+                  width={60}
                   height={100}
                   className="card-img-top p-2"
-                /> */}
+                />
+
                 <div className="d-flex flex-column justify-content-center align-items-center">
                   <text className="p-0">{productUnit.productSampleName}</text>
                   <text className="text-danger p-1">
@@ -433,8 +318,13 @@ function SalePage() {
             onClickIcon={handleSearchCustomer}
             icon={<FaSearch />}
           />
-          <Input size={4} title="Khách hàng" value={customer?.name} readOnly />
-          <ProtectedComponent requiredRoles={['create_customer']}>
+          <Input
+            size={4}
+            title="Khách hàng"
+            value={customer?.name || ''}
+            readOnly
+          />
+          <ProtectedComponent requiredRoles={['c_cus']}>
             <div className="col-md-3 mb-1">
               <Link
                 href="/customers"
@@ -559,29 +449,18 @@ function SalePage() {
           <Input
             size={3}
             title="Tích điểm"
-            value='1'
-            // value={formDataOrder.totalPrice / parameterData?.results[1].value}
+            // value="0"
+            value={formDataOrder.totalPrice / parameterData?.results[1].value}
             readOnly
           />
           <Input
             size={3}
             title="Điểm đã tích"
-            value={customer?.score}
+            value={customer?.score || 0}
             readOnly
           />
-          <div className="col-md-3 mb-2">
-            <button
-              className="btn btn-primary w-100"
-              onClick={handleUsePoint}
-              disabled={
-                customer?.score && formDataOrder.totalPrice > 0 ? false : true
-              }
-            >
-              Dùng điểm
-            </button>
-          </div>
         </div>
-        <div className="row ">
+        <div className="row align-items-end">
           <Input
             size={5}
             title="Phương thức thanh toán"
@@ -597,11 +476,32 @@ function SalePage() {
               { id: 'Chuyển khoản', method: 'Chuyển khoản' },
             ]}
           />
+
+          <Input
+            size={4}
+            title="Điểm muốn sử dụng"
+            value={pointsToUse}
+            placeholder="Nhập số điểm"
+            onChange={(value) => handlePointsToUseChange(+value)}
+            readOnly={!customer?.score}
+          />
+
+          <div className="col-md-3 mb-2">
+            <button
+              className="btn btn-primary w-100"
+              onClick={handleUsePoint}
+              disabled={
+                customer?.score && formDataOrder.totalPrice > 0 ? false : true
+              }
+            >
+              Dùng điểm
+            </button>
+          </div>
         </div>
 
         <div className="row align-items-end">
           <Input
-            size={8}
+            size={6}
             title="Thành tiền"
             value={`${formDataOrder.totalPrice} đ`}
             readOnly
@@ -614,18 +514,18 @@ function SalePage() {
               Tạo đơn hàng
             </button>
           </div>
+          <div className="col-md-2 mb-2">
+            <button
+              className="btn btn-danger w-100"
+              onClick={handleCancelOrder}
+            >
+              Hủy
+            </button>
+          </div>
         </div>
       </div> */}
-
-      <UpdateProductSampleModal
-        isUpdateModalOpen={isUpdateModalOpen}
-        setIsUpdateModalOpen={setIsUpdateModalOpen}
-        data={selectedProductUnit}
-        setData={setSelectedProductUnit}
-        onMutate={onMutate}
-      />
     </div>
   );
 }
 
-export default withRoleAuthorization(SalePage, ['create_order']);
+export default withRoleAuthorization(SalePage, ['c_order']);
