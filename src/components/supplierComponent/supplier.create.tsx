@@ -18,12 +18,12 @@ const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị', key: 'unitName' },
   { title: 'Khối lượng', key: 'volumne' },
   { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
-  // { title: 'Giá bán', key: 'sellPrice' },
 ];
 
 type FormData = {
   name: string;
   phone: string;
+  email: string;
   address: string;
   country: string;
   productUnitIds: number[];
@@ -36,6 +36,7 @@ function CreateSupplierModal(props: CreateModalProps) {
 
   const initalFormData = {
     name: '',
+    email: '',
     phone: '',
     address: '',
     country: '',
@@ -139,8 +140,16 @@ function CreateSupplierModal(props: CreateModalProps) {
               <Input
                 title="Tên nhà cung cấp"
                 value={formData?.name || ''}
-                size={6}
+                size={12}
                 onChange={(value) => handleFormDataChange('name', value)}
+              />
+            </div>
+            <div className="row mb-3">
+              <Input
+                title="Email"
+                value={formData?.email || ''}
+                size={6}
+                onChange={(value) => handleFormDataChange('email', value)}
               />
               <Input
                 title="Số điện thoại"

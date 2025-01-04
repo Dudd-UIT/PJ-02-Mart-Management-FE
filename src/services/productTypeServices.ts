@@ -40,7 +40,7 @@ export const fetchProductTypes = async (
   }
 };
 
-export const handleCreaterProductTypeAction = async (data: any) => {
+export const handleCreateProductTypeAction = async (data: any) => {
   const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`,

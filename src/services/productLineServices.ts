@@ -43,7 +43,7 @@ export const fetchProductLines = async (
   }
 };
 
-export const handleCreaterProductLineAction = async (data: any) => {
+export const handleCreateProductLineAction = async (data: any) => {
   const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`,

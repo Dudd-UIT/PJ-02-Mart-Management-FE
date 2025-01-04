@@ -15,8 +15,8 @@ import {
 import { LuImport } from 'react-icons/lu';
 import { TbShieldStar } from 'react-icons/tb';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import ProtectedComponent from './ProtectedComponent';
+import Image from 'next/image';
 
 export default function Sidebar() {
   const [isPinned, setIsPinned] = useState(false);
@@ -51,19 +51,35 @@ export default function Sidebar() {
         transition: 'width 0.3s',
       }}
     >
-      <div className="h-5rem d-flex justify-content-between align-items-center">
-        <h1 className="fs-4">
-          <span
-            className="text-white"
-            style={{ display: isPinned ? 'inline' : 'none' }}
+      <div
+        className="h-5rem d-flex justify-content-between align-items-center"
+        style={{ paddingTop: '10px' }}
+      >
+        {/* Logo and Text Container */}
+        <div className="d-flex align-items-center">
+          <Image
+            src="/images/logo.svg"
+            alt="Logo"
+            width={30}
+            height={30}
+            priority
+            className="ms-2"
+            style={{ objectFit: 'contain' }}
+          />
+          <h1
+            className="fs-2 ms-2 mb-0 d-flex align-items-center"
+            style={{ lineHeight: '30px' }}
           >
-            {/* BMart */}
-          </span>
-        </h1>
+            {isPinned && <span className="text-white">BMart</span>}
+          </h1>
+        </div>
+
+        {/* Button */}
         <button className="btn text-white" onClick={togglePin}>
           {isPinned ? <FaAngleDoubleLeft /> : <FaAngleDoubleRight />}
         </button>
       </div>
+
       <hr className="h-color mx-2" style={{ color: 'white' }} />
 
       <ul
@@ -313,6 +329,13 @@ export default function Sidebar() {
                   <li className={pathname == '/rule/staff' ? 'active' : ''}>
                     <Link href="/rule/staff" className="btn btn-sc">
                       {isPinned && <text className="small">Nhân viên</text>}
+                    </Link>
+                  </li>
+                </ProtectedComponent>
+                <ProtectedComponent requiredRoles={['v_units']}>
+                  <li className={pathname == '/rule/unit' ? 'active' : ''}>
+                    <Link href="/rule/unit" className="btn btn-sc">
+                      {isPinned && <text className="small">Đơn vị tính</text>}
                     </Link>
                   </li>
                 </ProtectedComponent>
