@@ -37,7 +37,7 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
 
   const [formData, setFormData] = useState<FormData>(initalFormData);
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/units`;
-  const { data: unitsData, error } = useSWR([url], () => fetchUnits(url));
+  const { data: unitsData, error } = useSWR([url], () => fetchUnits());
   console.log('unitsData', unitsData);
   const handleCloseProductUnitListModal = () => {
     setIsProductSampleUnitsModalOpen(false);

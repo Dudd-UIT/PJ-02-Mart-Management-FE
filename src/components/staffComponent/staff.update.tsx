@@ -8,6 +8,7 @@ import { Input } from '../commonComponent/InputForm';
 import useSWR from 'swr';
 import { fetchGroups } from '@/services/groupServices';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
+import ResetPasswordModal from './staff.resetPass';
 
 type FormData = {
   id: number;
@@ -27,6 +28,8 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
     setData: setStaffData,
     onMutate,
   } = props;
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState<boolean>(false);
 
   const initalFormData = {
     id: 0,
@@ -77,6 +80,10 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleResetPassword = () => {
+    setIsResetPasswordModalOpen(true);
+  };
+
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/groups`;
 
   const { data: groups, error } = useSWR([url], () => fetchGroups());
@@ -115,31 +122,32 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
                 }
               />
             </div>
-            <div className="row mb-3">
+            <div className="row mb-3 align-items-end">
               <Input
-                size={6}
+                size={5}
                 title="Email"
                 value={formData?.email || ''}
                 onChange={(value) => handleFormDataChange('email', value)}
               />
-              <Input
-                size={6}
-                readOnly={true}
-                title="Mật khẩu"
-                value={formData?.password || ''}
-                onChange={(value) => handleFormDataChange('password', value)}
-              />
-            </div>
-            <div className="row mb-3">
               <Input
                 size={4}
                 title="Số điện thoại"
                 value={formData?.phone || ''}
                 onChange={(value) => handleFormDataChange('phone', value)}
               />
+              <div className="col-md-3 mb-2">
+                <button
+                  className="btn btn-primary w-100"
+                  onClick={handleResetPassword}
+                >
+                  Reset Mật khẩu
+                </button>
+              </div>
+            </div>
+            <div className="row mb-3">
               <Input
                 title="Địa chỉ"
-                size={8}
+                size={12}
                 value={formData?.address || ''}
                 onChange={(value) => handleFormDataChange('address', value)}
               />
@@ -157,6 +165,12 @@ function UpdateStaffModal(props: UpdateModalProps<Staff>) {
           </ProtectedComponent>
         </Modal.Footer>
       </Modal>
+
+      <ResetPasswordModal
+        isResetPasswordModalOpen={isResetPasswordModalOpen}
+        setIsResetPasswordModalOpen={setIsResetPasswordModalOpen}
+        data={staffData}
+      />
     </>
   );
 }
