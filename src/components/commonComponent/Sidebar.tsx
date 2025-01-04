@@ -121,32 +121,44 @@ export default function Sidebar() {
                   )}
                 </Link>
               </li>
-              <li className={pathname == '/statistics/revenue' ? 'active' : ''}>
-                <Link href="/statistics/revenue" className="btn btn-sc">
-                  {isPinned && <text className="small">Doanh thu</text>}
-                </Link>
-              </li>
-              <li
-                className={pathname == '/statistics/best-sale' ? 'active' : ''}
-              >
-                <Link href="/statistics/best-sale" className="btn btn-sc">
-                  {isPinned && (
-                    <text className="small">Sản phẩm thịnh hành</text>
-                  )}
-                </Link>
-              </li>
-              <li
-                className={
-                  pathname == '/statistics/order-statistics' ? 'active' : ''
-                }
-              >
-                <Link
-                  href="/statistics/order-statistics"
-                  className="btn btn-sc"
+              <ProtectedComponent requiredRoles={['v_statis']}>
+                <li
+                  className={pathname == '/statistics/revenue' ? 'active' : ''}
                 >
-                  {isPinned && <text className="small">Thống kê đơn hàng</text>}
-                </Link>
-              </li>
+                  <Link href="/statistics/revenue" className="btn btn-sc">
+                    {isPinned && <text className="small">Doanh thu</text>}
+                  </Link>
+                </li>
+              </ProtectedComponent>
+              <ProtectedComponent requiredRoles={['v_statis']}>
+                <li
+                  className={
+                    pathname == '/statistics/best-sale' ? 'active' : ''
+                  }
+                >
+                  <Link href="/statistics/best-sale" className="btn btn-sc">
+                    {isPinned && (
+                      <text className="small">Sản phẩm thịnh hành</text>
+                    )}
+                  </Link>
+                </li>
+              </ProtectedComponent>
+              <ProtectedComponent requiredRoles={['v_statis']}>
+                <li
+                  className={
+                    pathname == '/statistics/order-statistics' ? 'active' : ''
+                  }
+                >
+                  <Link
+                    href="/statistics/order-statistics"
+                    className="btn btn-sc"
+                  >
+                    {isPinned && (
+                      <text className="small">Thống kê đơn hàng</text>
+                    )}
+                  </Link>
+                </li>
+              </ProtectedComponent>
             </ul>
           )}
         </li>

@@ -8,7 +8,6 @@ import {
 } from '@/services/productSampleServices';
 import useSWR from 'swr';
 import { fetchProductLines } from '@/services/productLineServices';
-import { fetchUnits } from '@/services/unitServices';
 import { Input } from '../commonComponent/InputForm';
 import { FaPlus } from 'react-icons/fa6';
 import SelectedProductSampleUnitTable from './selectedProductSample.table';

@@ -47,6 +47,12 @@ declare global {
     data: User;
   }
 
+  interface ChangePasswordModalProps {
+    isChangePasswordModalOpen: boolean;
+    setIsChangePasswordModalOpen: (v: boolean) => void;
+    data: User;
+  }
+
   export type Column<T> = {
     title: string;
     key: keyof T;
@@ -82,6 +88,13 @@ declare global {
     setIsDeleteModalOpen: (v: boolean) => void;
     data?: T;
     onMutate: () => void;
+  }
+
+  export interface ResetPasswordModal {
+    isResetPasswordModalOpen: boolean;
+    setIsResetPasswordModalOpen: (v: boolean) => void;
+    data?: T;
+    // onMutate: () => void;
   }
 }
 
