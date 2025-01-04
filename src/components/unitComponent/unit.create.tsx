@@ -3,10 +3,10 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { handleCreateProductTypeAction } from '@/services/productTypeServices';
 import { Input } from '../commonComponent/InputForm';
+import { handleCreateUnitAction } from '@/services/unitServices';
 
-function CreateProductTypeModal(props: CreateModalProps) {
+function CreateUnitModal(props: CreateModalProps) {
   const { isCreateModalOpen, setIsCreateModalOpen, onMutate } = props;
   const [name, setName] = useState('');
 
@@ -15,12 +15,12 @@ function CreateProductTypeModal(props: CreateModalProps) {
     setName('');
   };
 
-  const handleCreateProductType = async () => {
-    const newProductType = {
+  const handleCreateUnit = async () => {
+    const newUnit = {
       name,
     };
 
-    const res = await handleCreateProductTypeAction(newProductType);
+    const res = await handleCreateUnitAction(newUnit);
     if (res?.data) {
       handleCloseCreateModal();
       toast.success(res.message);
@@ -38,13 +38,13 @@ function CreateProductTypeModal(props: CreateModalProps) {
         backdrop={'static'}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Thêm mới loại sản phẩm</Modal.Title>
+          <Modal.Title>Thêm mới đơn vị tính</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Thông tin loại sản phẩm */}
+          {/* Thông tin đơn vị tính */}
           <Input
             size={12}
-            title="Tên loại sản phẩm"
+            title="Tên đơn vị tính"
             value={name}
             onChange={(value) => setName(value)}
           />
@@ -53,7 +53,7 @@ function CreateProductTypeModal(props: CreateModalProps) {
           <Button variant="secondary" onClick={handleCloseCreateModal}>
             Thoát
           </Button>
-          <Button variant="danger" onClick={handleCreateProductType}>
+          <Button variant="danger" onClick={handleCreateUnit}>
             Lưu
           </Button>
         </Modal.Footer>
@@ -62,4 +62,4 @@ function CreateProductTypeModal(props: CreateModalProps) {
   );
 }
 
-export default CreateProductTypeModal;
+export default CreateUnitModal;

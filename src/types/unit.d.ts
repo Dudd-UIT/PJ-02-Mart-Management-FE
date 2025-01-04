@@ -1,24 +1,14 @@
 import { Column, MetaData } from './commonType';
 
-export type UnitTransform = {
-  id: number;
-  sellPrice: number;
-  conversionRate: number;
-  createdAt: string;
-  volumne: string;
-  productSampleName: string;
-  unitName: string;
-};
-
 export type Unit = {
   id: number;
   name: string;
 };
 
-export interface UnitTableModalProps {
-  productUnits: ProductUnitTransform[];
-  columns: Column<ProductUnitTransform>[];
-  // meta: MetaData;
+export interface UnitTableType {
+  units: Unit[];
+  columns: Column<Unit>[];
+  onMutate: () => void;
 }
 
 export interface ProductSampleUnitModalProps {
@@ -26,10 +16,4 @@ export interface ProductSampleUnitModalProps {
   setIsProductSampleUnitsModalOpen: (v: boolean) => void;
   productSampleData?: ProductSampleTransform;
   onAddUnit: (ProductUnitTransform) => void;
-}
-
-export interface SelectedProductUnitTableModalProps {
-  productUnits: ProductUnitTransform[];
-  columns: Column<ProductUnitTransform>[];
-  // meta: MetaData;
 }

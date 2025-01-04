@@ -90,7 +90,6 @@ function PointConvertPage() {
         </button>
       </div>
 
-      <h2>Quản lý tỷ lệ quy đổi điểm</h2>
       <h4>Bao nhiêu VND được 1 điểm?</h4>
 
       <div className="container d-flex flex-column align-items-center pt-5">
