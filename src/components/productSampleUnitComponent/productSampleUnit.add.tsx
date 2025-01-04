@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { Input } from '../commonComponent/InputForm';
 import { ProductSampleUnitModalProps, Unit } from '@/types/unit';
 import { fetchUnits } from '@/services/unitServices';
+import Image from 'next/image';
 
 type FormData = {
   unitId: number;
@@ -24,7 +25,6 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
     productSampleData,
     onAddUnit,
   } = props;
-  console.log('productSampleData', productSampleData);
   const initalFormData = {
     unitId: 0,
     sellPrice: 0,
@@ -38,7 +38,7 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
   const [formData, setFormData] = useState<FormData>(initalFormData);
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/units`;
   const { data: unitsData, error } = useSWR([url], () => fetchUnits(url));
-
+  console.log('unitsData', unitsData);
   const handleCloseProductUnitListModal = () => {
     setIsProductSampleUnitsModalOpen(false);
     setFormData(initalFormData);
@@ -62,7 +62,6 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
   }, [productSampleData, handleFormDataChange]);
 
   const handleSave = async () => {
-    console.log('formData:::', formData);
     onAddUnit(formData);
     handleCloseProductUnitListModal();
     setIsProductSampleUnitsModalOpen(false);
@@ -81,34 +80,35 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
       <Modal.Body>
         <div className="container p-3">
           <div className="row g-3">
-          <div className="col-md-4 d-flex align-items-center justify-content-center">
-            <div
-              className="border rounded bg-light d-flex align-items-center justify-content-center"
-              style={{ width: '100%', height: '200px' }}
-            >
-              {formData.image instanceof File ? (
-                <img
-                  src={URL.createObjectURL(formData.image)}
-                  alt="Preview"
-                  style={{ maxWidth: '100%', maxHeight: '100%' }}
-                />
-              ) : (
-                <span className="text-muted">Ảnh sản phẩm</span>
-              )}
+            <div className="col-md-4 d-flex align-items-center justify-content-center">
+              <div
+                className="border rounded bg-light d-flex align-items-center justify-content-center"
+                style={{ width: '100%', height: '200px' }}
+              >
+                {formData.image instanceof File ? (
+                  <Image
+                    src={URL.createObjectURL(formData.image)}
+                    alt="Preview"
+                    layout="intrinsic"
+                    width={200} // Kích thước tùy chỉnh
+                    height={200}
+                  />
+                ) : (
+                  <span className="text-muted">Ảnh sản phẩm</span>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="mt-3">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  handleFormDataChange('image', e.target.files[0]);
-                }
-              }}
-            /> 
-          </div>
-
+            <div className="mt-3">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleFormDataChange('image', e.target.files[0]);
+                  }
+                }}
+              />
+            </div>
 
             <div className="col-md-8">
               <div className="mb-3">

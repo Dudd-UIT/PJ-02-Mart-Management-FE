@@ -1,44 +1,33 @@
 'use client';
 
-import { Input, SelectInput } from '@/components/commonComponent/InputForm';
+import { Input } from '@/components/commonComponent/InputForm';
 import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
-import CreateCustomerModal from '@/components/customerComponent/customer.create';
-import CustomerTable from '@/components/customerComponent/customer.table';
+import CreateUnitModal from '@/components/unitComponent/unit.create';
+import UnitTable from '@/components/unitComponent/unit.table';
 import withRoleAuthorization from '@/hoc/withRoleAuthorization';
-import { fetchCustomers } from '@/services/customerServices';
-import { Customer } from '@/types/customer';
+import { fetchUnits } from '@/services/unitServices';
+import { ProductType } from '@/types/productType';
 import { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
 
-const columns: Column<Customer>[] = [
+const columns: Column<ProductType>[] = [
   { title: '#', key: 'id' },
-  { title: 'Tên khách hàng', key: 'name' },
-  { title: 'Số điện thoại', key: 'phone' },
-  { title: 'Địa chỉ', key: 'address' },
-  { title: 'Email', key: 'email' },
-  { title: 'Điểm tích lũy', key: 'score' },
+  { title: 'Tên đơn vị tính', key: 'name' },
 ];
 
-const CustomersPage = () => {
+function UnitPage() {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [groupId, setGroupId] = useState(3);
-  const [searchValue, setSearchValue] = useState('');
-  const [searchType, setSearchType] = useState<'name' | 'phone'>('name');
-  const [searchParams, setSearchParams] = useState({ name: '', phone: '' });
+
+  const [searchName, setSearchName] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/users`;
+  const [searchParams, setSearchParams] = useState({ name: '' });
+
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/units`;
   const { data, error } = useSWR(
-    [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
-    () =>
-      fetchCustomers(
-        current,
-        pageSize,
-        groupId,
-        searchParams.name,
-        searchParams.phone,
-      ),
+    [url, current, pageSize, searchParams.name],
+    () => fetchUnits(current, pageSize, searchParams.name),
   );
 
   if (error)
@@ -63,14 +52,6 @@ const CustomersPage = () => {
     total: data.meta.total,
   };
 
-  const handleSearchClick = () => {
-    setSearchParams({
-      name: searchType === 'name' ? searchValue : '',
-      phone: searchType === 'phone' ? searchValue : '',
-    });
-    setCurrent(1);
-  };
-
   const handlePreviousPage = () => {
     if (current > 1) setCurrent(current - 1);
   };
@@ -79,50 +60,31 @@ const CustomersPage = () => {
     if (current < meta.pages) setCurrent(current + 1);
   };
 
-  const onMutate = () =>
-    mutate(
-      [url, current, pageSize, groupId, searchParams.name, searchParams.phone],
-      async () =>
-        await fetchCustomers(
-          current,
-          pageSize,
-          groupId,
-          searchParams.name,
-          searchParams.phone,
-        ),
-      { revalidate: true },
-    );
+  const handleSearchClick = () => {
+    setSearchParams({ name: searchName });
+    setCurrent(1);
+  };
+
+  const onMutate = () => mutate([url, current, pageSize, searchParams.name]);
 
   return (
     <>
-      <h2>Quản lý khách hàng</h2>
-      {/* Thanh tìm kiếm gộp */}
+      <h3>Quản lý đơn vị tính</h3>
+      {/* button search */}
       <div className="row">
-        <SelectInput
-          size={2}
-          label="Chọn loại tìm kiếm"
-          value={searchType}
-          options={[
-            { label: 'Tên khách hàng', value: 'name' },
-            { label: 'Số điện thoại', value: 'phone' },
-          ]}
-          onChange={(value) => setSearchType(value as 'name' | 'phone')}
-        />
         <Input
-          title="Tìm kiếm"
+          title="Tên đơn vị tính"
           size={4}
-          value={searchValue}
-          placeholder={`Nhập ${
-            searchType === 'name' ? 'tên khách hàng' : 'số điện thoại'
-          }`}
-          onChange={(value) => setSearchValue(value)}
+          value={searchName}
+          placeholder="Nhập tên đơn vị tính"
+          onChange={(value) => setSearchName(value)}
           onClickIcon={handleSearchClick}
           icon={<FaSearch />}
         />
       </div>
 
-      {/* button Thêm Customer */}
-      <ProtectedComponent requiredRoles={['c_cus']}>
+      {/* button Thêm Unit */}
+      <ProtectedComponent requiredRoles={['c_unit']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -134,9 +96,9 @@ const CustomersPage = () => {
         </div>
       </ProtectedComponent>
 
-      {/* Quản lý Customer */}
-      <CustomerTable
-        customers={data.results}
+      {/* Quản lý Unit */}
+      <UnitTable
+        units={data.results}
         columns={columns}
         onMutate={onMutate}
       />
@@ -171,15 +133,14 @@ const CustomersPage = () => {
           </li>
         </ul>
       </nav>
-
-      {/* Modal Create Customer */}
-      <CreateCustomerModal
+      {/* Modal Create Unit */}
+      <CreateUnitModal
         isCreateModalOpen={isCreateModalOpen}
         setIsCreateModalOpen={setIsCreateModalOpen}
         onMutate={onMutate}
       />
     </>
   );
-};
+}
 
-export default withRoleAuthorization(CustomersPage, ['v_cus']);
+export default withRoleAuthorization(UnitPage, ['v_units']);

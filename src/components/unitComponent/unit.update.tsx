@@ -3,16 +3,16 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { handleUpdateProductTypeAction } from '@/services/productTypeServices';
-import { ProductType } from '@/types/productType';
 import { Input } from '../commonComponent/InputForm';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
+import { Unit } from '@/types/unit';
+import { handleUpdateUnitAction } from '@/services/unitServices';
 
-function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
+function UpdateUnitModal(props: UpdateModalProps<Unit>) {
   const {
     isUpdateModalOpen,
     setIsUpdateModalOpen,
-    data: productTypeData,
+    data: unitData,
     setData,
     onMutate,
   } = props;
@@ -21,15 +21,15 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
   const [name, setName] = useState('');
 
   useEffect(() => {
-    if (productTypeData) {
-      setId(productTypeData.id);
-      setName(productTypeData.name || '');
+    if (unitData) {
+      setId(unitData.id);
+      setName(unitData.name || '');
     }
-  }, [productTypeData]);
+  }, [unitData]);
 
   const resetForm = () => {
-    setId(productTypeData?.id);
-    setName(productTypeData?.name || '');
+    setId(unitData?.id);
+    setName(unitData?.name || '');
   };
 
   const handleCloseUpdateModal = () => {
@@ -38,13 +38,13 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
     setData?.(undefined);
   };
 
-  const handleUpdateProductType = async () => {
-    const newProductType = {
+  const handleUpdateUnit = async () => {
+    const newUnit = {
       id,
       name,
     };
 
-    const res = await handleUpdateProductTypeAction(newProductType);
+    const res = await handleUpdateUnitAction(newUnit);
     if (res?.data) {
       handleCloseUpdateModal();
       toast.success(res.message);
@@ -62,13 +62,13 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
         onHide={handleCloseUpdateModal}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Thông tin loại sản phẩm</Modal.Title>
+          <Modal.Title>Thông tin đơn vị tính</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Thông tin loại sản phẩm */}
+          {/* Thông tin đơn vị tính */}
           <Input
             size={12}
-            title="Tên loại sản phẩm"
+            title="Tên đơn vị tính"
             value={name}
             onChange={(value) => setName(value)}
           />
@@ -77,8 +77,8 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
           <Button variant="secondary" onClick={handleCloseUpdateModal}>
             Thoát
           </Button>
-          <ProtectedComponent requiredRoles={['u_pdtype']}>
-            <Button variant="danger" onClick={handleUpdateProductType}>
+          <ProtectedComponent requiredRoles={['u_unit']}>
+            <Button variant="danger" onClick={handleUpdateUnit}>
               Lưu
             </Button>
           </ProtectedComponent>
@@ -88,4 +88,4 @@ function UpdateProductTypeModal(props: UpdateModalProps<ProductType>) {
   );
 }
 
-export default UpdateProductTypeModal;
+export default UpdateUnitModal;

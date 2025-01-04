@@ -40,9 +40,7 @@ const CustomerTable = (props: CustomerTableType) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent
-                requiredRoles={['update_customer', 'delete_customer']}
-              >
+              <ProtectedComponent requiredRoles={['v_cus', 'd_cus']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -55,17 +53,15 @@ const CustomerTable = (props: CustomerTableType) => {
                 {columns.map((column, colIndex) => (
                   <td key={colIndex}>{row[column.key as keyof Customer]}</td>
                 ))}
-                <ProtectedComponent
-                  requiredRoles={['update_customer', 'delete_customer']}
-                >
+                <ProtectedComponent requiredRoles={['v_cus', 'd_cus']}>
                   <td>
-                    <ProtectedComponent requiredRoles={['update_customer']}>
+                    <ProtectedComponent requiredRoles={['v_cus']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
 
-                    <ProtectedComponent requiredRoles={['delete_customer']}>
+                    <ProtectedComponent requiredRoles={['d_cus']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>

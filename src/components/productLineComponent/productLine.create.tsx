@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { fetchProductTypes } from '@/services/productTypeServices';
-import { handleCreaterProductLineAction } from '@/services/productLineServices';
+import { handleCreateProductLineAction } from '@/services/productLineServices';
 import useSWR from 'swr';
 import { Input } from '../commonComponent/InputForm';
 
@@ -33,7 +33,7 @@ function CreateProductLineModal(props: CreateModalProps) {
   };
 
   const handleCreateProductLine = async () => {
-    const res = await handleCreaterProductLineAction(formData);
+    const res = await handleCreateProductLineAction(formData);
     if (res?.data) {
       handleCloseCreateModal();
       toast.success(res.message);

@@ -1,31 +1,24 @@
-// SupplierTable Component
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
-import {
-  ProductLine,
-  ProductLineTableType,
-  ProductLineTransform,
-} from '@/types/productLine';
-import DeleteProductLineModal from './productLine.delete';
-import UpdateProductLineModal from './productLine.update';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
+import UpdateUnitModal from './unit.update';
+import DeleteUnitModal from './unit.delete';
+import { Unit, UnitTableType } from '@/types/unit';
 
-const ProductLineTable = (props: ProductLineTableType) => {
-  const { productLines, columns, onMutate } = props;
+const UnitTable = (props: UnitTableType) => {
+  const { units, columns, onMutate } = props;
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [selectedProductLine, setSelectedProductLine] = useState<
-    ProductLineTransform | undefined
-  >();
+  const [selectedUnit, setSelectedUnit] = useState<Unit | undefined>();
 
-  const handleOpenUpdateModal = (productLine: ProductLineTransform) => {
-    setSelectedProductLine(productLine);
+  const handleOpenUpdateModal = (unit: Unit) => {
+    setSelectedUnit(unit);
     setIsUpdateModalOpen(true);
   };
 
-  const handleOpenDeleteModal = (productLine: ProductLineTransform) => {
-    setSelectedProductLine(productLine);
+  const handleOpenDeleteModal = (unit: Unit) => {
+    setSelectedUnit(unit);
     setIsDeleteModalOpen(true);
   };
 
@@ -44,7 +37,7 @@ const ProductLineTable = (props: ProductLineTableType) => {
                   {column.title}
                 </th>
               ))}
-              <ProtectedComponent requiredRoles={['v_pdlines', 'd_pdline']}>
+              <ProtectedComponent requiredRoles={['v_pdtypes', 'd_pdtype']}>
                 <th scope="col" className="text-center align-middle">
                   Thao tác
                 </th>
@@ -52,23 +45,19 @@ const ProductLineTable = (props: ProductLineTableType) => {
             </tr>
           </thead>
           <tbody>
-            {productLines?.map((row, rowIndex) => (
+            {units?.map((row, rowIndex) => (
               <tr key={rowIndex} className="text-center align-middle">
                 {columns.map((column, colIndex) => (
-                  <td key={colIndex}>
-                    {column.render
-                      ? column.render(row)
-                      : row[column.key as keyof ProductLineTransform]}
-                  </td>
+                  <td key={colIndex}>{row[column.key as keyof Unit]}</td>
                 ))}
-                <ProtectedComponent requiredRoles={['v_pdlines', 'd_pdline']}>
+                <ProtectedComponent requiredRoles={['v_units', 'd_unit']}>
                   <td>
-                    <ProtectedComponent requiredRoles={['v_pdlines']}>
+                    <ProtectedComponent requiredRoles={['v_units']}>
                       <button onClick={() => handleOpenUpdateModal(row)}>
                         <FaEye size={18} />
                       </button>
                     </ProtectedComponent>
-                    <ProtectedComponent requiredRoles={['d_pdline']}>
+                    <ProtectedComponent requiredRoles={['d_unit']}>
                       <button onClick={() => handleOpenDeleteModal(row)}>
                         <HiOutlineTrash size={18} />
                       </button>
@@ -81,21 +70,21 @@ const ProductLineTable = (props: ProductLineTableType) => {
         </table>
       </div>
 
-      <UpdateProductLineModal
+      <UpdateUnitModal
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
-        data={selectedProductLine}
-        setData={setSelectedProductLine}
+        data={selectedUnit}
+        setData={setSelectedUnit}
         onMutate={onMutate}
       />
-      <DeleteProductLineModal
+      <DeleteUnitModal
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
-        data={selectedProductLine}
+        data={selectedUnit}
         onMutate={onMutate}
       />
     </>
   );
 };
 
-export default ProductLineTable;
+export default UnitTable;

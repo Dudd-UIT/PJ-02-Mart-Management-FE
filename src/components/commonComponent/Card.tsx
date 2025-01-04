@@ -2,9 +2,10 @@ import { StatisticsCardProps } from '@/types/commonType';
 import { formatCurrency } from '@/utils/format';
 
 export function Card(props: StatisticsCardProps) {
-  const { title, data, unit } = props;
+  const { title, data, unit, size } = props;
+
   return (
-    <div className="col col-md-4">
+    <div className={size ? `col col-md-4` : `col col-md-${size}`}>
       <button className="btn btn-outline w-75 ">
         <h4 className="text-start">{title}</h4>
         <h1 className="text-start fw-bold" style={{ display: 'inline' }}>

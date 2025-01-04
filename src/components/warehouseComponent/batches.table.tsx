@@ -19,7 +19,6 @@ const BatchTable = (props: BatchTableType) => {
 
   const handleOpenUpdateModal = (batch: BatchGrouped) => {
     setSelectedBatch(batch);
-    console.log(batch);
     setIsUpdateModalOpen(true);
   };
 

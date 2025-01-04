@@ -87,16 +87,17 @@ declare global {
 
 interface GroupedProductData {
   [typeName: string]: {
-      [lineName: string]: Product[];
+    [lineName: string]: Product[];
   };
 }
 
 export type StatisticsCardProps = {
   title: string;
-  data?: string|number;
+  size?: number;
+  data?: string | number;
   unit?: string;
   onClick?: () => void;
-}
+};
 
 type RevenueChartData = {
   time: string;

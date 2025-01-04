@@ -8,6 +8,7 @@ export type Staff = {
   address: string;
   email: string;
   group: Group;
+  isActive: number;
 };
 
 export interface StaffTableType {

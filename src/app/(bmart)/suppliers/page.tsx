@@ -15,6 +15,7 @@ const columns: Column<Supplier>[] = [
   { title: '#', key: 'id' },
   { title: 'Tên nhà cung cấp', key: 'name' },
   { title: 'Số điện thoại', key: 'phone' },
+  { title: 'Email', key: 'email' },
   { title: 'Địa chỉ', key: 'address' },
   { title: 'Quốc gia', key: 'country' },
 ];
@@ -36,7 +37,7 @@ const SuppliersPage = () => {
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>Failed to load suppliers: {error.message}</div>
+        <div>{error.message}</div>
       </div>
     );
 
@@ -103,7 +104,7 @@ const SuppliersPage = () => {
       </div>
 
       {/* button Thêm Supplier */}
-      <ProtectedComponent requiredRoles={['create_supplier']}>
+      <ProtectedComponent requiredRoles={['c_sup']}>
         <div className="d-flex justify-content-end mx-3">
           <button
             className="btn d-flex align-items-center btn-primary"
@@ -162,4 +163,4 @@ const SuppliersPage = () => {
     </>
   );
 };
-export default withRoleAuthorization(SuppliersPage, ['view_suppliers']);
+export default withRoleAuthorization(SuppliersPage, ['v_sups']);
