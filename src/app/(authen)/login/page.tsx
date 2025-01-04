@@ -39,7 +39,7 @@ function LoginPage() {
         // }
         toast.error(res.message);
       } else {
-        router.replace('/statistics');
+        router.replace('/product-sale');
       }
     } catch (error) {
       console.log('Error:', error);
