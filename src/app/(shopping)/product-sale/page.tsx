@@ -366,7 +366,7 @@ function SalePage() {
             <div
               key={productUnit.id}
               className="col-md-3 p-1"
-              onClick={() => handleOpenUpdateModal(productUnit)}
+              onClick={() => {}}
               style={{ cursor: 'pointer' }}
             >
               <div className="card">
