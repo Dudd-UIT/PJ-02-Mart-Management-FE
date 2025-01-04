@@ -25,6 +25,8 @@ function ProductSamplePage() {
   const [pageSize, setPageSize] = useState(5);
 
   const [searchName, setSearchName] = useState('');
+  const [searchParams, setSearchParams] = useState({ name: '' });
+
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchProductTypeId, setSearchProductTypeId] = useState<number>(0);
   const [searchProductLineId, setSearchProductLineId] = useState<number>(0);
@@ -47,7 +49,7 @@ function ProductSamplePage() {
       urlProductSample,
       current,
       pageSize,
-      '',
+      searchParams.name,
       searchProductLineId,
       searchProductTypeId,
     ],
@@ -55,7 +57,7 @@ function ProductSamplePage() {
       fetchProductSamples(
         current,
         pageSize,
-        '',
+        searchParams.name,
         searchProductLineId,
         searchProductTypeId,
       ),
@@ -104,6 +106,13 @@ function ProductSamplePage() {
     setSearchProductLineId(0);
   };
 
+  const handleSearchClick = () => {
+    setSearchParams({
+      name: searchName,
+    });
+    setCurrent(1);
+  };
+
   return (
     <>
       <h3>Danh sách sản phẩm</h3>
@@ -115,6 +124,7 @@ function ProductSamplePage() {
           value={searchName}
           placeholder="Nhập tên sản phẩm"
           onChange={(value) => setSearchName(value)}
+          onClickIcon={handleSearchClick}
           icon={<FaSearch />}
         />
         <Input
