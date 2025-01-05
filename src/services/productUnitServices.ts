@@ -7,10 +7,10 @@ export const fetchProductUnits = async (
   current: number,
   pageSize: number,
   searchName?: string,
-  searchCategory?: string,
-  searchLine?: string,
-  searchType?: string,
-  searchProuductLineId?: number,
+  searchId?: number,
+  searchLineId?: number,
+  searchTypeId?: number,
+  showOption?: number,
 ) => {
   const session = await auth();
 
@@ -19,11 +19,14 @@ export const fetchProductUnits = async (
     pageSize,
   };
 
+  if (showOption === 2) {
+    queryParams.outOfStock = 1;
+  }
+
   if (searchName) queryParams.name = searchName;
-  if (searchLine) queryParams.productLineName = searchLine;
-  if (searchType) queryParams.productTypeName = searchType;
-  if (searchCategory) queryParams.productLine = searchCategory;
-  if (searchProuductLineId) queryParams.productLineId = searchProuductLineId;
+  if (searchLineId) queryParams.productLineId = searchLineId;
+  if (searchTypeId) queryParams.productTypeId = searchTypeId;
+  if (searchId) queryParams.id = searchId;
 
   try {
     const res = await sendRequest<IBackendRes<any>>({

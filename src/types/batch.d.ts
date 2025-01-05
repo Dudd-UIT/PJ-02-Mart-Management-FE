@@ -38,10 +38,12 @@ export type BatchGrouped = {
   discount: number;
   inventQuantity: number;
   inboundQuantity: number;
-  expiredAt: string; 
-  inboundReceiptId: number; 
+  expiredAt: string;
+  inboundReceiptId: number;
   unit: string;
+  unitId: number;
   productSample: string;
+  uniqueUnitKey: string;
 };
 
 export interface BatchTableType {
@@ -49,7 +51,6 @@ export interface BatchTableType {
   columns: Column<BatchGrouped>[];
   onMutate: () => void;
 }
-
 
 // export type InboundReceipt = {
 //   id: number;

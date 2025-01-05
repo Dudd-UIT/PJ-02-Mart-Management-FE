@@ -88,7 +88,6 @@ export const handleResetPasswordAction = async (id: any) => {
 
 export const handleChangePasswordAction = async (data: any) => {
   const { id, ...rest } = data;
-  console.log('data', data);
   const session = await auth();
 
   const res = await sendRequest<IBackendRes<any>>({

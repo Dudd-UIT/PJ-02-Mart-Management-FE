@@ -1,7 +1,7 @@
 'use client';
 
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
 import ProductUnitTable from '../productUnitComponent/productUnit.table';
@@ -10,10 +10,9 @@ import {
   ProductUnit,
   ProductUnitTransform,
 } from '@/types/productUnit';
-import { sendRequest } from '@/utils/api';
 import useSWR from 'swr';
 import { Input } from '../commonComponent/InputForm';
-import { fetchProductUnits, fetchProductUnitsBySupplier } from '@/services/productUnitServices';
+import { fetchProductUnitsBySupplier } from '@/services/productUnitServices';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'ID', key: 'id' },
@@ -29,7 +28,7 @@ function ProductSupplierModal(props: ProductSupplierModalProps) {
     setIsProductSupplierModalOpen,
     selectedProductUnitIds,
     onSelectedProductUnitsChange,
-    supplierId
+    supplierId,
   } = props;
 
   const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();

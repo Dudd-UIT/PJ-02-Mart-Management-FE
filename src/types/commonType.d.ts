@@ -98,11 +98,19 @@ declare global {
   }
 }
 
-interface GroupedProductData {
+export type GroupedProductData = {
   [typeName: string]: {
-    [lineName: string]: Product[];
+    [lineName: string]: {
+      [sampleName: string]: {
+        id: number;
+        name: string;
+        sellPrice: number;
+        image: string;
+      }[];
+    };
   };
-}
+};
+
 
 export type StatisticsCardProps = {
   title: string;
