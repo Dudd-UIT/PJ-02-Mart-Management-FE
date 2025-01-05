@@ -111,6 +111,7 @@ function CreateProductSampleModal(props: CreateModalProps) {
         productSampleDto: formData,
         productUnitsDto,
       });
+      console.log('payload', payload);
 
       // Gửi payload xuống backend
       const res = await handleCreateProductSampleAction(payload);
