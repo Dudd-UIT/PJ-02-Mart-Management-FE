@@ -69,5 +69,5 @@ interface Product {
   image: string;
   volumne: string;
   productSample: ProductSample;
-  // unit: Unit;
+  unit: Unit;
 }

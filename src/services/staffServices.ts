@@ -72,6 +72,36 @@ export const handleUpdateStaffAction = async (data: any) => {
   return res;
 };
 
+export const handleResetPasswordAction = async (id: any) => {
+  const session = await auth();
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/users/reset-pass/${id}`,
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+  });
+
+  return res;
+};
+
+export const handleChangePasswordAction = async (data: any) => {
+  const { id, ...rest } = data;
+  const session = await auth();
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/users/change-pass/${id}`,
+    method: 'PATCH',
+    body: { ...rest },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+  });
+
+  return res;
+};
+
 export const handleDeleteStaffAction = async (id: any) => {
   const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({

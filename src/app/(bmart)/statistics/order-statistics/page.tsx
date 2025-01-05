@@ -30,8 +30,6 @@ function OrderStat() {
     () => fetchOrderValueDistribution(level.toString(), startDate, endDate),
   );
 
-  console.log('orderDistributions', orderDistributions);
-
   if (orderStatsError)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">

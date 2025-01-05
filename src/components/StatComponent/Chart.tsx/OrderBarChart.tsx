@@ -60,9 +60,6 @@ const OrderBarChart: React.FC<OrderBarChartProps> = ({ data, target }) => {
     }
   }, [times, selectedTime]);
 
-  console.log('data', data);
-  console.log('times', times);
-
   // Hàm nhóm dữ liệu theo thời gian được chọn
   const groupDataForBarChart = (
     data: OrderChartData[],

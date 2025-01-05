@@ -58,8 +58,6 @@ function CreateStaffModal(props: CreateModalProps) {
 
   const { data: groups, error } = useSWR([url], () => fetchEmployees());
 
-  console.log('groups:::', groups);
-
   return (
     <>
       <Modal

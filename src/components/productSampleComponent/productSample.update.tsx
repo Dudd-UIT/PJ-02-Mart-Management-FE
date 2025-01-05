@@ -41,7 +41,7 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
   } = props;
 
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(100);
   const [isProductSampleUnitsModalOpen, setIsProductSampleUnitsModalOpen] =
     useState(false);
 

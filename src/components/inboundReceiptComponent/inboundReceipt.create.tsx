@@ -145,7 +145,6 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
   };
 
   const handleSupplierChange = (value: number) => {
-    console.log('value:::', value);
     setSupplierId(value);
     handleInboundReceiptInfoChange('supplierId', value);
   };
@@ -212,7 +211,6 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
       batchsDto,
     };
 
-    console.log('payload', payload);
     const res = await handleSendEmailAction(payload);
     if (res?.data) {
       toast.success(res.message);

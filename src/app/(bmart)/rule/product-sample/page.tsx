@@ -40,7 +40,7 @@ function ProductSamplePage() {
   const urlProductLine = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`;
   const { data: productLinesData, error: productLinesError } = useSWR(
     [urlProductLine, searchProductTypeId],
-    () => fetchProductLines(1, 100, '', searchProductTypeId),
+    () => fetchProductLines(1, 100, undefined, searchProductTypeId),
   );
 
   const urlProductSample = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`;
@@ -69,7 +69,7 @@ function ProductSamplePage() {
     ...productSamplesData,
     results: productSamplesData?.results?.map((sample: ProductSample) => {
       const minUnit = sample.productUnits?.find(
-        (unit) => unit.conversionRate === null,
+        (unit) => unit.conversionRate === 1 && unit.compareUnit === null,
       )?.unit;
       const minUnitName = minUnit?.name;
       const minUnitId = minUnit?.id;
@@ -160,7 +160,7 @@ function ProductSamplePage() {
         </div>
       </ProtectedComponent>
 
-      {transformedProductSamplesData ? (
+      {productSamplesData ? (
         <>
           <ProductSampleUnitTable
             productUnits={

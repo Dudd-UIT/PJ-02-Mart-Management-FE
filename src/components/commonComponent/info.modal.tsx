@@ -1,5 +1,4 @@
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { Input } from './InputForm';
 

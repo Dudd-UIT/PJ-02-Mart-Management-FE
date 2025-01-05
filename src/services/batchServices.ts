@@ -4,8 +4,9 @@ import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 
 export const fetchBatchs = async (
-  current?: number,
-  pageSize?: number,
+  showOption: number,
+  current: number,
+  pageSize: number,
   searchQuantity?: string,
   searchExpDate?: string,
 ) => {
@@ -16,8 +17,15 @@ export const fetchBatchs = async (
     pageSize,
   };
 
-  if (searchQuantity) queryParams.inventQuantity = searchQuantity;
-  if (searchExpDate) queryParams.expiredAt = searchExpDate;
+  if (showOption === 1) {
+    queryParams.nearExpired = 1;
+  } else if (showOption === 3) {
+    queryParams.createdToday = 1;
+  }
+
+  if (searchQuantity?.trim())
+    queryParams.inventQuantity = searchQuantity.trim();
+  if (searchExpDate?.trim()) queryParams.expiredAt = searchExpDate.trim();
 
   try {
     const res = await sendRequest<IBackendRes<any>>({

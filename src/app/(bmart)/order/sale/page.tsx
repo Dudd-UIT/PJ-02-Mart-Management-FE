@@ -76,7 +76,7 @@ function SalePage() {
   const { data: productUnitsData, error: productUnitsError } = useSWR(
     [urlProductUnit, current, pageSize, searchParams.name, searchParams.id],
     () =>
-      fetchProductUnits(current, pageSize, searchParams.name, searchParams.id),
+      fetchProductUnits(current, pageSize, searchParams.name, +searchParams.id),
   );
 
   const meta: MetaData = {
