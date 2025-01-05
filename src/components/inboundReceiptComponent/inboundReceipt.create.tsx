@@ -16,6 +16,7 @@ import {
   handleSendEmailAction,
 } from '@/services/inboundReceiptServices';
 import { fetchProductUnitByIds } from '@/services/productUnitServices';
+import { formatCurrencyLong } from '@/utils/format';
 
 type FormDataBatch = {
   inboundPrice: number;
@@ -314,7 +315,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
                           className="form-control input-table"
                         />
                       </td>
-                      <td>{item.total.toFixed(2)}</td>
+                      <td>{formatCurrencyLong(item.total)}</td>
                       <td>
                         <input
                           type="date"
@@ -353,8 +354,8 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
               <Form.Group className="mb-2">
                 <Form.Label>Tổng tiền hàng</Form.Label>
                 <Form.Control
-                  type="number"
-                  value={inboundReceiptInfo.totalPrice}
+                  type="string"
+                  value={formatCurrencyLong(inboundReceiptInfo.totalPrice)}
                   readOnly
                 />
               </Form.Group>
@@ -387,8 +388,8 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
               <Form.Group>
                 <Form.Label>Tổng tiền thanh toán</Form.Label>
                 <Form.Control
-                  type="number"
-                  value={inboundReceiptInfo.paymentTotal}
+                  type="string"
+                  value={formatCurrencyLong(inboundReceiptInfo.paymentTotal)}
                   readOnly
                 />
               </Form.Group>
