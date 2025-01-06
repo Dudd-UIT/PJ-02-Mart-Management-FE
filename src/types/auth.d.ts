@@ -10,6 +10,8 @@ interface User {
   groupName: string;
   roles: string[];
   access_token: string;
+  refresh_token: string;
+  access_expire: number;
 }
 
 declare module 'next-auth/jwt' {

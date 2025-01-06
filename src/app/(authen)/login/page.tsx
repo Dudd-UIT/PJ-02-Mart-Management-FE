@@ -27,16 +27,13 @@ function LoginPage() {
   };
 
   const handleLogin = async () => {
-    console.log(
-      '${process.env.NEXT_PUBLIC_BACKEND_URL}',
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
-    );
     try {
       const res = await authenticate(formLogin);
       if (res?.message) {
-        // if (res?.code === 2) {
-        //   return;
-        // }
+        if (res?.code === 2) {
+          toast.error(res.message);
+          return;
+        }
         toast.error(res.message);
       } else {
         router.replace('/statistics');

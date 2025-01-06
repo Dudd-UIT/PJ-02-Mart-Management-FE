@@ -39,6 +39,7 @@ declare global {
       roles: string[];
     };
     access_token: string;
+    refresh_token: string;
   }
 
   interface InfoModalProps {
