@@ -41,3 +41,16 @@ export interface ProductSampleUnitTableType {
   columns: Column<ProductSample>[];
   onMutate: () => void;
 }
+
+export interface ProductSampleShoping {
+  id: number;
+  name: string;
+  description: string;
+  sellPrice: number;
+  image: string;
+  discount: number;
+  productLineId: number;
+  productLine: ProductLine;
+  productUnits: ProductUnit[];
+  available: number;
+}

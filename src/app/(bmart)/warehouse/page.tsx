@@ -22,7 +22,7 @@ import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 
 function WarehousePage() {
   const current = 1;
-  const pageSize = 10;
+  const pageSize = 100;
   const [level, setLevel] = useState(1);
   const [showOption, setShowOption] = useState(0);
   const [searchSample, setSearchSample] = useState('');

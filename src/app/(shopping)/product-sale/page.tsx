@@ -1,11 +1,10 @@
 'use client';
 
 import { Input, SelectInput } from '@/components/commonComponent/InputForm';
-import { fetchProductUnits } from '@/services/productUnitServices';
-import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
+import { fetchProductSamples } from '@/services/productSampleServices';
 import { useState } from 'react';
 import { FaPlus, FaMinus, FaTrash, FaSearch, FaFilter } from 'react-icons/fa';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import Image from 'next/image';
 import { OrderDetailTransform } from '@/types/order';
 import {
@@ -19,14 +18,12 @@ import { handleCreatedOrderAction } from '@/services/orderServices';
 import Link from 'next/link';
 import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
-
-const columns: Column<OrderDetailTransform>[] = [
-  { title: '#', key: 'id' },
-  { title: 'Tên sản phẩm', key: 'productSampleName' },
-  { title: 'Đơn vị', key: 'unitName' },
-  { title: 'Số lượng', key: 'quantity' },
-  { title: 'Giá', key: 'currentPrice' },
-];
+import InfoProductSampleModal from '@/components/productSampleComponent/productSample.info';
+import CreateProductOrder from '@/components/shoppingComponent/productSale.create';
+import { ProductUnit } from '@/types/productUnit';
+import { ProductSample, ProductSampleShoping } from '@/types/productSample';
+import { FaArrowDown } from 'react-icons/fa6';
+import { formatCurrency } from '@/utils/format';
 
 type FormDataOrder = {
   staffId: number;
@@ -40,17 +37,15 @@ type FormDataOrder = {
 };
 
 function SalePage() {
-  const [cart, setCart] = useState<OrderDetailTransform[]>([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedproductSample, setSelectedproductSample] = useState<
+    ProductSampleShoping | undefined
+  >();
   const [searchValue, setSearchValue] = useState('');
-  const [searchType, setSearchType] = useState<'name' | 'id'>('name');
-  const [searchParams, setSearchParams] = useState({ name: '', id: '' });
+  const [searchParams, setSearchParams] = useState({ name: '', id: 0 });
 
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
-
-  const pageSizeCart = 4;
-  const [currentCartPage, setCurrentCartPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
 
   const initialOrder = {
     staffId: 0,
@@ -66,18 +61,27 @@ function SalePage() {
   const [formDataOrder, setFormDataOrder] =
     useState<FormDataOrder>(initialOrder);
 
-  const urlProductUnit = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
-  const { data: productUnitsData, error: productUnitsError } = useSWR(
-    [urlProductUnit, current, pageSize, searchParams.name, searchParams.id],
+  const urlproductSample = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`;
+  const { data: productSamplesData, error: productSamplesError } = useSWR(
+    [urlproductSample, current, pageSize, searchParams.name, searchParams.id],
     () =>
-      fetchProductUnits(current, pageSize, searchParams.name, searchParams.id),
+      fetchProductSamples(
+        current,
+        pageSize,
+        searchParams.name,
+        searchParams.id,
+      ),
   );
+
+  const onMutate = () => {
+    mutate(['']);
+  };
 
   const meta: MetaData = {
     current,
     pageSize,
-    pages: productUnitsData?.meta.pages,
-    total: productUnitsData?.meta.total,
+    pages: productSamplesData?.meta.pages,
+    total: productSamplesData?.meta.total,
   };
 
   const urlParameter = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/parameters`;
@@ -86,14 +90,14 @@ function SalePage() {
     () => fetchParameters(),
   );
 
-  if (productUnitsError)
+  if (productSamplesError)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>{productUnitsError.message}</div>
+        <div>{productSamplesError.message}</div>
       </div>
     );
 
-  if (!productUnitsData)
+  if (!productSamplesData)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
         <div className="spinner-grow text-success" role="status"></div>
@@ -101,26 +105,59 @@ function SalePage() {
       </div>
     );
 
-  const productUnits: ProductUnitTransform[] = productUnitsData.results.map(
-    (item: ProductUnit) => ({
-      id: item.id,
-      sellPrice: item.sellPrice,
-      conversionRate: item.conversionRate,
-      createdAt: item.createdAt,
-      volumne: item.volumne,
-      image: item.image,
-      productSampleName: item.productSample?.name,
-      unitName: item.unit?.name,
-    }),
+  function findMaxDiscountIndex(data: ProductSample): {
+    maxProductIndex: number | null;
+    maxBatchIndex: number | null;
+  } {
+    let maxProductIndex: number | null = null;
+    let maxBatchIndex: number | null = null;
+    let maxDiscount = -Infinity;
+    data.productUnits.forEach((productUnit, productIndex) => {
+      productUnit.batches?.forEach((batch, batchIndex) => {
+        const discount = batch.discount; // Chuyển đổi discount sang số thực
+        if (discount > maxDiscount) {
+          maxDiscount = discount;
+          maxProductIndex = productIndex;
+          maxBatchIndex = batchIndex;
+        }
+      });
+    });
+    return { maxProductIndex, maxBatchIndex };
+  }
+
+  const productSamples: ProductSampleShoping[] = productSamplesData.results.map(
+    (item: ProductSample) => {
+      const { maxProductIndex, maxBatchIndex } = findMaxDiscountIndex(item);
+      const productUnit =
+        maxProductIndex !== null
+          ? item.productUnits[maxProductIndex]
+          : undefined;
+      const batch =
+        productUnit?.batches && maxBatchIndex !== null
+          ? productUnit.batches[maxBatchIndex]
+          : undefined;
+      return {
+        id: item.id,
+        name: item.name || null,
+        description: item.description,
+        sellPrice: productUnit?.sellPrice || item.productUnits[0].sellPrice,
+        image: productUnit?.image || item.productUnits[0].image,
+        discount: batch?.discount || 0,
+        productLine: item.productLine,
+        productLineId: item.productLineId,
+        productUnits: item.productUnits,
+        available: item.productUnits[0].batches?.length,
+      };
+    },
   );
 
-  const handleSearchClick = () => {
-    setSearchParams({
-      name: searchType === 'name' ? searchValue : '',
-      id: searchType === 'id' ? searchValue : '',
-    });
-    setCurrent(1);
-  };
+  // const handleSearchClick = () => {
+  //   setSearchParams({
+  //     name: searchType === 'name' ? searchValue : '',
+  //     id: searchType === 'id' ? searchValue : '',
+  //   });
+  //   setCurrent(1);
+  // };
 
   const handleOrderInfoChange = (
     field: keyof typeof formDataOrder,
@@ -129,62 +166,62 @@ function SalePage() {
     setFormDataOrder((prev) => ({ ...prev, [field]: value }));
   };
 
-  const addToCart = (productUnit: ProductUnitTransform) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === productUnit.id);
+  // const addToCart = (productSample: ProductSample) => {
+  //   setCart((prevCart) => {
+  //     const existingItem = prevCart.find((item) => item.id === productSample.id);
 
-      let updatedCart;
-      if (existingItem) {
-        updatedCart = prevCart.map((item) =>
-          item.id === productUnit.id
-            ? { ...item, quantity: item.quantity! + 1 }
-            : item,
-        );
-      } else {
-        updatedCart = [
-          ...prevCart,
-          {
-            id: productUnit.id,
-            quantity: 1,
-            currentPrice: productUnit.sellPrice,
-            productSampleName: productUnit.productSampleName,
-            unitName: productUnit.unitName,
-          },
-        ];
-      }
+  //     let updatedCart;
+  //     if (existingItem) {
+  //       updatedCart = prevCart.map((item) =>
+  //         item.id === productSample.id
+  //           ? { ...item, quantity: item.quantity! + 1 }
+  //           : item,
+  //       );
+  //     } else {
+  //       updatedCart = [
+  //         ...prevCart,
+  //         {
+  //           id: productSample.id,
+  //           quantity: 1,
+  //           currentPrice: productSample.sellPrice,
+  //           productSampleName: productSample.productSampleName,
+  //           unitName: productSample.unitName,
+  //         },
+  //       ];
+  //     }
 
-      // Tính toán tổng ngay khi cập nhật giỏ hàng
-      const newTotal = updatedCart.reduce(
-        (acc, item) => acc + item.currentPrice * (item.quantity || 0),
-        0,
-      );
-      handleOrderInfoChange('totalPrice', newTotal);
+  //     // Tính toán tổng ngay khi cập nhật giỏ hàng
+  //     const newTotal = updatedCart.reduce(
+  //       (acc, item) => acc + item.currentPrice * (item.quantity || 0),
+  //       0,
+  //     );
+  //     handleOrderInfoChange('totalPrice', newTotal);
 
-      return updatedCart;
-    });
-  };
+  //     return updatedCart;
+  //   });
+  // };
 
-  const updateQuantity = (productId: number, increment: number) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item.id === productId
-          ? {
-              ...item,
-              quantity: Math.max(1, (item.quantity || 0) + increment),
-            }
-          : item,
-      );
+  // const updateQuantity = (productId: number, increment: number) => {
+  //   setCart((prevCart) => {
+  //     const updatedCart = prevCart.map((item) =>
+  //       item.id === productId
+  //         ? {
+  //             ...item,
+  //             quantity: Math.max(1, (item.quantity || 0) + increment),
+  //           }
+  //         : item,
+  //     );
 
-      // Tính toán tổng ngay khi cập nhật giỏ hàng
-      const newTotal = updatedCart.reduce(
-        (acc, item) => acc + item.currentPrice * (item.quantity || 0),
-        0,
-      );
-      handleOrderInfoChange('totalPrice', newTotal);
+  //     // Tính toán tổng ngay khi cập nhật giỏ hàng
+  //     const newTotal = updatedCart.reduce(
+  //       (acc, item) => acc + item.currentPrice * (item.quantity || 0),
+  //       0,
+  //     );
+  //     handleOrderInfoChange('totalPrice', newTotal);
 
-      return updatedCart;
-    });
-  };
+  //     return updatedCart;
+  //   });
+  // };
 
   const handlePreviousPage = () => {
     if (current > 1) setCurrent(current - 1);
@@ -194,6 +231,12 @@ function SalePage() {
     if (current < meta.pages) setCurrent(current + 1);
   };
 
+  const handleCreateModal = (data: ProductSampleShoping) => {
+    setSelectedproductSample(data);
+    setIsModalOpen(true);
+  };
+
+  // console.log(productSamples);
   return (
     <div>
       <div className="col-md-12">
@@ -206,7 +249,7 @@ function SalePage() {
             placeholder="Nhập tên mặt hàng"
             onChange={(value) => {}}
             icon={<FaSearch />}
-            onClickIcon={handleSearchClick}
+            // onClickIcon={handleSearchClick}
           />
           <Input
             title="Loại sản phẩm"
@@ -214,51 +257,96 @@ function SalePage() {
             value={searchValue}
             placeholder="Chọn loại sản phẩm"
             onChange={(value) => {}}
-            onClickIcon={handleSearchClick}
+            // onClickIcon={handleSearchClick}
             icon={<FaFilter />}
           />
         </div>
 
         {/* list */}
-        <div className="row mt-3">
-          {productUnits.map((productUnit: ProductUnitTransform) => (
-            <div
-              key={productUnit.id}
-              className="col-md-2 col-sm-4 p-2 my-2"
-              onClick={() => addToCart(productUnit)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="card h-100 position-relative">
-                {/* badge */}
-                <h3>
-                  <span className="position-absolute top-0 translate-middle badge rounded bg-danger" style={{right: '-3rem'}}>
-                    -99%
-                    <span className="visually-hidden">unread messages</span>
-                  </span>
-                </h3>
-                {/* Image */}
-                <Image
-                  src={
-                    typeof productUnit.image === 'string'
-                      ? productUnit.image
-                      : URL.createObjectURL(productUnit.image)
-                  }
-                  alt={productUnit.productSampleName || 'Product'}
-                  width={200}
-                  height={180}
-                  className="card-img-top p-3"
-                />
+        <div className="row m-5">
+          {productSamples
+            .sort((a, b) => {
+              const aInStock = a.available > 0 ? 1 : 0; // Sản phẩm còn hàng (available > 0)
+              const bInStock = b.available > 0 ? 1 : 0; // Sản phẩm còn hàng (available > 0)
+              return bInStock - aInStock; // Sản phẩm còn hàng trước
+            })
+            .map((productSample: ProductSampleShoping) => (
+              <div
+                key={productSample.id}
+                className="col-md-3 col-sm-6 p-3 my-2"
+                onClick={
+                  productSample.available > 0
+                    ? () => handleCreateModal(productSample)
+                    : undefined
+                }
+                style={{
+                  cursor:
+                    productSample.available > 0 ? 'pointer' : 'not-allowed',
+                }}
+              >
+                <div
+                  className={`card h-100 position-relative ${
+                    productSample.available === 0 ? 'disabled' : ''
+                  }`}
+                >
+                  {/* badge */}
+                  {productSample.discount > 0 && (
+                    <h3>
+                      <span
+                        className="position-absolute top-0 translate-middle badge rounded bg-danger"
+                        style={{ right: '-4rem' }}
+                      >
+                        <FaArrowDown /> {productSample.discount * 100}%
+                        <span className="visually-hidden">unread messages</span>
+                      </span>
+                    </h3>
+                  )}
+                  {/* Image */}
+                  {productSample.available === 0 && (
+                    <Image
+                      src={'/images/soldout.png'}
+                      alt={productSample.name || 'Product'}
+                      width={200}
+                      height={200}
+                      className="card-img-top p-3 position-absolute h-100 py-5"
+                      style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}
+                    />
+                  )}
+                  <Image
+                    src={
+                      typeof productSample.image === 'string'
+                        ? productSample.image
+                        : '/images/default-product-image.png'
+                    }
+                    alt={productSample.name || 'Product'}
+                    width={200}
+                    height={240}
+                    className="card-img-top p-3"
+                  />
 
-                <div className="d-flex flex-column justify-content-center align-items-center">
-                  <h6 className="p-0">{productUnit.productSampleName}</h6>
-                    {productUnit.sellPrice>60000 && <small className='position-absolute' style={{bottom:'2.5rem'}}><s>1.000.000 đ</s></small>}
-                    <h4 className="text-danger p-1 pt-2">
-                      <strong>{productUnit.sellPrice?.toLocaleString('vi-VN')} đ</strong>
-                    </h4>
+                  <div className="d-flex flex-column justify-content-center align-items-center">
+                    <h5 className="p-0">{productSample.name}</h5>
+                    {productSample.discount > 0 && (
+                      <small
+                        className="position-absolute"
+                        style={{ bottom: '2.8rem' }}
+                      >
+                        <s>{formatCurrency(productSample.sellPrice)} đ</s>
+                      </small>
+                    )}
+                    <h3 className="text-danger p-1 pt-2">
+                      <strong>
+                        {(
+                          productSample.sellPrice -
+                          productSample.sellPrice * productSample.discount
+                        )?.toLocaleString('vi-VN')}{' '}
+                        đ
+                      </strong>
+                    </h3>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
 
         <nav aria-label="Page navigation example">
@@ -294,224 +382,13 @@ function SalePage() {
         </nav>
       </div>
 
-      {/* Giỏ hàng */}
-      {/* <div className="col-md-6">
-        <div className="row align-items-end">
-          <Input
-            size={5}
-            title="Tìm khách hàng"
-            placeholder="Nhập SĐT"
-            value={customerPhone}
-            onChange={(value) => setCustomerPhone(value)}
-            onClickIcon={handleSearchCustomer}
-            icon={<FaSearch />}
-          />
-          <Input
-            size={4}
-            title="Khách hàng"
-            value={customer?.name || ''}
-            readOnly
-          />
-          <ProtectedComponent requiredRoles={['c_cus']}>
-            <div className="col-md-3 mb-1">
-              <Link
-                href="/customers"
-                className="btn d-flex align-items-center justify-content-center btn-primary w-100"
-              >
-                <FaPlus />
-                <text>Thêm KH</text>
-              </Link>
-            </div>
-          </ProtectedComponent>
-        </div>
-
-        <table className="table table-bordered ">
-          <thead>
-            <tr>
-              {columns.map((column, index) => (
-                <th
-                  key={index}
-                  scope="col"
-                  className="text-center align-middle"
-                >
-                  {column.title}
-                </th>
-              ))}
-              <th scope="col" className="text-center align-middle">
-                Tổng
-              </th>
-              <th scope="col" className="text-center align-middle">
-                Xóa
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedCart?.map((row, rowIndex) => (
-              <tr key={rowIndex} className="text-center align-middle">
-                {columns.map((column, colIndex) => {
-                  const cellData =
-                    row[column.key as keyof OrderDetailTransform];
-
-                  if (column.key === 'quantity') {
-                    return (
-                      <td key={colIndex}>
-                        <FaMinus
-                          onClick={() => updateQuantity(row.id, -1)}
-                          className="text-danger me-2"
-                          style={{ cursor: 'pointer' }}
-                        />
-                        {row.quantity}
-                        <FaPlus
-                          onClick={() => updateQuantity(row.id, 1)}
-                          className="text-success ms-2"
-                          style={{ cursor: 'pointer' }}
-                        />
-                      </td>
-                    );
-                  }
-
-                  return <td key={colIndex}>{cellData}</td>;
-                })}
-                <td>{(row.currentPrice || 0) * (row.quantity || 0)}đ</td>
-                <td>
-                  <FaTrash
-                    onClick={() => removeFromCart(row.id)}
-                    className="text-danger"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {cart.length > 4 ? (
-          <nav aria-label="Page navigation">
-            <ul className="pagination justify-content-center">
-              <li
-                className={`page-item ${
-                  currentCartPage === 1 ? 'disabled' : ''
-                }`}
-              >
-                <button className="page-link" onClick={handlePreviousCartPage}>
-                  Previous
-                </button>
-              </li>
-              {Array.from({ length: totalCartPages }, (_, index) => (
-                <li
-                  key={index}
-                  className={`page-item ${
-                    currentCartPage === index + 1 ? 'active' : ''
-                  }`}
-                >
-                  <button
-                    className="page-link"
-                    onClick={() => setCurrentCartPage(index + 1)}
-                  >
-                    {index + 1}
-                  </button>
-                </li>
-              ))}
-              <li
-                className={`page-item ${
-                  currentCartPage === totalCartPages ? 'disabled' : ''
-                }`}
-              >
-                <button className="page-link" onClick={handleNextCartPage}>
-                  Next
-                </button>
-              </li>
-            </ul>
-          </nav>
-        ) : (
-          <></>
-        )}
-
-        <div className="row align-items-end">
-          <Input
-            size={3}
-            title="Tổng đơn"
-            value={`${formDataOrder.totalPrice} đ`}
-            onChange={(value) => handleOrderInfoChange('totalPrice', value)}
-            readOnly
-          />
-          <Input
-            size={3}
-            title="Tích điểm"
-            // value="0"
-            value={formDataOrder.totalPrice / parameterData?.results[1].value}
-            readOnly
-          />
-          <Input
-            size={3}
-            title="Điểm đã tích"
-            value={customer?.score || 0}
-            readOnly
-          />
-        </div>
-        <div className="row align-items-end">
-          <Input
-            size={5}
-            title="Phương thức thanh toán"
-            keyObj="id"
-            showObj="method"
-            placeholder="Chọn phương thức thanh toán"
-            value={formDataOrder.paymentMethod}
-            onSelectedChange={(value) =>
-              handleOrderInfoChange('paymentMethod', value)
-            }
-            options={[
-              { id: 'Tiền mặt', method: 'Tiền mặt' },
-              { id: 'Chuyển khoản', method: 'Chuyển khoản' },
-            ]}
-          />
-
-          <Input
-            size={4}
-            title="Điểm muốn sử dụng"
-            value={pointsToUse}
-            placeholder="Nhập số điểm"
-            onChange={(value) => handlePointsToUseChange(+value)}
-            readOnly={!customer?.score}
-          />
-
-          <div className="col-md-3 mb-2">
-            <button
-              className="btn btn-primary w-100"
-              onClick={handleUsePoint}
-              disabled={
-                customer?.score && formDataOrder.totalPrice > 0 ? false : true
-              }
-            >
-              Dùng điểm
-            </button>
-          </div>
-        </div>
-
-        <div className="row align-items-end">
-          <Input
-            size={6}
-            title="Thành tiền"
-            value={`${formDataOrder.totalPrice} đ`}
-            readOnly
-          />
-          <div className="col-md-4 mb-2">
-            <button
-              className="btn btn-primary w-100"
-              onClick={handleCreateOrder}
-            >
-              Tạo đơn hàng
-            </button>
-          </div>
-          <div className="col-md-2 mb-2">
-            <button
-              className="btn btn-danger w-100"
-              onClick={handleCancelOrder}
-            >
-              Hủy
-            </button>
-          </div>
-        </div>
-      </div> */}
+      <CreateProductOrder
+        isUpdateModalOpen={isModalOpen}
+        setIsUpdateModalOpen={setIsModalOpen}
+        onMutate={onMutate}
+        data={selectedproductSample}
+        setData={setSelectedproductSample}
+      />
     </div>
   );
 }

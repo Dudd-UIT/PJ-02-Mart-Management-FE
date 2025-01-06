@@ -44,7 +44,9 @@ $accordion-button-focus-box-shadow: $body-bg;
     $primary,
     $primary,
     $onPrimary,
-    $primary
+    $primary,
+    $primary,
+    $onPrimary,
   );
 }
 
@@ -224,4 +226,9 @@ li.active a {
 
 .card:hover {
   transform: scale(1.1); 
+}
+
+.disabled {
+  pointer-events: none; 
+  transform: none !important; 
 }

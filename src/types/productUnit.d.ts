@@ -1,3 +1,4 @@
+import { Batch, BatchGrouped } from './batch';
 import { Column, MetaData } from './commonType';
 import { ProductSample } from './productSample';
 
@@ -35,6 +36,7 @@ export type ProductUnit = {
     id: number;
     name: string;
   };
+  batches?: BatchGrouped[]
 };
 
 export interface ProductUnitTableProps {
