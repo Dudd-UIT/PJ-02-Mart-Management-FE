@@ -201,3 +201,27 @@ li.active a {
 .input-group {
   gap: 1rem;
 }
+
+.navigate-header {
+  text-decoration: none;
+  padding: 1rem 2rem;
+  color: $body-color;
+
+}
+
+.navigate-header.active {
+  background-color: $primaryContainer;
+  color: $onPrimaryContainer;
+}
+.navigate-header:hover {
+  background-color: $primary;
+  color: $onPrimary;
+}
+
+.card {
+  transition: transform .5s;
+}
+
+.card:hover {
+  transform: scale(1.1); 
+}

@@ -4,7 +4,7 @@ import { Input, SelectInput } from '@/components/commonComponent/InputForm';
 import { fetchProductUnits } from '@/services/productUnitServices';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
 import { useState } from 'react';
-import { FaPlus, FaMinus, FaTrash, FaSearch } from 'react-icons/fa';
+import { FaPlus, FaMinus, FaTrash, FaSearch, FaFilter } from 'react-icons/fa';
 import useSWR from 'swr';
 import Image from 'next/image';
 import { OrderDetailTransform } from '@/types/order';
@@ -186,25 +186,6 @@ function SalePage() {
     });
   };
 
-  const paginatedCart = cart.slice(
-    (currentCartPage - 1) * pageSizeCart,
-    currentCartPage * pageSizeCart,
-  );
-
-  const totalCartPages = Math.ceil(cart.length / pageSizeCart);
-
-  const handlePreviousCartPage = () => {
-    if (currentCartPage > 1) {
-      setCurrentCartPage(currentCartPage - 1);
-    }
-  };
-
-  const handleNextCartPage = () => {
-    if (currentCartPage < totalCartPages) {
-      setCurrentCartPage(currentCartPage + 1);
-    }
-  };
-
   const handlePreviousPage = () => {
     if (current > 1) setCurrent(current - 1);
   };
@@ -214,42 +195,48 @@ function SalePage() {
   };
 
   return (
-    <div className="row">
-      {/* Danh sách sản phẩm */}
+    <div>
       <div className="col-md-12">
-        <div className="row">
-          <SelectInput
-            size={4}
-            label="Chọn loại tìm kiếm"
-            value={searchType}
-            options={[
-              { label: 'Tên sản phẩm', value: 'name' },
-              { label: 'Mã sản phẩm', value: 'id' },
-            ]}
-            onChange={(value) => setSearchType(value as 'name' | 'id')}
+        {/* Search zone */}
+        <div className="row justify-content-md-center">
+          <Input
+            size={5}
+            title="Tra cứu mặt hàng"
+            value={''}
+            placeholder="Nhập tên mặt hàng"
+            onChange={(value) => {}}
+            icon={<FaSearch />}
+            onClickIcon={handleSearchClick}
           />
           <Input
-            title="Tìm kiếm"
-            size={6}
+            title="Loại sản phẩm"
+            size={5}
             value={searchValue}
-            placeholder={`Nhập ${
-              searchType === 'name' ? 'tên sản phẩm' : 'số sản phẩm'
-            }`}
-            onChange={(value) => setSearchValue(value)}
+            placeholder="Chọn loại sản phẩm"
+            onChange={(value) => {}}
             onClickIcon={handleSearchClick}
-            icon={<FaSearch />}
+            icon={<FaFilter />}
           />
         </div>
 
-        <div className="row">
+        {/* list */}
+        <div className="row mt-3">
           {productUnits.map((productUnit: ProductUnitTransform) => (
             <div
               key={productUnit.id}
-              className="col-md-3 p-2"
+              className="col-md-2 col-sm-4 p-2 my-2"
               onClick={() => addToCart(productUnit)}
               style={{ cursor: 'pointer' }}
             >
-              <div className="card">
+              <div className="card h-100 position-relative">
+                {/* badge */}
+                <h3>
+                  <span className="position-absolute top-0 translate-middle badge rounded bg-danger" style={{right: '-3rem'}}>
+                    -99%
+                    <span className="visually-hidden">unread messages</span>
+                  </span>
+                </h3>
+                {/* Image */}
                 <Image
                   src={
                     typeof productUnit.image === 'string'
@@ -257,16 +244,17 @@ function SalePage() {
                       : URL.createObjectURL(productUnit.image)
                   }
                   alt={productUnit.productSampleName || 'Product'}
-                  width={60}
-                  height={100}
-                  className="card-img-top p-2"
+                  width={200}
+                  height={180}
+                  className="card-img-top p-3"
                 />
 
                 <div className="d-flex flex-column justify-content-center align-items-center">
-                  <text className="p-0">{productUnit.productSampleName}</text>
-                  <text className="text-danger p-1">
-                    {productUnit.sellPrice?.toLocaleString('vi-VN')} đ
-                  </text>
+                  <h6 className="p-0">{productUnit.productSampleName}</h6>
+                    {productUnit.sellPrice>60000 && <small className='position-absolute' style={{bottom:'2.5rem'}}><s>1.000.000 đ</s></small>}
+                    <h4 className="text-danger p-1 pt-2">
+                      <strong>{productUnit.sellPrice?.toLocaleString('vi-VN')} đ</strong>
+                    </h4>
                 </div>
               </div>
             </div>

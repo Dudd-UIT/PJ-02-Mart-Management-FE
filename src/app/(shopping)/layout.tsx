@@ -1,5 +1,5 @@
 import { auth } from '@/auth';
-import Header from '@/components/commonComponent/Header';
+import Header, { HeaderCustomerSide } from '@/components/commonComponent/Header';
 import Sidebar from '@/components/commonComponent/Sidebar';
 import Sidebar2 from '@/components/commonComponent/Sidebar2';
 import { SelectedRolesProvider } from '@/context/selectedRolesContext';
@@ -15,10 +15,9 @@ export default async function Layout({
   return (
     <>
       <div className="d-flex">
-        <Sidebar2 />
         <div className="content w-100">
-          <Header session={session} />
-          <hr className="h-color m-2" />
+          <HeaderCustomerSide session={session} />
+          <hr className="h-color mb-2 mt-0" />
           <div className="container">
             <SelectedRolesProvider>{children}</SelectedRolesProvider>
           </div>

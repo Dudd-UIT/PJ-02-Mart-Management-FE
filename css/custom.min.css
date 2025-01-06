@@ -12165,4 +12165,28 @@ li.active a {
 
 .input-group {
   gap: 1rem;
+}
+
+.navigate-header {
+  text-decoration: none;
+  padding: 1rem 2rem;
+  color: #333333;
+}
+
+.navigate-header.active {
+  background-color: #fadadd;
+  color: #333333;
+}
+
+.navigate-header:hover {
+  background-color: #e57373;
+  color: #ffffff;
+}
+
+.card {
+  transition: transform 0.5s;
+}
+
+.card:hover {
+  transform: scale(1.1);
 }/*# sourceMappingURL=custom.min.css.map */
