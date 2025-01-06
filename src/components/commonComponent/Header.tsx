@@ -6,13 +6,17 @@ import { IoPersonOutline } from 'react-icons/io5';
 import InfoModal from './info.modal';
 import { useSessionContext } from '@/context/SessionContext';
 import { signOut } from 'next-auth/react';
+import { handleChangePasswordAction } from '@/services/staffServices';
+import ChangePasswordModal from './changePassword.modal';
 
 export default function Header(props: any) {
   const { session } = props;
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+    useState(false);
+
   const { currentSession, setCurrentSession } = useSessionContext();
 
-  // Đặt session hiện tại
   if (session) {
     setCurrentSession(session);
   }
@@ -42,6 +46,9 @@ export default function Header(props: any) {
             <Dropdown.Item onClick={() => setIsInfoModalOpen(true)}>
               Thông tin
             </Dropdown.Item>
+            <Dropdown.Item onClick={() => setIsChangePasswordModalOpen(true)}>
+              Đổi mật khẩu
+            </Dropdown.Item>
             <Dropdown.Item onClick={handleSignOut}>Đăng xuất</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -49,6 +56,11 @@ export default function Header(props: any) {
       <InfoModal
         isInfoModalOpen={isInfoModalOpen}
         setIsInfoModalOpen={setIsInfoModalOpen}
+        data={session}
+      />
+      <ChangePasswordModal
+        isChangePasswordModalOpen={isChangePasswordModalOpen}
+        setIsChangePasswordModalOpen={setIsChangePasswordModalOpen}
         data={session}
       />
     </>
