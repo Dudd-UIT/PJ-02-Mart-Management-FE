@@ -10,6 +10,7 @@ import {
   InboundReceipt,
   InboundReceiptTransform,
 } from '@/types/inboundReceipt';
+import { formatCurrency } from '@/utils/format';
 import { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
@@ -79,13 +80,15 @@ const InboundReceiptPage = () => {
       </div>
     );
 
+  // const x = formatCurrency(x)
+
   const inboundReceipts = data.results.map((item: InboundReceipt) => ({
     id: item.id,
     staffId: item.staff?.id,
     staffName: item.staff?.name,
     supplierId: item.supplier?.id,
     supplierName: item.supplier?.name,
-    totalPrice: item.totalPrice,
+    totalPrice: formatCurrency(item.totalPrice),
     isReceived: item.isReceived,
     isPaid: item.isPaid,
     createdAt: item.createdAt,

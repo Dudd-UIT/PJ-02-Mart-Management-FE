@@ -19,6 +19,7 @@ import { handleCreatedOrderAction } from '@/services/orderServices';
 import Link from 'next/link';
 import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
+import { formatCurrencyLong } from '@/utils/format';
 
 const columns: Column<OrderDetailTransform>[] = [
   { title: '#', key: 'id' },
@@ -345,9 +346,9 @@ function SalePage() {
   };
 
   return (
-    <div className="row">
+    <div className="row ">
       {/* Danh sách sản phẩm */}
-      <div className="col-md-6">
+      <div className="col col-md-6">
         <div className="row">
           <SelectInput
             size={4}
@@ -376,7 +377,7 @@ function SalePage() {
           {productUnits.map((productUnit: ProductUnitTransform) => (
             <div
               key={productUnit.id}
-              className="col-md-3 p-1"
+              className="col-lg-3 col-sm-4 col-4 p-1"
               onClick={() => addToCart(productUnit)}
               style={{ cursor: 'pointer' }}
             >
@@ -480,7 +481,7 @@ function SalePage() {
                   {column.title}
                 </th>
               ))}
-              <th scope="col" className="text-center align-middle">
+              <th scope="col" className="text-center align-middle" style={{width: '10rem'}}>
                 Tổng
               </th>
               <th scope="col" className="text-center align-middle">
@@ -513,9 +514,18 @@ function SalePage() {
                     );
                   }
 
+                  if (
+                    column.key === 'currentPrice' &&
+                    typeof cellData === 'number'
+                  ) {
+                    return (
+                      <td key={colIndex}>{formatCurrencyLong(cellData)}</td>
+                    );
+                  }
+
                   return <td key={colIndex}>{cellData}</td>;
                 })}
-                <td>{(row.currentPrice || 0) * (row.quantity || 0)}đ</td>
+                <td>{formatCurrencyLong((row.currentPrice || 0) * (row.quantity || 0))}đ</td>
                 <td>
                   <FaTrash
                     onClick={() => removeFromCart(row.id)}
@@ -573,7 +583,7 @@ function SalePage() {
           <Input
             size={3}
             title="Tổng đơn"
-            value={`${formDataOrder.totalPrice} đ`}
+            value={`${formatCurrencyLong(formDataOrder.totalPrice)} đ`}
             onChange={(value) => handleOrderInfoChange('totalPrice', value)}
             readOnly
           />
@@ -634,7 +644,8 @@ function SalePage() {
           <Input
             size={6}
             title="Thành tiền"
-            value={`${formDataOrder.totalPrice} đ`}
+            value={`${formatCurrencyLong
+              (formDataOrder.totalPrice)} đ`}
             readOnly
           />
           <div className="col-md-4 mb-2">

@@ -313,6 +313,19 @@ function WarehousePage() {
             <h5 style={{ display: 'inline' }}>VNĐ</h5>
           </div>
         </div>
+        <div className="col col-md-3">
+      <div className="stat-card w-100 py-5 px-3 mt-5">
+        <h4 className="text-start">Tổng giá trị kho hàng</h4>
+        <h1 className="text-start fw-bold" style={{ display: 'inline' }}>
+          {typeof totalValue === 'string'
+            ? totalValue
+            : typeof totalValue === 'number'
+            ? formatCurrency(totalValue)
+            : '0'}{' '}
+        </h1>
+        <h5 style={{ display: 'inline' }}>VNĐ</h5>
+      </div>
+    </div>
       </div>
 
       {/* Button thêm */}

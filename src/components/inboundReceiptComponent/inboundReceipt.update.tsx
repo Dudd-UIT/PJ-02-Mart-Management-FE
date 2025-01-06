@@ -13,7 +13,7 @@ import { Input } from '../commonComponent/InputForm';
 import { fetchSuppliers } from '@/services/supplierServices';
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { InboundReceiptTransform } from '@/types/inboundReceipt';
-import { formatDate } from '@/utils/format';
+import { formatCurrency, formatCurrencyLong, formatDate } from '@/utils/format';
 import {
   handleUpdatedInboundReceiptAction,
   handleUpdatedStatusInboundReceiptAction,
@@ -416,7 +416,7 @@ function UpdateInboundReceiptModal(
                           className="form-control input-table"
                         />
                       </td>
-                      <td>{item.total.toFixed(2)}</td>
+                      <td>{formatCurrencyLong(item.total)}</td>
                       <td>
                         <input
                           type="date"
@@ -462,8 +462,8 @@ function UpdateInboundReceiptModal(
                 <Form.Label>Tổng tiền hàng</Form.Label>
                 <Form.Control
                   disabled={+inboundReceiptInfo.isPaid === 1}
-                  type="number"
-                  value={inboundReceiptInfo.totalPrice}
+                  type="string"
+                  value={formatCurrencyLong(inboundReceiptInfo.totalPrice)}
                   readOnly
                 />
               </Form.Group>
@@ -498,9 +498,9 @@ function UpdateInboundReceiptModal(
               <Form.Group>
                 <Form.Label>Tổng tiền thanh toán</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="string"
                   disabled={+inboundReceiptInfo.isPaid === 1}
-                  value={inboundReceiptInfo.paymentTotal}
+                  value={formatCurrencyLong(inboundReceiptInfo.paymentTotal)}
                   readOnly
                 />
               </Form.Group>
