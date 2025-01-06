@@ -216,7 +216,7 @@ function UpdateProductSampleModal(
                     key={`${unit.id}-${batch.id}-${index}`}
                     onClick={() => handleButtonClick(unit, batch)}
                     className={`btn m-2 col col-md-4 ${
-                      isActive ? 'btn-primary active' : 'btn-primary'
+                      isActive ? 'btn-outline active' : 'btn-outline'
                     }`}
                   >
                     {buttonLabel}
