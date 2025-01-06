@@ -1,6 +1,12 @@
 'use server';
 
-import { auth, signIn } from '@/auth';
+import { signIn } from '@/auth';
+import { sendRequest } from '@/utils/api';
+import {
+  CustomAuthError,
+  InvalidActiveAccountError,
+  InvalidEmailPasswordError,
+} from '@/utils/error';
 
 type FormDataLogin = {
   email: string;
@@ -17,21 +23,25 @@ export async function authenticate(formData: FormDataLogin) {
 
     return res;
   } catch (error) {
-    if ((error as any).name === 'InvalidEmailPasswordError') {
-      return {
-        message: (error as any).type,
-        code: 1,
-      };
-    } else if ((error as any).name === 'InvalidActiveAccountError') {
-      return {
-        message: (error as any).type,
-        code: 2,
-      };
+    if (error instanceof InvalidEmailPasswordError) {
+      return { message: InvalidEmailPasswordError.type, code: 1 };
+    } else if (error instanceof InvalidActiveAccountError) {
+      return { message: InvalidActiveAccountError.type, code: 2 };
+    } else if (error instanceof CustomAuthError) {
+      return { message: error.type, code: 0 };
     } else {
-      return {
-        message: (error as any).type,
-        code: 0,
-      };
+      return { message: 'Lỗi không xác định', code: -1 };
     }
   }
+}
+
+export async function refreshAccessToken(token: any) {
+  const refreshToken = token.user.refresh_token;
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/auths/refresh`,
+    method: 'POST',
+    body: { refreshToken },
+  });
+
+  return res;
 }

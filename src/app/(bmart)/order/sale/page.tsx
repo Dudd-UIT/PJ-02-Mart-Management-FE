@@ -252,6 +252,7 @@ function SalePage() {
       orderDto,
       orderDetailsDto,
     };
+    console.log('payload', payload);
 
     const res = await handleCreatedOrderAction(payload);
     if (res?.data) {

@@ -17,7 +17,7 @@ function ChangePasswordModal(props: ChangePasswordModalProps) {
     props;
 
   const initalFormData = {
-    id: data.user.id,
+    id: data?.user?.id,
     password: '',
     newPassword: '',
     confirmPassword: '',

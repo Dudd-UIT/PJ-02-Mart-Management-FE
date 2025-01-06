@@ -119,8 +119,6 @@ function WarehousePage() {
 
   const totalValue = getWarehouseValue(groupedBatchData);
 
-  console.log('Tổng giá trị kho hàng:', totalValue);
-
   const handleSearchClick = () => {
     setSearchProductUnitParams({
       name: searchSample,
