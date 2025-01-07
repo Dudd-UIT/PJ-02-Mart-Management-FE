@@ -13,7 +13,7 @@ export type InboundReceiptTransform = {
   supplierId: number;
   discount: number;
   vat: number;
-  batchs: Batch[];
+  batches: Batch[];
 };
 
 export type InboundReceipt = {
@@ -32,7 +32,7 @@ export type InboundReceipt = {
     id: number;
     name: string;
   };
-  batchs?: Batch[];
+  batches?: Batch[];
 };
 
 export interface InboundReceiptTableModalProps {

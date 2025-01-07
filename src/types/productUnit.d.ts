@@ -1,3 +1,4 @@
+import { Batch } from './batch';
 import { Column, MetaData } from './commonType';
 import { ProductSample } from './productSample';
 
@@ -14,6 +15,7 @@ export type ProductUnitTransform = {
   unitName: string;
   unitId: number;
   image: string | File;
+  batches: Batch[];
 };
 
 export type ProductUnit = {
@@ -23,18 +25,10 @@ export type ProductUnit = {
   createdAt: string;
   volumne: string;
   image: string;
-  productSample?: {
-    id: number;
-    name: string;
-  };
-  unit?: {
-    id: number;
-    name: string;
-  };
-  compareUnit?: {
-    id: number;
-    name: string;
-  };
+  productSample?: ProductSample;
+  unit?: Unit;
+  compareUnit?: Unit;
+  batches: Batch[];
 };
 
 export interface ProductUnitTableProps {

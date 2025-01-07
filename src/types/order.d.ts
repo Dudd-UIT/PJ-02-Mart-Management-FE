@@ -21,10 +21,15 @@ export type OrderTransform = {
 
 export type OrderDetailTransform = {
   id: number;
+  batchId: number;
   quantity: number;
   currentPrice: number;
+  sellPrice: number;
+  totalPrice: number;
   productSampleName: string | undefined;
   unitName: string;
+  discount: number;
+  batchInfo?: Batch;
 };
 
 export type OrderDetail = {
@@ -32,6 +37,7 @@ export type OrderDetail = {
   quantity: number;
   currentPrice: number;
   productUnit: ProductUnit;
+  // batches: Batch[];
 };
 
 export type Order = {

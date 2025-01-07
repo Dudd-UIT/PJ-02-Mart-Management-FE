@@ -114,7 +114,7 @@ function UpdateInboundReceiptModal(
       });
 
       // Populate formBatchData from batches
-      const updatedBatchData = inboundReceiptData.batchs.map(
+      const updatedBatchData = inboundReceiptData.batches.map(
         (batch: Batch) => ({
           id: batch?.id,
           inboundPrice: batch.inboundPrice,
@@ -130,7 +130,7 @@ function UpdateInboundReceiptModal(
       );
       setFormBatchData(updatedBatchData);
 
-      const productUnitInitial = inboundReceiptData.batchs
+      const productUnitInitial = inboundReceiptData.batches
         .map((batch) => batch.productUnit?.id)
         .filter((id) => id !== undefined);
 
@@ -242,7 +242,7 @@ function UpdateInboundReceiptModal(
       createdAt: inboundReceiptInfo.createdAt,
     };
 
-    const batchsDto = formBatchData.map((item) => ({
+    const batchesDto = formBatchData.map((item) => ({
       id: item?.id,
       inboundPrice: item.inboundPrice,
       discount: item.discount,
@@ -255,7 +255,7 @@ function UpdateInboundReceiptModal(
     const payload = {
       inboundReceiptId,
       inboundReceiptDto,
-      batchsDto,
+      batchesDto,
     };
 
     const res = await handleUpdatedInboundReceiptAction(payload);

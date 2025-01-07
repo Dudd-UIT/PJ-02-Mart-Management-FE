@@ -166,7 +166,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
       createdAt: inboundReceiptInfo.createdAt,
     };
 
-    const batchsDto = formBatchData.map((item) => ({
+    const batchesDto = formBatchData.map((item) => ({
       inboundPrice: item.inboundPrice,
       discount: item.discount,
       inventQuantity: item.inboundQuantity,
@@ -177,7 +177,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
 
     const payload = {
       inboundReceiptDto,
-      batchsDto,
+      batchesDto,
     };
     const res = await handleCreatedInboundReceiptAction(payload);
     if (res?.data) {
@@ -199,7 +199,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
       createdAt: inboundReceiptInfo.createdAt,
     };
 
-    const batchsDto = formBatchData.map((item) => ({
+    const batchesDto = formBatchData.map((item) => ({
       inboundPrice: item.inboundPrice,
       inboundQuantity: item.inboundQuantity,
       expiredAt: item.expiredAt,
@@ -209,7 +209,7 @@ function CreateInboundReceiptModal(props: CreateModalProps) {
 
     const payload = {
       inboundReceiptDto,
-      batchsDto,
+      batchesDto,
     };
 
     const res = await handleSendEmailAction(payload);

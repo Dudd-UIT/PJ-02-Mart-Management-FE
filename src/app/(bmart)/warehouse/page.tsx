@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchBatchs } from '@/services/batchServices';
+import { fetchBatches } from '@/services/batchServices';
 import { useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import WarehouseTable from '@/components/warehouseComponent/warehouse.table';
@@ -61,7 +61,7 @@ function WarehousePage() {
       showOption,
     ],
     () =>
-      fetchBatchs(showOption, current, pageSize, searchQuantity, searchExpDate),
+      fetchBatches(current, pageSize, showOption, searchQuantity, searchExpDate),
   );
 
   const urlFetchProductUnits = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
@@ -313,19 +313,6 @@ function WarehousePage() {
             <h5 style={{ display: 'inline' }}>VNĐ</h5>
           </div>
         </div>
-        <div className="col col-md-3">
-      <div className="stat-card w-100 py-5 px-3 mt-5">
-        <h4 className="text-start">Tổng giá trị kho hàng</h4>
-        <h1 className="text-start fw-bold" style={{ display: 'inline' }}>
-          {typeof totalValue === 'string'
-            ? totalValue
-            : typeof totalValue === 'number'
-            ? formatCurrency(totalValue)
-            : '0'}{' '}
-        </h1>
-        <h5 style={{ display: 'inline' }}>VNĐ</h5>
-      </div>
-    </div>
       </div>
 
       {/* Button thêm */}
@@ -397,9 +384,12 @@ function groupBatch(results: Batch[]): BatchGrouped[] {
     inventQuantity: item.inventQuantity,
     inboundQuantity: item.inboundQuantity,
     expiredAt: new Date(item.expiredAt).toISOString(),
+    createdAt: new Date(item.createdAt).toISOString(),
     inboundReceiptId: item.inboundReceipt?.id ?? 0,
     unit: item.productUnit.unit?.name || '',
     unitId: item.productUnit.unit?.id || 0,
+    image: item.productUnit.image,
+    supplierName: item.inboundReceipt?.supplier?.name || '',
     productSampleId: item.productUnit.productSample?.id || 0,
     productSample: item.productUnit.productSample?.name || '',
     uniqueUnitKey: `${item.productUnit.productSample?.id}_${item.productUnit.unit?.name}`,
