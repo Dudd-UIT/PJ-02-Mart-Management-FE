@@ -236,7 +236,7 @@ function SalePage() {
     setIsModalOpen(true);
   };
 
-  // console.log(productSamples);
+  console.log(productSamples);
   return (
     <div>
       <div className="col-md-12">

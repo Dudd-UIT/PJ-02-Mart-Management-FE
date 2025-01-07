@@ -57,7 +57,7 @@ function UpdateProductSampleModal(
   const initialBatch = {
     image: '',
     inventQuantity: 0,
-    discount: 0,
+    discount: 0,                                                       
     inboundPrice: 0,
   };
 
@@ -135,49 +135,49 @@ function UpdateProductSampleModal(
     setData?.(undefined);
   };
 
-  // const handleUpdateProductSample = async () => {
-  //   const { id, ...rest } = formData;
+  const handleUpdateCart = async () => {
+    const { id, ...rest } = formData;
 
-  //   const productUnitsWithImageUrls = await Promise.all(
-  //     productUnits.map(async (productUnit) => {
-  //       if (productUnit.image instanceof File) {
-  //         const formDataImage = new FormData();
-  //         formDataImage.append('file', productUnit.image);
-  //         const uploadedImageUrl = await uploadImageToS3(formDataImage);
+    const productUnitsWithImageUrls = await Promise.all(
+      productUnits.map(async (productUnit) => {
+        if (productUnit.image instanceof File) {
+          const formDataImage = new FormData();
+          formDataImage.append('file', productUnit.image);
+          const uploadedImageUrl = await uploadImageToS3(formDataImage);
 
-  //         return {
-  //           ...productUnit,
-  //           image: uploadedImageUrl,
-  //         };
-  //       }
+          return {
+            ...productUnit,
+            image: uploadedImageUrl,
+          };
+        }
 
-  //       return productUnit;
-  //     }),
-  //   );
+        return productUnit;
+      }),
+    );
 
-  //   const productUnitsDto = productUnitsWithImageUrls.map?.((productUnit) => ({
-  //     volumne: productUnit.volumne,
-  //     sellPrice: productUnit.sellPrice,
-  //     conversionRate: productUnit.conversionRate,
-  //     compareUnitId: productUnit.compareUnitId,
-  //     image: productUnit.image,
-  //     productSampleId: formData.id,
-  //     unitId: productUnit.unitId,
-  //   }));
-  //   const payload = { productSampleDto: rest, productUnitsDto };
-  //   const res = await handleUpdateProductSampleAction({
-  //     id: formData.id,
-  //     ...payload,
-  //   });
+    const productUnitsDto = productUnitsWithImageUrls.map?.((productUnit) => ({
+      volumne: productUnit.volumne,
+      sellPrice: productUnit.sellPrice,
+      conversionRate: productUnit.conversionRate,
+      compareUnitId: productUnit.compareUnitId,
+      image: productUnit.image,
+      productSampleId: formData.id,
+      unitId: productUnit.unitId,
+    }));
+    const payload = { productSampleDto: rest, productUnitsDto };
+    const res = await handleUpdateProductSampleAction({
+      id: formData.id,
+      ...payload,
+    });
 
-  //   if (res?.data) {
-  //     handleCloseCreateModal();
-  //     toast.success(res.message);
-  //     onMutate();
-  //   } else {
-  //     toast.error(res.message);
-  //   }
-  // };
+    if (res?.data) {
+      handleCloseCreateModal();
+      toast.success(res.message);
+      onMutate();
+    } else {
+      toast.error(res.message);
+    }
+  };
 
   console.log(productSampleData);
 
@@ -295,11 +295,11 @@ function UpdateProductSampleModal(
           <Button variant="secondary" onClick={handleCloseCreateModal}>
             Thoát
           </Button>
-          {/* <ProtectedComponent requiredRoles={['u_pdsam']}>
-            <Button variant="danger" onClick={handleUpdateProductSample}>
-              Lưu
+          <ProtectedComponent requiredRoles={['u_pdsam']}>
+            <Button variant="danger" onClick={handleUpdateCart}>
+              Thêm vào giỏ
             </Button>
-          </ProtectedComponent> */}
+          </ProtectedComponent>
         </Modal.Footer>
       </Modal>
     </>
