@@ -19,7 +19,7 @@ import Link from 'next/link';
 import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
 import InfoProductSampleModal from '@/components/productSampleComponent/productSample.info';
-import CreateProductOrder from '@/components/shoppingComponent/productSale.create';
+import ProductSaleModal from '@/components/shoppingComponent/productSale.create';
 import { ProductUnit } from '@/types/productUnit';
 import { ProductSample, ProductSampleShoping } from '@/types/productSample';
 import { FaArrowDown } from 'react-icons/fa6';
@@ -349,7 +349,7 @@ function SalePage() {
             ))}
         </div>
 
-        <nav aria-label="Page navigation example">
+        {/* <nav aria-label="Page navigation example">
           <ul className="pagination justify-content-center m-0">
             <li className={`page-item ${current === 1 ? 'disabled' : ''}`}>
               <button className="page-link" onClick={handlePreviousPage}>
@@ -379,10 +379,10 @@ function SalePage() {
               </button>
             </li>
           </ul>
-        </nav>
+        </nav> */}
       </div>
 
-      <CreateProductOrder
+      <ProductSaleModal
         isUpdateModalOpen={isModalOpen}
         setIsUpdateModalOpen={setIsModalOpen}
         onMutate={onMutate}
