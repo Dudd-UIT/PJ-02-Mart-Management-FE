@@ -80,8 +80,10 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
           volumne: productUnit.volumne,
           sellPrice: productUnit.sellPrice,
           image: productUnit.image,
+          batches: productUnit.batches || [], // Thêm thuộc tính `batches` với giá trị mặc định
         }),
       );
+
       setProductUnits(productUnits);
     }
   }, [productSampleData]);

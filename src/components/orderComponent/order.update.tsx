@@ -26,15 +26,14 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
     onMutate,
   } = props;
 
-  const orderDetiailsTranform = selectedOrder?.orderDetails.map(
-    (orderDetail) => ({
+  const orderDetiailsTranform: Partial<OrderDetailTransform>[] =
+    selectedOrder?.orderDetails.map((orderDetail) => ({
       id: orderDetail.id,
       productSampleName: orderDetail.productUnit.productSample?.name,
       quantity: orderDetail.quantity,
       unitName: orderDetail.productUnit.unit?.name,
       currentPrice: orderDetail.currentPrice,
-    }),
-  );
+    })) || [];
 
   const handleCloseModal = () => {
     setIsUpdateModalOpen(false);
@@ -134,11 +133,18 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
                 <tbody>
                   {orderDetiailsTranform?.map((row, rowIndex) => (
                     <tr key={rowIndex} className="text-center align-middle">
-                      {columns.map((column, colIndex) => (
-                        <td key={colIndex}>
-                          {row[column.key as keyof OrderDetailTransform]}
-                        </td>
-                      ))}
+                      {columns.map((column, colIndex) => {
+                        const cellData =
+                          row[column.key as keyof OrderDetailTransform];
+
+                        if (typeof cellData === 'object') {
+                          return (
+                            <td key={colIndex}>{`Batches: ${cellData}`}</td>
+                          );
+                        }
+
+                        return <td key={colIndex}>{cellData}</td>;
+                      })}
                     </tr>
                   ))}
                 </tbody>

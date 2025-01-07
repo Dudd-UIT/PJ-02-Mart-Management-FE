@@ -42,7 +42,7 @@ export type BatchGrouped = {
   inboundReceiptId: number;
   unit: string;
   unitId: number;
-  image: string | File;
+  image: string;
   productSample: string;
   supplierName: string;
   uniqueUnitKey: string;
