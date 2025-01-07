@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { handleCreateStaffAction } from '@/services/staffServices';
 import { Input } from '../commonComponent/InputForm';
-import { FaSearch } from 'react-icons/fa';
 import { fetchEmployees } from '@/services/groupServices';
 import useSWR from 'swr';
 

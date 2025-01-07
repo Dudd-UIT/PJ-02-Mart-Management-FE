@@ -111,14 +111,14 @@ function LoginPage() {
         </form>
 
         {/* Register Link */}
-        <div className="mt-3 text-center">
+        {/* <div className="mt-3 text-center">
           <span>
             Chưa có tài khoản?{' '}
             <a href="#" className="text-primary fw-bold">
               Đăng ký ngay!
             </a>
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

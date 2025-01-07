@@ -3,10 +3,10 @@
 import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 
-export const fetchBatchs = async (
-  showOption: number,
+export const fetchBatches = async (
   current: number,
   pageSize: number,
+  showOption?: number,
   searchQuantity?: string,
   searchExpDate?: string,
 ) => {
@@ -43,7 +43,7 @@ export const fetchBatchs = async (
       throw new Error(res.message);
     }
   } catch (error) {
-    console.error('Fetch batchs failed:', error);
+    console.error('Fetch batches failed:', error);
     throw error;
   }
 };

@@ -1,11 +1,7 @@
 'use client';
 import { Modal, Button } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
-import useSWR from 'swr';
-import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { toast } from 'react-toastify';
-import { fetchProductUnitByIds } from '@/services/productUnitServices';
 import { Input } from '../commonComponent/InputForm';
 import { BatchGrouped } from '@/types/batch';
 import { handleUpdateWarehouseAction } from '@/services/batchServices';
@@ -13,19 +9,8 @@ import Image from 'next/image';
 
 type FormData = {
   id: number;
-  inboundPrice: number;
-  // sellPrice: number;
   discount: number;
-  inventQuantity: number;
-  inboundQuantity: number;
-  expiredAt: string;
-  inboundReceiptId: number;
-  // unit: string;
-  // productSample: string;
 };
-
-const imgURL =
-  'https://bizweb.dktcdn.net/thumb/1024x1024/100/459/016/products/16172903911888-1.jpg?v=1722161429533';
 
 const altImg = '/images/warehousePH.png';
 
@@ -40,36 +25,17 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
 
   const initalFormData = {
     id: 0,
-    inboundPrice: 0,
-    // sellPrice: 0,
     discount: 0,
-    inventQuantity: 0,
-    inboundQuantity: 0,
-    expiredAt: '',
-    inboundReceiptId: 0,
-    // unit: '',
-    // productSample: '',
   };
 
+  console.log('warehouseData', warehouseData);
   const [formData, setFormData] = useState<FormData>(initalFormData);
-  const { productUnitIds, setProductUnitIds } = useSelectedProductUnits();
-
-  const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
 
   useEffect(() => {
     if (warehouseData) {
       setFormData({
         id: warehouseData.id,
-        inboundPrice: warehouseData.inboundPrice,
-        // sellPrice: warehouseData.sellPrice,
         discount: warehouseData.discount,
-        inventQuantity: warehouseData.inventQuantity,
-        inboundQuantity: warehouseData.inboundQuantity,
-        expiredAt: warehouseData.expiredAt,
-        inboundReceiptId: warehouseData.inboundReceiptId,
-        // unit: warehouseData.unit,
-        // productSample: warehouseData.productSample,
       });
     }
   }, [warehouseData]);
@@ -97,57 +63,6 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const { data, error } = useSWR(
-    [current, pageSize, productUnitIds.length],
-    () => fetchProductUnitByIds(productUnitIds, current, pageSize),
-  );
-  if (error)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div>{error.message}</div>
-      </div>
-    );
-
-  if (!data)
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div className="spinner-grow" role="status" color=""></div>
-        <span className="sr-only text-success">Loading...</span>
-      </div>
-    );
-
-  const productUnits = Array.isArray(data?.results)
-    ? data.results.map((item: ProductUnit) => ({
-        id: item.id,
-        sellPrice: item.sellPrice,
-        conversionRate: item.conversionRate,
-        createdAt: item.createdAt,
-        volumne: item.volumne,
-        productSampleName: item.productSample?.name,
-        unitName: item.unit?.name,
-      }))
-    : [];
-
-  const meta: MetaData = {
-    current,
-    pageSize,
-    pages: data.meta.pages,
-    total: data.meta.total,
-  };
-
-  const handlePreviousPage = () => {
-    if (current > 1) setCurrent(current - 1);
-  };
-
-  const handleNextPage = () => {
-    if (current < meta.pages) setCurrent(current + 1);
-  };
-
-  function convertISOString(dateString: string) {
-    const date = new Date(dateString);
-    return date.toISOString();
-  }
-
   return (
     <>
       <Modal
@@ -166,7 +81,11 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
               <div className="col col-md-4 pt-2">
                 <Image
                   className="img-fluid img-thumbnail"
-                  src={imgURL ? imgURL : altImg}
+                  src={
+                    typeof warehouseData?.image === 'string'
+                      ? warehouseData.image
+                      : altImg
+                  }
                   alt="Warehouse"
                   width={200}
                   height={200}
@@ -178,36 +97,29 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
                     title="Mẫu sản phẩm"
                     value={props.data?.productSample || ''}
                     size={12}
-                    // onChange={(value) =>
-                    //   handleFormDataChange('productSample', value)
-                    // }
                     readOnly={true}
                   />
                 </div>
                 <div className="row mb-3">
                   <Input
                     title="Nhà cung cấp"
-                    value={''}
+                    value={props.data?.supplierName || ''}
                     size={12}
-                    // onChange={(value) => handleFormDataChange('', value)}
+                    readOnly={true}
                   />
                 </div>
                 <div className="row mb-3">
                   <Input
                     title="Số lượng tồn"
-                    value={formData?.inventQuantity || 0}
+                    value={props.data?.inventQuantity || 0}
                     size={6}
-                    onChange={(value) =>
-                      handleFormDataChange('inventQuantity', value)
-                    }
+                    readOnly={true}
                   />
                   <Input
                     title="Số lượng nhập"
-                    value={formData?.inboundQuantity || 0}
+                    value={props.data?.inboundQuantity || 0}
                     size={6}
-                    onChange={(value) =>
-                      handleFormDataChange('inboundQuantity', value)
-                    }
+                    readOnly={true}
                   />
                 </div>
               </div>
@@ -215,37 +127,41 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
 
             <div className="row mb-3">
               <Input
-                title="Giá nhập"
-                value={formData?.inboundPrice || ''}
+                title="Ngày nhập"
+                value={props.data?.createdAt.split('T')[0] || ''}
                 size={6}
-                onChange={(value) =>
-                  handleFormDataChange('inboundPrice', value)
-                }
+                type="date"
+                readOnly={true}
               />
-              <Input title="Ngày nhập" value={''} size={6} type="date" />
+              <Input
+                title="Hạn sử dụng"
+                value={props.data?.expiredAt.split('T')[0] || ''}
+                size={6}
+                type="date"
+                readOnly={true}
+              />
             </div>
 
             <div className="row mb-3">
-              <Input
-                title="Giảm giá"
-                value={formData?.discount || 0}
-                size={4}
-                onChange={(value) => handleFormDataChange('discount', value)}
-              />
               <Input
                 title="Đơn vị tính"
                 value={props.data?.unit || ''}
                 size={2}
                 readOnly={true}
-                // onChange={(value) => handleFormDataChange('unit', value)}
               />
               <Input
-                title="Hạn sử dụng"
-                value={formData?.expiredAt.split('T')[0] || ''}
+                title="Giá nhập"
+                value={props.data?.inboundPrice || ''}
                 size={6}
-                type="date"
+                readOnly={true}
+              />
+              <Input
+                title="Giảm giá"
+                value={formData?.discount || 0}
+                size={4}
+                type="number"
                 onChange={(value) =>
-                  handleFormDataChange('expiredAt', convertISOString(value))
+                  handleFormDataChange('discount', parseFloat(value))
                 }
               />
             </div>

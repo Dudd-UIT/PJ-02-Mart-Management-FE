@@ -94,7 +94,7 @@ const InboundReceiptPage = () => {
     createdAt: item.createdAt,
     discount: item.discount,
     vat: item.vat,
-    batchs: item.batchs,
+    batches: item.batches,
   }));
 
   const meta: MetaData = {
