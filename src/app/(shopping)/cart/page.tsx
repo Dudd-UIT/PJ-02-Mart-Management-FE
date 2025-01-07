@@ -1,247 +1,55 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
-import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
-import CreateProductSampleModal from '@/components/productSampleComponent/productSample.create';
-import ProductSampleUnitTable from '@/components/productSampleComponent/productSample.table';
-import withRoleAuthorization from '@/hoc/withRoleAuthorization';
-import { fetchProductLines } from '@/services/productLineServices';
-import { fetchProductSamples } from '@/services/productSampleServices';
-import { fetchProductTypes } from '@/services/productTypeServices';
-import { ProductSample } from '@/types/productSample';
-import { ProductUnitTransform } from '@/types/productUnit';
 import Image from 'next/image';
-import { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { FaFilter, FaPlus } from 'react-icons/fa';
-import useSWR, { mutate } from 'swr';
-
-const columns: Column<ProductSample>[] = [
-  { title: '#', key: 'id' },
-  { title: 'Tên sản phẩm', key: 'name' },
-  { title: 'Đơn vị nhỏ nhất', key: 'minUnitName' },
-];
+import { FaMinus, FaPlus } from 'react-icons/fa';
 
 function ProductSamplePage() {
-  const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
-
-  const [searchName, setSearchName] = useState('');
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [searchProductTypeId, setSearchProductTypeId] = useState<number>(0);
-  const [searchProductLineId, setSearchProductLineId] = useState<number>(0);
-
-  const urlProductType = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`;
-  const { data: productTypesData, error: productTypesError } = useSWR(
-    [urlProductType],
-    () => fetchProductTypes(1, 100),
-  );
-
-  const urlProductLine = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-lines`;
-  const { data: productLinesData, error: productLinesError } = useSWR(
-    [urlProductLine, searchProductTypeId],
-    () => fetchProductLines(1, 100, '', searchProductTypeId),
-  );
-
-  const urlProductSample = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`;
-  const { data: productSamplesData, error: productSamplesError } = useSWR(
-    [
-      urlProductSample,
-      current,
-      pageSize,
-      '',
-      searchProductLineId,
-      searchProductTypeId,
-    ],
-    () =>
-      fetchProductSamples(
-        current,
-        pageSize,
-        '',
-        searchProductLineId,
-        searchProductTypeId,
-      ),
-  );
-
-  console.log('productSamplesData', productSamplesData);
-
-  const transformedProductSamplesData = {
-    ...productSamplesData,
-    results: productSamplesData?.results?.map((sample: ProductSample) => {
-      const minUnit = sample.productUnits?.find(
-        (unit) => unit.conversionRate === null,
-      )?.unit;
-      const minUnitName = minUnit?.name;
-      const minUnitId = minUnit?.id;
-
-      return {
-        ...sample,
-        minUnitName: minUnitName || null,
-        minUnitId: minUnitId || null,
-      };
-    }),
-  };
-
-  const onMutate = () => {
-    mutate([urlProductSample, current, pageSize, '', searchProductLineId]);
-  };
-
-  const meta: MetaData = {
-    current,
-    pageSize,
-    pages: transformedProductSamplesData?.meta?.pages,
-    total: transformedProductSamplesData?.meta?.total,
-  };
-
-  const handlePreviousPage = () => {
-    if (current > 1) setCurrent(current - 1);
-  };
-
-  const handleNextPage = () => {
-    if (current < meta.pages) setCurrent(current + 1);
-  };
-
-  const handleProductTypeChange = (value: number) => {
-    setSearchProductTypeId(+value);
-    setSearchProductLineId(0);
-  };
-
   return (
-    <>
-      <h3>Danh sách sản phẩm</h3>
-      {/* button search */}
+    <div>
       <div className="row">
-        <Input
-          title="Tìm kiếm"
-          size={4}
-          value={searchName}
-          placeholder="Nhập tên sản phẩm"
-          onChange={(value) => setSearchName(value)}
-          icon={<FaSearch />}
-        />
-        <Input
-          title="Loại sản phẩm"
-          size={4}
-          value={searchProductTypeId}
-          onSelectedChange={handleProductTypeChange}
-          icon={<FaFilter />}
-          options={productTypesData?.results}
-          placeholder="Chọn tên loại sản phẩm"
-        />
-        <Input
-          title="Dòng sản phẩm"
-          size={4}
-          readOnly={searchProductTypeId === 0}
-          value={searchProductLineId}
-          onSelectedChange={(value) => setSearchProductLineId(+value)}
-          icon={<FaFilter />}
-          options={productLinesData?.results}
-          placeholder="Chọn tên dòng sản phẩm"
-        />
-      </div>
-
-      <ProtectedComponent requiredRoles={['c_pdsam']}>
-        <div className="d-flex justify-content-end mx-3">
-          <button
-            className="btn d-flex align-items-center btn-primary"
-            onClick={() => setIsCreateModalOpen(true)}
-          >
-            <FaPlus />
-            <text>Thêm</text>
-          </button>
-        </div>
-      </ProtectedComponent>
-
-      {transformedProductSamplesData ? (
-        <>
-          <ProductSampleUnitTable
-            productUnits={
-              transformedProductSamplesData?.results?.length > 0
-                ? transformedProductSamplesData.results
-                : []
-            }
-            columns={columns}
-            onMutate={onMutate}
+        <div className="col col-md-2">
+          <Image
+            src={'/images/warehousePH.png'}
+            alt={'Product'}
+            width={250}
+            height={250}
+            className="h-100 w-100 img-thumbnail"
           />
-          {/* <div className="row">
-            {transformedProductSamplesData.map((productUnit: ProductUnitTransform) => (
-              <div
-                key={productUnit.id}
-                className="col-md-3 p-2"
-                onClick={() => {}}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className="card">
-                  <Image
-                    src={
-                      typeof productUnit.image === 'string'
-                        ? productUnit.image
-                        : URL.createObjectURL(productUnit.image)
-                    }
-                    alt={productUnit.productSampleName || 'Product'}
-                    width={60}
-                    height={100}
-                    className="card-img-top p-2"
-                  />
-  
-                  <div className="d-flex flex-column justify-content-center align-items-center">
-                    <text className="p-0">{productUnit.productSampleName}</text>
-                    <text className="text-danger p-1">
-                      {productUnit.sellPrice?.toLocaleString('vi-VN')} đ
-                    </text>
-                  </div>
-                </div>
+        </div>
+        <div className="col col-md-10">
+          <div className="d-flex">
+            <div>
+              <h2>Tên sản phẩm</h2>
+              <h2><strong>1.000.000 đ</strong></h2>
+            </div>
+            <Input title={'Mẫu mã'} value={'chai 330ml 20/12/2025'} size={3} />
+            <div className="btn-group" role="group" aria-label="Basic example">
+              <div className="d-flex align-items-center">
+                <FaMinus
+                  onClick={() => {}}
+                  className="text-danger me-2"
+                  style={{ cursor: 'pointer' }}
+                />
+                <input
+                  className="form-control"
+                  value={4}
+                  style={{ width: '5rem' }}
+                />
+
+                <FaPlus
+                  onClick={() => {}}
+                  className="text-success ms-2"
+                  style={{ cursor: 'pointer' }}
+                />
               </div>
-            ))}
-          </div> */}
-        </>
-      ) : (
-        <>
-          <div className="d-flex justify-content-center align-items-center">
-            <div className="spinner-grow text-success" role="status"></div>
-            <span className="sr-only text-success">Loading...</span>
+            </div>
           </div>
-        </>
-      )}
-
-      {/* Navigate control */}
-      <nav aria-label="Page navigation example">
-        <ul className="pagination justify-content-center">
-          <li className={`page-item ${current === 1 ? 'disabled' : ''}`}>
-            <button className="page-link" onClick={handlePreviousPage}>
-              Previous
-            </button>
-          </li>
-          {Array.from({ length: meta.pages }, (_, index) => (
-            <li
-              key={index}
-              className={`page-item ${current === index + 1 ? 'active' : ''}`}
-            >
-              <button
-                className="page-link"
-                onClick={() => setCurrent(index + 1)}
-              >
-                {index + 1}
-              </button>
-            </li>
-          ))}
-          <li
-            className={`page-item ${current === meta.pages ? 'disabled' : ''}`}
-          >
-            <button className="page-link" onClick={handleNextPage}>
-              Next
-            </button>
-          </li>
-        </ul>
-      </nav>
-
-      <CreateProductSampleModal
-        isCreateModalOpen={isCreateModalOpen}
-        setIsCreateModalOpen={setIsCreateModalOpen}
-        onMutate={onMutate}
-      />
-    </>
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default withRoleAuthorization(ProductSamplePage, ['v_pdsams']);
+// export default withRoleAuthorization(ProductSamplePage, ['v_pdsams']);
+export default ProductSamplePage;

@@ -32,7 +32,7 @@ type FormData = {
   available: number;
 };
 
-function UpdateProductSampleModal(
+function ProductSaleModal(
   props: UpdateModalProps<ProductSampleShoping>,
 ) {
   const {
@@ -215,7 +215,7 @@ function UpdateProductSampleModal(
                   <button
                     key={`${unit.id}-${batch.id}-${index}`}
                     onClick={() => handleButtonClick(unit, batch)}
-                    className={`btn m-2 col col-md-4 ${
+                    className={`btn m-1 p-1 col col-md-3 ${
                       isActive ? 'btn-outline active' : 'btn-outline'
                     }`}
                   >
@@ -306,4 +306,4 @@ function UpdateProductSampleModal(
   );
 }
 
-export default UpdateProductSampleModal;
+export default ProductSaleModal;
