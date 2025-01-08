@@ -51,8 +51,8 @@ const InboundReceiptPage = () => {
       pageSize,
       searchParams.staffName,
       searchParams.supplierName,
-      searchParams.startDate,
-      searchParams.endDate,
+      startDate,
+      endDate,
     ],
     () =>
       fetchInboundReceipts(
@@ -60,8 +60,8 @@ const InboundReceiptPage = () => {
         pageSize,
         searchParams.staffName,
         searchParams.supplierName,
-        searchParams.startDate,
-        searchParams.endDate,
+        startDate,
+        endDate,
       ),
   );
 
@@ -129,8 +129,8 @@ const InboundReceiptPage = () => {
       pageSize,
       searchParams.staffName,
       searchParams.supplierName,
-      searchParams.startDate,
-      searchParams.endDate,
+      startDate,
+      endDate,
     ]);
 
   return (
@@ -152,7 +152,9 @@ const InboundReceiptPage = () => {
           title="Tìm kiếm"
           size={4}
           value={searchValue}
-          placeholder={`Nhập ${searchType === 'staffName' ? 'Tên nhân viên' : 'Tên nhà cung cấp'}`}
+          placeholder={`Nhập ${
+            searchType === 'staffName' ? 'tên nhân viên' : 'tên nhà cung cấp'
+          }`}
           type="text"
           onChange={(value) => setSearchValue(value)}
           onClickIcon={handleSearchClick}

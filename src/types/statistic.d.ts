@@ -8,5 +8,5 @@ interface TopSale {
   productSampleName: string;
   unitName: string;
   totalSold: number;
-  inventQuantity: number;
+  totalInventQuantity: number;
 }

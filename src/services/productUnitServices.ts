@@ -43,7 +43,7 @@ export const fetchProductUnits = async (
       throw new Error(res.message);
     }
   } catch (error) {
-    console.error('loi');
+    console.error('Fetch product units failed:', error);
     throw error;
   }
 };
@@ -84,7 +84,7 @@ export const fetchProductUnitsForSale = async (
       throw new Error(res.message);
     }
   } catch (error) {
-    console.error('loi');
+    console.error('Fetch product units for sale failed:', error);
     throw error;
   }
 };
@@ -119,7 +119,7 @@ export const fetchProductUnitsBySupplier = async (
       throw new Error(res.message);
     }
   } catch (error) {
-    console.error('loi');
+    console.error('Fetch product units by supplier failed:', error);
     throw error;
   }
 };

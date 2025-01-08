@@ -18,7 +18,7 @@ import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const columns: Column<ProductUnitTransform>[] = [
   { title: 'Đơn vị tính', key: 'unitName' },
-  // { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
+  { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
   // { title: 'So với', key: 'compareUnitName' },
   { title: 'Giá bán', key: 'sellPrice' },
   { title: 'Khối lượng', key: 'volumne' },
@@ -88,6 +88,8 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
     }
   }, [productSampleData]);
 
+  console.log('productSampleData', productSampleData);
+
   const handleDeleteUnit = (productUnitId: number) => {
     const newProductunits = productUnits?.filter(
       (productUnit) => productUnit.id !== productUnitId,
@@ -146,6 +148,7 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
       unitId: productUnit.unitId,
     }));
     const payload = { productSampleDto: rest, productUnitsDto };
+    console.log('payload', payload);
     const res = await handleUpdateProductSampleAction({
       id: formData.id,
       ...payload,
@@ -218,11 +221,19 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
               </span>
             </button>
           </div>
-
           <SelectedProductSampleUnitTable
             columns={columns}
             productSampleUnits={productUnits}
             onDeleteUnit={handleDeleteUnit}
+            onUpdateUnit={(updatedUnit: ProductUnitTransform) => {
+              console.log('updatedUnit', updatedUnit);
+              const updatedUnits = productUnits.map((unit) =>
+                unit.id === updatedUnit.id ? updatedUnit : unit,
+              );
+              setProductUnits(updatedUnits); // Đảm bảo mảng này chỉ chứa ProductUnitTransform
+              toast.success('Cập nhật đơn vị tính thành công!');
+            }}
+            productSampleData={productSampleData}
           />
         </Modal.Body>
         <Modal.Footer>

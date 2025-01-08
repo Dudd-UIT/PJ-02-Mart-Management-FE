@@ -18,6 +18,8 @@ export interface SelectedProductSampleUnitTableProps {
   productSampleUnits: ProductUnitTransform[];
   columns: Column<ProductUnitTransform>[];
   onDeleteUnit: (unitId: number) => void;
+  onUpdateUnit?: (productUnit: any) => void;
+  productSampleData?: ProductSampleTransform;
 }
 
 export interface ProductSample {

@@ -117,15 +117,15 @@ function UpdateInboundReceiptModal(
       const updatedBatchData = inboundReceiptData.batches.map(
         (batch: Batch) => ({
           id: batch?.id,
-          inboundPrice: batch.inboundPrice,
-          discount: batch.discount,
-          inventQuantity: batch.inventQuantity,
-          inboundQuantity: batch.inboundQuantity,
-          expiredAt: batch.expiredAt,
-          productUnitId: batch.productUnit.id,
-          productSampleName: batch.productUnit?.productSample?.name,
-          unitName: batch.productUnit?.unit?.name,
-          total: batch.inboundPrice * batch.inboundQuantity,
+          inboundPrice: batch?.inboundPrice,
+          discount: batch?.discount,
+          inventQuantity: batch?.inventQuantity,
+          inboundQuantity: batch?.inboundQuantity,
+          expiredAt: batch?.expiredAt,
+          productUnitId: batch?.productUnit?.id,
+          productSampleName: batch?.productUnit?.productSample?.name,
+          unitName: batch?.productUnit?.unit?.name,
+          total: batch?.inboundPrice * batch?.inboundQuantity,
         }),
       );
       setFormBatchData(updatedBatchData);
@@ -331,8 +331,8 @@ function UpdateInboundReceiptModal(
                 keyObj="id"
                 showObj="name"
                 onSelectedChange={handleSupplierChange}
-                readOnly={+inboundReceiptInfo.isPaid === 1}
-                disabled={+inboundReceiptInfo.isPaid === 1}
+                readOnly={true}
+                disabled={true}
               />
             </div>
           </div>
