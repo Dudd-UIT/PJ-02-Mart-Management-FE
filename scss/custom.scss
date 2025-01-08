@@ -29,6 +29,7 @@ $accordion-button-focus-box-shadow: $body-bg;
 
 .btn {
   border-bottom-width: 4px;
+  gap: 0.5rem;
 }
 
 .btn.borderless {
@@ -107,6 +108,14 @@ $accordion-button-focus-box-shadow: $body-bg;
   background-color: $primaryContainer;
 }
 
+.stat-card {
+  color: $body-color;
+  border-radius: 0.375rem;
+  border: 2px solid $body-color;
+  border-bottom-width: 4px;
+  padding: 0.375rem 0.75rem;
+}
+
 //Ẩn bg xanh của autofill
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
@@ -167,11 +176,14 @@ table * * * {
 .accordion-body {
   border-left: 1px solid $secondaryContainer !important;
   margin-top: 0.5rem;
+  padding-right: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 #side_nav {
   background: $secondary;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   transition: width 0.3s;
 }

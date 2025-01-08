@@ -1,23 +1,26 @@
-import Sidebar from '@/components/Sidebar';
-import { IoPersonOutline } from 'react-icons/io5';
+import { auth } from '@/auth';
+import Header from '@/components/commonComponent/Header';
+import Sidebar from '@/components/commonComponent/Sidebar';
+import { SelectedRolesProvider } from '@/context/selectedRolesContext';
+import { useSessionContext } from '@/context/SessionContext';
 
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <>
       <div className="d-flex">
         <Sidebar />
         <div className="content w-100">
-          <div className="d-flex justify-content-end px-4 pt-2">
-            <button id="avatar">
-              <IoPersonOutline className="fs-3" />
-            </button>
-          </div>
+          <Header session={session} />
           <hr className="h-color m-2" />
-          <div className="container">{children}</div>
+          <div className="container">
+            <SelectedRolesProvider>{children}</SelectedRolesProvider>
+          </div>
         </div>
       </div>
     </>
