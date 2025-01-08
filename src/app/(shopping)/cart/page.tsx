@@ -1,10 +1,32 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
+import { fetchCartDetails } from '@/services/cartServices';
 import Image from 'next/image';
+import { useState } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
+import useSWR from 'swr';
 
 function ProductSamplePage() {
+  const [searchParams, setSearchParams] = useState({ name: '', id: 1 });
+
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+
+  const urlcartDetail = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/carts`;
+  const { data: cartDetailData, error: cartDetailError } = useSWR(
+    [urlcartDetail, current, pageSize, searchParams.name, searchParams.id],
+    () =>
+      fetchCartDetails(
+        current,
+        pageSize,
+        searchParams.name,
+        searchParams.id,
+      ),
+  );
+
+  console.log('cartDetailData', cartDetailData);
+
   return (
     <div>
       <div className="row">

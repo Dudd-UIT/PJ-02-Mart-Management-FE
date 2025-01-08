@@ -3,12 +3,11 @@
 import { auth } from '@/auth';
 import { sendRequest } from '@/utils/api';
 
-export const fetchProductSamples = async (
+export const fetchCartDetails = async (
   current: number,
   pageSize: number,
   searchName?: string,
-  searchProductLineId?: number,
-  searchProductTypeId?: number,
+  searchUserId?: number,
 ) => {
   const session = await auth();
 
@@ -17,21 +16,9 @@ export const fetchProductSamples = async (
     pageSize,
   };
 
-  if (searchName) {
-    queryParams.name = searchName;
-  }
-
-  if (searchProductLineId) {
-    queryParams.productLineId = searchProductLineId;
-  }
-
-  if (searchProductTypeId) {
-    queryParams.productTypeId = searchProductTypeId;
-  }
-
   try {
     const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/carts/${searchUserId}`,
       method: 'GET',
       queryParams,
       headers: {
@@ -39,13 +26,15 @@ export const fetchProductSamples = async (
       },
     });
 
+    console.log('res', res)
+
     if (res?.data) {
       return res.data;
     } else {
       throw new Error(res.message);
     }
   } catch (error) {
-    console.error('Fetch product samples failed:', error);
+    console.error('Fetch cart detail failed:', error);
     throw error;
   }
 };
