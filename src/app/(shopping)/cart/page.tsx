@@ -1,16 +1,13 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
-import { preventOverflow } from '@popperjs/core';
-import { fetchCartDetails, handleDeleteCartDetailAction } from '@/services/cartServices';
+import { fetchCartDetails } from '@/services/cartServices';
 import Image from 'next/image';
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
-import { OrderDetailTransform } from '@/types/order';
-import { ProductUnitTransform } from '@/types/productUnit';
 import { toast } from 'react-toastify';
-import { handleCreatedOrderAction, handleCreatedOrderOnlineAction } from '@/services/orderServices';
+import { handleCreatedOrderOnlineAction } from '@/services/orderServices';
 import DeleteCartDetailModal from '@/components/cartComponent/cart.delete';
 import { CartDetail } from '@/types/cart';
 
@@ -31,7 +28,6 @@ type FormDataOrder = {
 };
 
 function ProductSamplePage() {
-
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
 
   const initialOrder = {
@@ -46,9 +42,12 @@ function ProductSamplePage() {
   };
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [selectedCartDetail, setSelectedCartDetail] = useState<CartDetail | undefined>();
+  const [selectedCartDetail, setSelectedCartDetail] = useState<
+    CartDetail | undefined
+  >();
 
-  const [formDataOrder, setFormDataOrder] = useState<FormDataOrder>(initialOrder);
+  const [formDataOrder, setFormDataOrder] =
+    useState<FormDataOrder>(initialOrder);
   const handleOrderInfoChange = (
     field: keyof typeof formDataOrder,
     value: string | number,
@@ -70,7 +69,9 @@ function ProductSamplePage() {
         return [...prevSelectedItems, item];
       } else {
         // Loại bỏ sản phẩm khỏi danh sách được chọn
-        return prevSelectedItems.filter((selectedItem) => selectedItem.id !== item.id);
+        return prevSelectedItems.filter(
+          (selectedItem) => selectedItem.id !== item.id,
+        );
       }
     });
   };
@@ -78,8 +79,8 @@ function ProductSamplePage() {
   const handleQuantityChange = (itemId: number, newQuantity: number) => {
     setSelectedItems((prevSelectedItems) =>
       prevSelectedItems.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
+        item.id === itemId ? { ...item, quantity: newQuantity } : item,
+      ),
     );
   };
 
@@ -90,21 +91,16 @@ function ProductSamplePage() {
   const { data: cartDetailData, error: cartDetailError } = useSWR(
     [urlcartDetail, current, pageSize, searchParams.name, searchParams.id],
     () =>
-      fetchCartDetails(
-        current,
-        pageSize,
-        searchParams.name,
-        searchParams.id,
-      ),
+      fetchCartDetails(current, pageSize, searchParams.name, searchParams.id),
   );
 
   const handlePurchase = async () => {
-    console.log("selected Item 2", selectedItems)
+    console.log('selected Item 2', selectedItems);
     if (selectedItems.length === 0) {
       toast.warning('Vui lòng chọn ít nhất một sản phẩm!');
       return;
     }
-  
+
     try {
       // Dữ liệu đơn hàng
       const orderDetailsDto = selectedItems.map((item) => ({
@@ -115,14 +111,14 @@ function ProductSamplePage() {
         cartDetailId: item.id,
       }));
 
-      console.log('selectedItems', selectedItems  )
-  
+      console.log('selectedItems', selectedItems);
+
       const orderDto = {
         // staffId: formDataOrder.staffId,
         customerId: formDataOrder.customerId,
         totalPrice: orderDetailsDto.reduce(
           (acc, detail) => acc + detail.quantity * detail.currentPrice,
-          0
+          0,
         ),
         paymentMethod: formDataOrder.paymentMethod,
         paymentTime: new Date(),
@@ -130,122 +126,139 @@ function ProductSamplePage() {
         isPaid: 0,
         orderType: 'Online',
       };
-  
+
       const payload = {
         orderDto,
         orderDetailsDto,
       };
-      console.log('payload', payload)
+      console.log('payload', payload);
       // Gửi yêu cầu tạo đơn hàng
       const res = await handleCreatedOrderOnlineAction(payload);
-      console.log('>>>res<<<', res)
+      console.log('>>>res<<<', res);
       if (res?.data) {
         toast.success('Đơn hàng được tạo thành công!');
         setSelectedItems([]); // Reset danh sách đã chọn
-        onMutate()
+        onMutate();
       } else {
         toast.error(res.message);
       }
     } catch (error) {
       toast.error('Có lỗi xảy ra, vui lòng thử lại!');
     }
-  }; 
+  };
 
   const handleDeleteCartDetail = (cartDetail: CartDetail) => {
-     console.log('cartDetail::', cartDetail);
-      setSelectedCartDetail(cartDetail);
-      setIsDeleteModalOpen(true);
+    console.log('cartDetail::', cartDetail);
+    setSelectedCartDetail(cartDetail);
+    setIsDeleteModalOpen(true);
   };
-  const onMutate = () => mutate([urlcartDetail, current, pageSize, searchParams.name, searchParams.id]);
+  const onMutate = () =>
+    mutate([
+      urlcartDetail,
+      current,
+      pageSize,
+      searchParams.name,
+      searchParams.id,
+    ]);
 
   return (
     <>
-    <div>
       <div>
-        {cartDetailData?.cartDetails?.map((item: any) => (
-          <div className="row border rounded p-3 mx-5 my-3">
-            <div className="col col-md-2 p-0">
-              <Image
-                src={
-                  typeof item.productUnit.image === 'string'
-                    ? item.productUnit.image
-                    : '/images/default-product-image.png'
-                }
-                alt={'Product'}
-                width={250}
-                height={250}
-                className="h-100 img-thumbnail"
-              />
-            </div>
-            <div className="col col-md-10">
-              <div className="d-flex align-items-center justify-content-around h-100">
-                <div className="col col-md-3 position-relative pe-2">
-                  <p>SL tồn: {item.productUnit.batches[0].inventQuantity}</p>
-                  <h4>{item.productUnit.productSample.name}</h4>
-                  <h3 className="mt-4">{item.productUnit.sellPrice} đ</h3>
-                  {/* <p className="position-absolute" style={{ bottom: '1.5rem' }}>
+        <div>
+          {cartDetailData?.cartDetails?.map((item: any) => (
+            <div className="row border rounded p-3 mx-5 my-3" key={item.id}>
+              <div className="col col-md-2 p-0">
+                <Image
+                  src={
+                    typeof item.productUnit.image === 'string'
+                      ? item.productUnit.image
+                      : '/images/default-product-image.png'
+                  }
+                  alt={'Product'}
+                  width={250}
+                  height={250}
+                  className="h-100 img-thumbnail"
+                />
+              </div>
+              <div className="col col-md-10">
+                <div className="d-flex align-items-center justify-content-around h-100">
+                  <div className="col col-md-3 position-relative pe-2">
+                    <p>SL tồn: {item.productUnit.batches[0].inventQuantity}</p>
+                    <h4>{item.productUnit.productSample.name}</h4>
+                    <h3 className="mt-4">{item.productUnit.sellPrice} đ</h3>
+                    {/* <p className="position-absolute" style={{ bottom: '1.5rem' }}>
                     <s>1.200.000 đ</s>
                   </p> */}
-                </div>
-                <Input
-                  title={'Mẫu mã'}
-                  value={`${item.productUnit.unit.name} ${item.productUnit.volumne} ${new Date(item.productUnit.batches[0].expiredAt).toLocaleDateString('vi-VN')}`}
-                  size={3}
-                />
-                <Input
-                  title="Số lượng"
-                  type="number"
-                  value={
-                    selectedItems.find((selectedItem) => selectedItem.id === item.id)?.quantity ||
-                    item.quantity
-                  }
-                  onChange={(value) => handleQuantityChange(item.id, +value)}
-                  size={1}
-                />
-                <div className="col col-md-3 d-flex justify-content-around">
-                  <h4 className="text-danger m-0 mt-4">
-                    <strong>
-                      <u>
-                        {(
-                          item.productUnit.sellPrice *
-                          (selectedItems.find((selectedItem) => selectedItem.id === item.id)
-                            ?.quantity || item.quantity)
-                        ).toLocaleString('vi-VN')}{' '}
-                        đ
-                      </u>
-                    </strong>
-                  </h4>
-                </div>
-                <div className="col col-md-1 d-flex justify-content-end align-items-end gap-4">
-                  <input
-                    className="form-check-input p-2 mt-3 "
-                    type="checkbox"
-                    value=""
-                    id={item.id}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleCheckbox(item, e.target.checked)
+                  </div>
+                  <Input
+                    title={'Mẫu mã'}
+                    value={`${item.productUnit.unit.name} ${
+                      item.productUnit.volumne
+                    } ${new Date(
+                      item.productUnit.batches[0].expiredAt,
+                    ).toLocaleDateString('vi-VN')}`}
+                    size={3}
+                  />
+                  <Input
+                    title="Số lượng"
+                    type="number"
+                    value={
+                      selectedItems.find(
+                        (selectedItem) => selectedItem.id === item.id,
+                      )?.quantity || item.quantity
                     }
-                    style={{ cursor: 'pointer' }}
+                    onChange={(value) => handleQuantityChange(item.id, +value)}
+                    size={1}
                   />
-                  <FaTrash
-                    className="fs-5 text-danger mt-3"
-                    style={{ cursor: 'pointer' }}
-                    id={item.id}
-                    onClick={() => handleDeleteCartDetail(item.id)}
-                  />
+                  <div className="col col-md-3 d-flex justify-content-around">
+                    <h4 className="text-danger m-0 mt-4">
+                      <strong>
+                        <u>
+                          {(
+                            item.productUnit.sellPrice *
+                            (selectedItems.find(
+                              (selectedItem) => selectedItem.id === item.id,
+                            )?.quantity || item.quantity)
+                          ).toLocaleString('vi-VN')}{' '}
+                          đ
+                        </u>
+                      </strong>
+                    </h4>
+                  </div>
+                  <div className="col col-md-1 d-flex justify-content-end align-items-end gap-4">
+                    <input
+                      className="form-check-input p-2 mt-3 "
+                      type="checkbox"
+                      value=""
+                      id={item.id}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleCheckbox(item, e.target.checked)
+                      }
+                      style={{ cursor: 'pointer' }}
+                    />
+                    <FaTrash
+                      className="fs-5 text-danger mt-3"
+                      style={{ cursor: 'pointer' }}
+                      id={item.id}
+                      onClick={() => handleDeleteCartDetail(item.id)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            className="btn btn-primary"
+            disabled={selectedItems.length === 0}
+            onClick={handlePurchase}
+          >
+            Mua hàng
+          </button>
+        </div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button className="btn btn-primary" disabled={selectedItems.length === 0} onClick={handlePurchase}>
-          Mua hàng
-        </button>
-      </div>
-    </div>
-    <DeleteCartDetailModal
+      <DeleteCartDetailModal
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
         data={selectedCartDetail}

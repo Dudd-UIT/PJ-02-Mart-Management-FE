@@ -2,21 +2,15 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { ProductSample, ProductSampleShoping } from '@/types/productSample';
+import { ProductSampleShoping } from '@/types/productSample';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
-import {
-  handleUpdateProductSampleAction,
-  uploadImageToS3,
-} from '@/services/productSampleServices';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
 import Image from 'next/image';
-import { BatchGrouped } from '@/types/batch';
+import { Batch, BatchGrouped } from '@/types/batch';
 import { formatCurrency } from '@/utils/format';
 import { handleAddCartDetailAction } from '@/services/cartServices';
 
-function ProductSaleModal(
-  props: UpdateModalProps<ProductSampleShoping>,
-) {
+function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
   const {
     isUpdateModalOpen,
     setIsUpdateModalOpen,
@@ -30,7 +24,7 @@ function ProductSaleModal(
     batchId: 0,
     image: '',
     inventQuantity: 1,
-    discount: 0,                                                       
+    discount: 0,
     inboundPrice: 0,
   };
 
@@ -50,6 +44,7 @@ function ProductSaleModal(
           volumne: productUnit.volumne,
           sellPrice: productUnit.sellPrice,
           image: productUnit.image,
+          batches: productUnit.batches || [],
         }),
       );
       setProductUnits(productUnits);
@@ -76,13 +71,19 @@ function ProductSaleModal(
   };
 
   const handleUpdateCart = async () => {
-    console.log(currentBatch)
+    console.log(currentBatch);
 
-    const cartDto = {customerId: 1}
+    const cartDto = { customerId: 1 };
 
-    const cartDetailsDto = [{productUnitId: currentBatch.unitId, quantity: currentBatch.inventQuantity, batch: [{id: currentBatch.batchId}], }]
+    const cartDetailsDto = [
+      {
+        productUnitId: currentBatch.unitId,
+        quantity: currentBatch.inventQuantity,
+        batch: [{ id: currentBatch.batchId }],
+      },
+    ];
 
-    const payload = {cartDto, cartDetailsDto };
+    const payload = { cartDto, cartDetailsDto };
     console.log(payload);
     const res = await handleAddCartDetailAction(payload);
 
@@ -120,7 +121,7 @@ function ProductSaleModal(
           productSampleData.productUnits.map((unit: ProductUnit) => {
             if (unit.batches && unit.batches.length > 0) {
               // Nếu có batches, tạo nút cho từng batch
-              return unit.batches.map((batch: BatchGrouped, index: number) => {
+              return unit.batches.map((batch: Batch, index: number) => {
                 const buttonLabel = `${unit.unit?.name} ${
                   unit.volumne
                 } ${new Date(batch.expiredAt).toLocaleDateString('vi-VN')}`;
