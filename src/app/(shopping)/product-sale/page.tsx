@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
-import { fetchProductSamplesOnlineShopping } from '@/services/productSampleServices';
+import { fetchProductSamplesOnlineShopping, fetchProductSamplesOnlineShoppingWithRecommend } from '@/services/productSampleServices';
 import { useState } from 'react';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
@@ -53,7 +53,7 @@ function SalePage() {
   const { data: productSamplesData, error: productSamplesError } = useSWR(
     [urlproductSample, current, pageSize, searchParams.name, searchParams.id],
     () =>
-      fetchProductSamplesOnlineShopping(
+      fetchProductSamplesOnlineShoppingWithRecommend(
         current,
         pageSize,
         searchParams.name,
