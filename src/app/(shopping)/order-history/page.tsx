@@ -16,7 +16,6 @@ const columns: Column<OrderTransform>[] = [
   { title: 'Ngày tạo', key: 'createdAt' },
   { title: 'Tổng tiền', key: 'totalPrice' },
   { title: 'PTTT', key: 'paymentMethod' },
-  { title: 'TDTT', key: 'paymentTime' },
   { title: 'Loại hóa đơn', key: 'orderType' },
   { title: 'TT thanh toán', key: 'isPaid' },
   { title: 'TT nhận hàng', key: 'isReceived' },

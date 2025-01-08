@@ -183,9 +183,9 @@ function ProductSamplePage() {
                   <p>SL tồn: {item.productUnit.batches[0].inventQuantity}</p>
                   <h4>{item.productUnit.productSample.name}</h4>
                   <h3 className="mt-4">{item.productUnit.sellPrice} đ</h3>
-                  <p className="position-absolute" style={{ bottom: '1.5rem' }}>
+                  {/* <p className="position-absolute" style={{ bottom: '1.5rem' }}>
                     <s>1.200.000 đ</s>
-                  </p>
+                  </p> */}
                 </div>
                 <Input
                   title={'Mẫu mã'}
@@ -239,9 +239,11 @@ function ProductSamplePage() {
           </div>
         ))}
       </div>
-      <button className="btn btn-primary" disabled={selectedItems.length === 0} onClick={handlePurchase}>
-        Mua hàng
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button className="btn btn-primary" disabled={selectedItems.length === 0} onClick={handlePurchase}>
+          Mua hàng
+        </button>
+      </div>
     </div>
     <DeleteCartDetailModal
         isDeleteModalOpen={isDeleteModalOpen}
