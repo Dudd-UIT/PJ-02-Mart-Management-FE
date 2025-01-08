@@ -47,8 +47,35 @@ export const fetchOrders = async (
 export const handleCreatedOrderAction = async (data: any) => {
   const session = await auth();
   const { orderDto, orderDetailsDto } = data;
+
+  console.log('-----data', data)
   const { staffId, ...rest } = orderDto;
   const updatedOrderDto = { staffId: session?.user.id, ...rest };
+  const updatedData = {
+    orderDto: updatedOrderDto,
+    orderDetailsDto,
+  };
+  console.log('updatedData', updatedData)
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/orders/order-details`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+    body: { ...updatedData },
+  });
+
+  return res;
+};
+
+export const handleCreatedOrderOnlineAction = async (data: any) => {
+  const session = await auth();
+  const { orderDto, orderDetailsDto } = data;
+
+  console.log('-----data', data)
+  const { customerId, ...rest } = orderDto;
+  const updatedOrderDto = { customerId: session?.user.id, ...rest };
   const updatedData = {
     orderDto: updatedOrderDto,
     orderDetailsDto,
