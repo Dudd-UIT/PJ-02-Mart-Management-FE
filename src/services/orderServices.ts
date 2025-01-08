@@ -53,6 +53,7 @@ export const handleCreatedOrderAction = async (data: any) => {
     orderDto: updatedOrderDto,
     orderDetailsDto,
   };
+  console.log('updatedData', updatedData)
 
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/orders/order-details`,

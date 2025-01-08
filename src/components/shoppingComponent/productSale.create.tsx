@@ -12,25 +12,7 @@ import ProtectedComponent from '../commonComponent/ProtectedComponent';
 import Image from 'next/image';
 import { BatchGrouped } from '@/types/batch';
 import { formatCurrency } from '@/utils/format';
-
-const columns: Column<ProductUnitTransform>[] = [
-  { title: 'Đơn vị tính', key: 'unitName' },
-  // { title: 'Tỷ lệ chuyển đổi', key: 'conversionRate' },
-  // { title: 'So với', key: 'compareUnitName' },
-  { title: 'Giá bán', key: 'sellPrice' },
-  { title: 'Khối lượng', key: 'volumne' },
-];
-
-type FormData = {
-  id: number;
-  name: string;
-  description: string;
-  sellPrice: number;
-  image: string;
-  discount: number;
-  productUnits: ProductUnit[];
-  available: number;
-};
+import { handleAddCartDetailAction } from '@/services/cartServices';
 
 function ProductSaleModal(
   props: UpdateModalProps<ProductSampleShoping>,
@@ -43,41 +25,20 @@ function ProductSaleModal(
     onMutate,
   } = props;
 
-  const initalFormData = {
-    id: 0,
-    name: '',
-    description: '',
-    sellPrice: 0,
-    image: '',
-    discount: 0,
-    productUnits: [],
-    available: 0,
-  };
-
   const initialBatch = {
+    unitId: 0,
+    batchId: 0,
     image: '',
-    inventQuantity: 0,
+    inventQuantity: 1,
     discount: 0,                                                       
     inboundPrice: 0,
   };
 
-  const [formData, setFormData] = useState<FormData>(initalFormData);
   const [productUnits, setProductUnits] = useState<ProductUnitTransform[]>([]);
   const [currentBatch, setCurrentBatch] = useState<any>(initialBatch);
 
   useEffect(() => {
     if (productSampleData) {
-      setFormData({
-        id: productSampleData.id,
-        name: productSampleData.name,
-        description: productSampleData.description,
-        sellPrice: productSampleData.sellPrice,
-        image: productSampleData.image,
-        discount: productSampleData.discount,
-        productUnits: productSampleData.productUnits,
-        available: productSampleData.available,
-      });
-
       const productUnits = productSampleData.productUnits.map(
         (productUnit: ProductUnit) => ({
           id: productUnit.id,
@@ -98,8 +59,10 @@ function ProductSaleModal(
       if (firstUnit) {
         const firstBatch = firstUnit.batches && firstUnit.batches[0];
         setCurrentBatch({
+          unitId: firstUnit?.id,
+          batchId: firstBatch?.id,
           image: firstUnit.image,
-          inventQuantity: firstBatch?.inventQuantity || 0,
+          inventQuantity: 1,
           discount: firstBatch?.discount || 0,
           inboundPrice: firstBatch?.inboundPrice || 0,
         });
@@ -107,74 +70,28 @@ function ProductSaleModal(
     }
   }, [productSampleData]);
 
-  // const handleDeleteUnit = (productUnitId: number) => {
-  //   const newProductunits = productUnits?.filter(
-  //     (productUnit) => productUnit.id !== productUnitId,
-  //   );
-  //   setProductUnits(newProductunits);
-  //   toast.info(`Đơn vị tính ${productUnitId} đã được xóa`);
-  // };
-
-  // const handleFormDataChange = (
-  //   field: keyof typeof formData,
-  //   value: number[] | string,
-  // ) => {
-  //   setFormData((prev) => ({ ...prev, [field]: value }));
-  // };
-
-  const handleAddUnit = (newUnit: ProductUnitTransform) => {
-    if (productUnits) {
-      const newProdudctUnits = [...productUnits, newUnit];
-      setProductUnits(newProdudctUnits);
-    }
-  };
-
   const handleCloseCreateModal = () => {
     setIsUpdateModalOpen(false);
-    setFormData(initalFormData);
     setData?.(undefined);
   };
 
   const handleUpdateCart = async () => {
-    const { id, ...rest } = formData;
+    console.log(currentBatch)
 
-    const productUnitsWithImageUrls = await Promise.all(
-      productUnits.map(async (productUnit) => {
-        if (productUnit.image instanceof File) {
-          const formDataImage = new FormData();
-          formDataImage.append('file', productUnit.image);
-          const uploadedImageUrl = await uploadImageToS3(formDataImage);
+    const cartDto = {customerId: 1}
 
-          return {
-            ...productUnit,
-            image: uploadedImageUrl,
-          };
-        }
+    const cartDetailsDto = [{productUnitId: currentBatch.unitId, quantity: currentBatch.inventQuantity, batch: [{id: currentBatch.batchId}], }]
 
-        return productUnit;
-      }),
-    );
-
-    const productUnitsDto = productUnitsWithImageUrls.map?.((productUnit) => ({
-      volumne: productUnit.volumne,
-      sellPrice: productUnit.sellPrice,
-      conversionRate: productUnit.conversionRate,
-      compareUnitId: productUnit.compareUnitId,
-      image: productUnit.image,
-      productSampleId: formData.id,
-      unitId: productUnit.unitId,
-    }));
-    const payload = { productSampleDto: rest, productUnitsDto };
-    const res = await handleUpdateProductSampleAction({
-      id: formData.id,
-      ...payload,
-    });
+    const payload = {cartDto, cartDetailsDto };
+    console.log(payload);
+    const res = await handleAddCartDetailAction(payload);
 
     if (res?.data) {
       handleCloseCreateModal();
       toast.success(res.message);
       onMutate();
     } else {
+      console.log(res);
       toast.error(res.message);
     }
   };
@@ -188,8 +105,10 @@ function ProductSaleModal(
   }) => {
     const handleButtonClick = (unit: any, batch: any) => {
       setCurrentBatch({
+        unitId: unit.id,
+        batchId: batch.id,
         image: unit.image,
-        inventQuantity: batch?.inventQuantity || 0,
+        inventQuantity: 1,
         discount: batch?.discount || 0,
         inboundPrice: batch?.inboundPrice || 0,
       });
@@ -208,7 +127,7 @@ function ProductSaleModal(
                 const isActive =
                   currentBatch &&
                   currentBatch.image === unit.image &&
-                  currentBatch.inventQuantity === batch.inventQuantity &&
+                  // currentBatch.inventQuantity === batch.inventQuantity &&
                   currentBatch.discount === batch.discount &&
                   currentBatch.inboundPrice === batch.inboundPrice;
                 return (
