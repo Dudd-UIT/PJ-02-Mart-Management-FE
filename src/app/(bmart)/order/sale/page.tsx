@@ -103,8 +103,6 @@ function SalePage() {
       ),
   );
 
-  console.log('productUnitsData', productUnitsData);
-
   const meta: MetaData = {
     current,
     pageSize,
@@ -297,7 +295,6 @@ function SalePage() {
       orderDto,
       orderDetailsDto,
     };
-    console.log('payload', payload);
 
     const res = await handleCreatedOrderAction(payload);
     if (res?.data) {
@@ -430,8 +427,6 @@ function SalePage() {
     setIsSelectBatchModalOpen(false);
     setSelectedProduct(null);
   };
-
-  console.log('cart', cart);
 
   return (
     <>

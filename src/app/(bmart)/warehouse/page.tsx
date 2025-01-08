@@ -70,6 +70,8 @@ function WarehousePage() {
       ),
   );
 
+  console.log('batchesData', batchesData);
+
   const urlFetchProductUnits = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
   const { data: productUnitsData, error: productUnitsError } = useSWR(
     [
@@ -92,6 +94,8 @@ function WarehousePage() {
         showOption,
       ),
   );
+
+  console.log('productUnitsData', productUnitsData);
 
   const urlProductType = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`;
   const { data: productTypesData, error: productTypesError } = useSWR(
@@ -122,6 +126,8 @@ function WarehousePage() {
 
   const groupedProductData = groupProductData(productUnitsData?.results);
   const groupedBatchData = groupBatch(batchesData?.results);
+  console.log('groupedProductData', groupedProductData);
+  console.log('groupedBatchData', groupedBatchData);
 
   const totalValue = getWarehouseValue(groupedBatchData);
 
@@ -398,7 +404,7 @@ function groupBatch(results: Batch[]): BatchGrouped[] {
     supplierName: item?.inboundReceipt?.supplier?.name || '',
     productSampleId: item?.productUnit?.productSample?.id || 0,
     productSample: item?.productUnit?.productSample?.name || '',
-    uniqueUnitKey: `${item?.productUnit?.productSample?.id}_${item.productUnit?.unit?.name}`,
+    uniqueUnitKey: `${item?.productUnit?.id}_${item.productUnit?.unit?.name}`,
   }));
 }
 
