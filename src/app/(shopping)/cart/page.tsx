@@ -274,9 +274,31 @@ function ProductSamplePage() {
       searchParams.id,
     ]);
 
+  const handleSelectAll = () => {
+    setSelectedItems([...cartItems]);
+  };
+
+  const handleUnselectAll = () => {
+    setSelectedItems([]);
+  };
+
   return (
     <>
       <div>
+        <div className="mx-5 mt-3 d-flex justify-content-between gap-3">
+          <h2>Giỏ hàng của bạn</h2>
+          <div className='gap-3 d-flex'>
+            <button className="btn btn-primary" onClick={handleSelectAll}>
+              Chọn tất cả ({cartItems.length} SP)
+            </button>
+            <button
+              className="btn btn-outline"
+              onClick={handleUnselectAll}
+            >
+              Bỏ chọn tất cả
+            </button>
+          </div>
+        </div>
         <div>
           {cartItems?.map((item: CartDetailItem) => {
             const discountPrice =
@@ -317,6 +339,7 @@ function ProductSamplePage() {
                       )}
                     </div>
                     <Input
+                    readOnly={true}
                       title={'Mẫu mã'}
                       value={`${item.productUnit.unit.name} ${
                         item.productUnit.volumne
@@ -368,6 +391,7 @@ function ProductSamplePage() {
                         type="checkbox"
                         value=""
                         id={`checkbox-${item.id}`}
+                        checked={selectedItems.some((check) => check.id === item.id)}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleCheckbox(item, e.target.checked)
                         }
@@ -384,7 +408,7 @@ function ProductSamplePage() {
               </div>
             );
           })}
-          <div style={{height: '5rem'}}></div>
+          <div style={{ height: '5rem' }}></div>
         </div>
 
         <div className="position-fixed bottom-0 start-0 w-100 z-3 d-flex align-items-center justify-content-between p-3 bg-white shadow-lg">
