@@ -6,150 +6,7 @@ import { fetchCartDetails } from '@/services/cartServices';
 import Image from 'next/image';
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
-
-const data: any = {
-  id: 2,
-  status: 1,
-  createdAt: '2025-01-07T07:24:42.409Z',
-  deletedAt: null,
-  customer: {
-    id: 1,
-    name: 'Đoàn Danh Dự',
-    email: 'dudd@mini.mart',
-    password: '$2b$10$ImF9chTfy2rgUDiW3t/V5eOYFtNo0JQzuxk/H/m2Jw3pJJTi/i3RC',
-    score: 0,
-    address: 'Ấp Thị 1, xã Hội An, Chợ Mới, An Giang',
-    phone: '0901234567',
-    isActive: 1,
-    codeId: null,
-    codeExpired: null,
-    createdAt: '2025-01-03T23:29:54.000Z',
-    deletedAt: null,
-  },
-  cartDetails: [
-    {
-      id: 14,
-      cartId: 2,
-      productUnitId: 13,
-      batchId: 18,
-      quantity: 2,
-      productUnit: {
-        id: 13,
-        sellPrice: 10000,
-        conversionRate: null,
-        image:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUlFvGKCHhTwr6fiK0O1ZwVyuffp8zRcXlcQ&s',
-        volumne: '330ml',
-        createdAt: '2025-01-03T23:29:54.000Z',
-        deletedAt: null,
-      },
-      batch: {
-        id: 18,
-        inboundPrice: '52500.00',
-        discount: '0.20',
-        inventQuantity: 300,
-        inboundQuantity: 300,
-        expiredAt: '2025-02-28T17:00:00.000Z',
-        createdAt: '2023-06-05T02:25:00.000Z',
-        deletedAt: null,
-      },
-    },
-    {
-      id: 15,
-      cartId: 2,
-      productUnitId: 5,
-      batchId: 32,
-      quantity: 1,
-      productUnit: {
-        id: 5,
-        sellPrice: 8000,
-        conversionRate: null,
-        image:
-          'https://images2.thanhnien.vn/zoom/686_429/528068263637045248/2023/9/13/rau-muong-16945744756401379166751-75-0-476-642-crop-16945745476001397609558.png',
-        volumne: '1 kg',
-        createdAt: '2025-01-03T23:29:54.000Z',
-        deletedAt: null,
-      },
-      batch: {
-        id: 32,
-        inboundPrice: '40000.00',
-        discount: '0.00',
-        inventQuantity: 200,
-        inboundQuantity: 200,
-        expiredAt: '2025-12-30T17:00:00.000Z',
-        createdAt: '2024-03-15T07:00:00.000Z',
-        deletedAt: null,
-      },
-    },
-  ],
-};
-
-const cart: any = [
-  {
-    id: 1,
-    cartId: 1,
-    productUnitId: 1,
-    batchId: 1,
-    quantity: 10000,
-    productUnit: {
-      id: 1,
-      sellPrice: 120000,
-      conversionRate: null,
-      image:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS_idOuuaioteV4Hzmsvwus57R7SlL1A26jg&s',
-      volumne: '1 kg',
-      createdAt: '2025-01-04T02:45:56.000Z',
-      deletedAt: null,
-      productSample: {
-        id: 1,
-        name: 'Thịt heo ba rọi',
-        description: 'Thịt heo tươi ngon từ trang trại',
-        createdAt: '2025-01-04T02:45:56.000Z',
-        deletedAt: null,
-        productLineId: 1,
-      },
-      unit: {
-        id: 1,
-        name: 'kg',
-        createdAt: '2025-01-04T02:45:56.000Z',
-        deletedAt: null,
-      },
-      batches: [
-        {
-          id: 31,
-          inboundPrice: '100000.00',
-          discount: '0.00',
-          inventQuantity: 100,
-          inboundQuantity: 100,
-          expiredAt: '2025-12-30T17:00:00.000Z',
-          createdAt: '2024-02-10T03:30:00.000Z',
-          deletedAt: null,
-        },
-        {
-          id: 16,
-          inboundPrice: '62500.00',
-          discount: '0.00',
-          inventQuantity: 100,
-          inboundQuantity: 100,
-          expiredAt: '2024-12-31T17:00:00.000Z',
-          createdAt: '2023-04-10T04:30:00.000Z',
-          deletedAt: null,
-        },
-        {
-          id: 1,
-          inboundPrice: '168250.00',
-          discount: '0.00',
-          inventQuantity: 100,
-          inboundQuantity: 100,
-          expiredAt: '2024-12-30T17:00:00.000Z',
-          createdAt: '2021-11-15T07:20:00.000Z',
-          deletedAt: null,
-        },
-      ],
-    },
-  },
-];
-console.log(cart);
+import useSWR from 'swr';
 
 interface Item {
   id: number;
@@ -161,10 +18,36 @@ interface CartProps {
 }
 
 function ProductSamplePage() {
+
+  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+
+  const handleCheckbox = (item: Item, isChecked: boolean) => {
+    setSelectedItems((prev) =>
+      isChecked ? [...prev, item] : prev.filter((i) => i.id !== item.id)
+    );
+    console.log('selected Items: ', selectedItems)
+  };
+
+  const [searchParams, setSearchParams] = useState({ name: '', id: 1 });
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const urlcartDetail = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/carts`;
+  const { data: cartDetailData, error: cartDetailError } = useSWR(
+    [urlcartDetail, current, pageSize, searchParams.name, searchParams.id],
+    () =>
+      fetchCartDetails(
+        current,
+        pageSize,
+        searchParams.name,
+        searchParams.id,
+      ),
+  );
+  console.log('cartDetailData', cartDetailData);
+
   return (
     <div>
       <div>
-        {cart.map((item: any) => (
+        {cartDetailData?.cartDetails?.map((item: any) => (
           <div className="row border rounded p-3 mx-5 my-3">
             <div className="col col-md-2 p-0">
               <Image
@@ -182,20 +65,19 @@ function ProductSamplePage() {
             <div className="col col-md-10">
               <div className="d-flex align-items-center justify-content-around h-100">
                 <div className="col col-md-3 position-relative pe-2">
-                  <p>SL tồn: {item.batch.inventQuantity}</p>
-                  <h4>Tên sản phẩm cực kì là dài dài ơi là dài</h4>
-                  <h3 className="mt-4">1.000.000 đ</h3>
-                  {/* Giá gốc */}
+                  <p>SL tồn: {item.productUnit.batches[0].inventQuantity}</p>
+                  <h4>{item.productUnit.productSample.name}</h4>
+                  <h3 className="mt-4">{item.productUnit.sellPrice} đ</h3>
                   <p className="position-absolute" style={{ bottom: '1.5rem' }}>
                     <s>1.200.000 đ</s>
                   </p>
                 </div>
                 <Input
                   title={'Mẫu mã'}
-                  value={'chai 330ml 20/12/2025'}
+                  value={`${item.productUnit.unit.name} ${item.productUnit.volumne} ${new Date(item.productUnit.batches[0].expiredAt).toLocaleDateString('vi-VN')}`}
                   size={3}
                 />
-                <Input title="Số lượng" type="number" size={1} />
+                <Input title="Số lượng" type="number" value={item.quantity} size={1} />
                 <div className="col col-md-3 d-flex justify-content-around">
                   <h4 className="text-danger m-0 mt-4">
                     <strong>
