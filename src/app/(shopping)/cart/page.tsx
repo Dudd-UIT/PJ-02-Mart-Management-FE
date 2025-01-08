@@ -2,7 +2,10 @@
 
 import { Input } from '@/components/commonComponent/InputForm';
 import { preventOverflow } from '@popperjs/core';
-import { fetchCartDetails, handleDeleteCartDetailAction } from '@/services/cartServices';
+import {
+  fetchCartDetails,
+  handleDeleteCartDetailAction,
+} from '@/services/cartServices';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
@@ -14,7 +17,10 @@ import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { OrderDetailTransform } from '@/types/order';
 import { ProductUnitTransform } from '@/types/productUnit';
 import { toast } from 'react-toastify';
-import { handleCreatedOrderAction, handleCreatedOrderOnlineAction } from '@/services/orderServices';
+import {
+  handleCreatedOrderAction,
+  handleCreatedOrderOnlineAction,
+} from '@/services/orderServices';
 import DeleteCartDetailModal from '@/components/cartComponent/cart.delete';
 // import { CartDetail } from '@/types/cart';
 
@@ -35,7 +41,6 @@ type FormDataOrder = {
 };
 
 function ProductSamplePage() {
-
   const initialOrder = {
     staffId: 0,
     customerId: 0,
@@ -46,11 +51,14 @@ function ProductSamplePage() {
     isPaid: 0,
     orderType: 'Trực tiếp',
   };
- const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [selectedCartDetail, setSelectedCartDetail] = useState<CartDetailItem | undefined>();
+  const [selectedCartDetail, setSelectedCartDetail] = useState<
+    CartDetailItem | undefined
+  >();
 
-  const [formDataOrder, setFormDataOrder] = useState<FormDataOrder>(initialOrder);
+  const [formDataOrder, setFormDataOrder] =
+    useState<FormDataOrder>(initialOrder);
   const handleOrderInfoChange = (
     field: keyof typeof formDataOrder,
     value: string | number,
@@ -195,12 +203,12 @@ function ProductSamplePage() {
   // );
 
   const handlePurchase = async () => {
-    console.log("selected Item 2", selectedItems)
+    console.log('selected Item 2', selectedItems);
     if (selectedItems.length === 0) {
       toast.warning('Vui lòng chọn ít nhất một sản phẩm!');
       return;
     }
-  
+
     try {
       // Dữ liệu đơn hàng
       const orderDetailsDto = selectedItems.map((item) => ({
@@ -211,14 +219,14 @@ function ProductSamplePage() {
         cartDetailId: item.id,
       }));
 
-      console.log('selectedItems', selectedItems  )
-  
+      console.log('selectedItems', selectedItems);
+
       const orderDto = {
         // staffId: formDataOrder.staffId,
         customerId: formDataOrder.customerId,
         totalPrice: orderDetailsDto.reduce(
           (acc, detail) => acc + detail.quantity * detail.currentPrice,
-          0
+          0,
         ),
         paymentMethod: formDataOrder.paymentMethod,
         paymentTime: new Date(),
@@ -226,26 +234,26 @@ function ProductSamplePage() {
         isPaid: 0,
         orderType: 'Online',
       };
-  
+
       const payload = {
         orderDto,
         orderDetailsDto,
       };
-      console.log('payload', payload)
+      console.log('payload', payload);
       // Gửi yêu cầu tạo đơn hàng
       const res = await handleCreatedOrderOnlineAction(payload);
-      console.log('>>>res<<<', res)
+      console.log('>>>res<<<', res);
       if (res?.data) {
         toast.success('Đơn hàng được tạo thành công!');
         setSelectedItems([]); // Reset danh sách đã chọn
-        onMutate()
+        onMutate();
       } else {
         toast.error(res.message);
       }
     } catch (error) {
       toast.error('Có lỗi xảy ra, vui lòng thử lại!');
     }
-  }; 
+  };
 
   // const handleDeleteCartDetail = (cartDetail: CartDetail) => {
   //    console.log('cartDetail::', cartDetail);
@@ -253,222 +261,159 @@ function ProductSamplePage() {
   //     setIsDeleteModalOpen(true);
   // };
   const handleDeleteCartDetail = (cartDetail: CartDetailItem) => {
-     console.log('cartDetail::', cartDetail);
-      setSelectedCartDetail(cartDetail);
-      setIsDeleteModalOpen(true);
+    console.log('cartDetail::', cartDetail);
+    setSelectedCartDetail(cartDetail);
+    setIsDeleteModalOpen(true);
   };
-  const onMutate = () => mutate([urlcartDetail, current, pageSize, searchParams.name, searchParams.id]);
+  const onMutate = () =>
+    mutate([
+      urlcartDetail,
+      current,
+      pageSize,
+      searchParams.name,
+      searchParams.id,
+    ]);
 
   return (
     <>
-    <div>
       <div>
-        {cartItems?.map((item: CartDetailItem) => {
-          const discountPrice =
-            item.productUnit.sellPrice -
-            item.productUnit.sellPrice * item.productUnit.batches[0].discount;
-          return (
-            <div className="row border rounded p-3 mx-5 my-3">
-              <div className="col col-md-2 p-0">
-                <Image
-                  src={
-                    typeof item.productUnit.image === 'string'
-                      ? item.productUnit.image
-                      : '/images/default-product-image.png'
-                  }
-                  alt={'Product'}
-                  width={250}
-                  height={250}
-                  className="h-100 img-thumbnail"
-                />
-              </div>
-              <div className="col col-md-10">
-                <div className="d-flex align-items-center justify-content-around h-100">
-                  <div className="col col-md-3 position-relative pe-2">
-                    <p>SL tồn: {item.productUnit.batches[0].inventQuantity}</p>
-                    <h4>{item.productUnit.productSample.name}</h4>
-                    <h3 className="mt-4">{formatCurrency(discountPrice)} đ</h3>
-                    {item.productUnit.batches[0].discount > 0 && (
-                      <p
-                        className="position-absolute"
-                        style={{ bottom: '1.5rem' }}
-                      >
-                        <s>{formatCurrency(item.productUnit.sellPrice)}</s>
-                      </p>
-                    )}
-                  </div>
-                  <Input
-                    title={'Mẫu mã'}
-                    value={`${item.productUnit.unit.name} ${
-                      item.productUnit.volumne
-                    } ${new Date(
-                      item.productUnit.batches[0].expiredAt,
-                    ).toLocaleDateString('vi-VN')}`}
-                    size={3}
+        <div>
+          {cartItems?.map((item: CartDetailItem) => {
+            const discountPrice =
+              item.productUnit.sellPrice -
+              item.productUnit.sellPrice * item.productUnit.batches[0].discount;
+            return (
+              <div className="row border rounded p-3 mx-5 my-3">
+                <div className="col col-md-2 p-0">
+                  <Image
+                    src={
+                      typeof item.productUnit.image === 'string'
+                        ? item.productUnit.image
+                        : '/images/default-product-image.png'
+                    }
+                    alt={'Product'}
+                    width={250}
+                    height={250}
+                    className="h-100 img-thumbnail"
                   />
-                  <div className="d-flex flex-column align-items-center">
-                    <div className="d-flex align-items-center gap-2">
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(item.id, item.quantity - 1)
+                </div>
+                <div className="col col-md-10">
+                  <div className="d-flex align-items-center justify-content-around h-100">
+                    <div className="col col-md-3 position-relative pe-2">
+                      <p>
+                        SL tồn: {item.productUnit.batches[0].inventQuantity}
+                      </p>
+                      <h4>{item.productUnit.productSample.name}</h4>
+                      <h3 className="mt-4">
+                        {formatCurrency(discountPrice)} đ
+                      </h3>
+                      {item.productUnit.batches[0].discount > 0 && (
+                        <p
+                          className="position-absolute"
+                          style={{ bottom: '1.5rem' }}
+                        >
+                          <s>{formatCurrency(item.productUnit.sellPrice)}</s>
+                        </p>
+                      )}
+                    </div>
+                    <Input
+                      title={'Mẫu mã'}
+                      value={`${item.productUnit.unit.name} ${
+                        item.productUnit.volumne
+                      } ${new Date(
+                        item.productUnit.batches[0].expiredAt,
+                      ).toLocaleDateString('vi-VN')}`}
+                      size={3}
+                    />
+                    <div className="d-flex flex-column align-items-center">
+                      <div className="d-flex align-items-center gap-2">
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity - 1)
+                          }
+                          className="btn btn-secondary mt-3"
+                        >
+                          <FaMinus />
+                        </button>
+                        <Input
+                          title="SL"
+                          value={item.quantity}
+                          onChange={(value) =>
+                            handleQuantityChange(item.id, Number(value))
+                          }
+                          size={6}
+                        />
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity + 1)
+                          }
+                          className="btn btn-secondary mt-3"
+                        >
+                          <FaPlus />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="col col-md-3 d-flex justify-content-around">
+                      <h4 className="text-danger m-0 mt-4">
+                        <strong>
+                          <u>
+                            {formatCurrency(discountPrice * item.quantity)} đ
+                          </u>
+                        </strong>
+                      </h4>
+                    </div>
+                    <div className="col col-md-1 d-flex justify-content-end align-items-end gap-4">
+                      <input
+                        className="form-check-input p-2 mt-3 "
+                        type="checkbox"
+                        value=""
+                        id={`checkbox-${item.id}`}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleCheckbox(item, e.target.checked)
                         }
-                        className="btn btn-secondary mt-3"
-                      >
-                        <FaMinus />
-                      </button>
-                      <Input
-                        title="SL"
-                        value={item.quantity}
-                        onChange={(value) =>
-                          handleQuantityChange(item.id, Number(value))
-                        }
-                        size={6}
+                        style={{ cursor: 'pointer' }}
                       />
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(item.id, item.quantity + 1)
-                        }
-                        className="btn btn-secondary mt-3"
-                      >
-                        <FaPlus />
-                      </button>
+                      <FaTrash
+                        className="fs-5 text-danger mt-3"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleDeleteCartDetail(item)}
+                      />
                     </div>
                   </div>
-                  <div className="col col-md-3 d-flex justify-content-around">
-                    <h4 className="text-danger m-0 mt-4">
-                      <strong>
-                        <u>{formatCurrency(discountPrice * item.quantity)} đ</u>
-                      </strong>
-                    </h4>
-                  </div>
-                  <div className="col col-md-1 d-flex justify-content-end align-items-end gap-4">
-                    <input
-                      className="form-check-input p-2 mt-3 "
-                      type="checkbox"
-                      value=""
-                      id={`checkbox-${item.id}`}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleCheckbox(item, e.target.checked)
-                      }
-                      style={{ cursor: 'pointer' }}
-                    />
-                    <FaTrash
-                      className="fs-5 text-danger mt-3"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-3">
-        <h3>
-          Tổng tiền (đã chọn):{' '}
-          <span className="text-danger">
-            {formatCurrency(calculateSelectedTotal())} đ
-          </span>
-        </h3>
-        {cartDetailData?.cartDetails?.map((item: any) => (
-          <div className="row border rounded p-3 mx-5 my-3">
-            <div className="col col-md-2 p-0">
-              <Image
-                src={
-                  typeof item.productUnit.image === 'string'
-                    ? item.productUnit.image
-                    : '/images/default-product-image.png'
-                }
-                alt={'Product'}
-                width={250}
-                height={250}
-                className="h-100 img-thumbnail"
-              />
-            </div>
-            <div className="col col-md-10">
-              <div className="d-flex align-items-center justify-content-around h-100">
-                <div className="col col-md-3 position-relative pe-2">
-                  <p>SL tồn: {item.productUnit.batches[0].inventQuantity}</p>
-                  <h4>{item.productUnit.productSample.name}</h4>
-                  <h3 className="mt-4">{item.productUnit.sellPrice} đ</h3>
-                  {/* <p className="position-absolute" style={{ bottom: '1.5rem' }}>
-                    <s>1.200.000 đ</s>
-                  </p> */}
-                </div>
-                <Input
-                  title={'Mẫu mã'}
-                  value={`${item.productUnit.unit.name} ${item.productUnit.volumne} ${new Date(item.productUnit.batches[0].expiredAt).toLocaleDateString('vi-VN')}`}
-                  size={3}
-                />
-                <Input
-                  title="Số lượng"
-                  type="number"
-                  value={
-                    selectedItems.find((selectedItem) => selectedItem.id === item.id)?.quantity ||
-                    item.quantity
-                  }
-                  onChange={(value) => handleQuantityChange(item.id, +value)}
-                  size={1}
-                />
-                <div className="col col-md-3 d-flex justify-content-around">
-                  <h4 className="text-danger m-0 mt-4">
-                    <strong>
-                      <u>
-                        {(
-                          item.productUnit.sellPrice *
-                          (selectedItems.find((selectedItem) => selectedItem.id === item.id)
-                            ?.quantity || item.quantity)
-                        ).toLocaleString('vi-VN')}{' '}
-                        đ
-                      </u>
-                    </strong>
-                  </h4>
-                </div>
-                <div className="col col-md-1 d-flex justify-content-end align-items-end gap-4">
-                  <input
-                    className="form-check-input p-2 mt-3 "
-                    type="checkbox"
-                    value=""
-                    id={item.id}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleCheckbox(item, e.target.checked)
-                    }
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <FaTrash
-                    className="fs-5 text-danger mt-3"
-                    style={{ cursor: 'pointer' }}
-                    id={item.id}
-                    onClick={() => handleDeleteCartDetail(item.id)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <button
-        className="btn btn-primary"
-        disabled={selectedItems.length === 0}
-        onClick={handleCreateModal}
-      >
-        Mua hàng
-      </button>
+            );
+          })}
+          <div style={{height: '5rem'}}></div>
+        </div>
 
-      <CheckOutModal
-        isUpdateModalOpen={isModalOpen}
-        setIsUpdateModalOpen={setIsModalOpen}
-        onMutate={onMutate}
-        data={selectedItems}
-        setData={setDataBridge}
-      />
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button className="btn btn-primary" disabled={selectedItems.length === 0} onClick={handlePurchase}>
-          Mua hàng
-        </button>
+        <div className="position-fixed bottom-0 start-0 w-100 z-3 d-flex align-items-center justify-content-between p-3 bg-white shadow-lg">
+          <div className="mt-3">
+            <h3>
+              Tổng tiền (đã chọn):{' '}
+              <span className="text-danger">
+                {formatCurrency(calculateSelectedTotal())} đ
+              </span>
+            </h3>
+          </div>
+          <button
+            className="btn btn-primary btn-lg"
+            disabled={selectedItems.length === 0}
+            onClick={handleCreateModal}
+          >
+            Mua hàng
+          </button>
+        </div>
+
+        <CheckOutModal
+          isUpdateModalOpen={isModalOpen}
+          setIsUpdateModalOpen={setIsModalOpen}
+          onMutate={onMutate}
+          data={selectedItems}
+          setData={setDataBridge}
+        />
       </div>
-    </div>
-    <DeleteCartDetailModal
+      <DeleteCartDetailModal
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
         data={selectedCartDetail}
