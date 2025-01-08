@@ -96,7 +96,7 @@ function ProductSaleModal(
     }
   };
 
-  console.log(productSampleData);
+  console.log('productSampleData', productSampleData);
 
   const ProductSampleButtons = ({
     productSampleData,
@@ -110,7 +110,7 @@ function ProductSaleModal(
         image: unit.image,
         inventQuantity: 1,
         discount: batch?.discount || 0,
-        inboundPrice: batch?.inboundPrice || 0,
+        inboundPrice: unit.sellPrice || 0,
       });
     };
 
@@ -190,16 +190,16 @@ function ProductSaleModal(
                 <div className="d-flex align-items-baseline gap-3">
                   <h1 className="text-danger">
                     <strong>
-                      {formatCurrency(currentBatch.inboundPrice)} đ
+                      {formatCurrency(
+                          currentBatch.inboundPrice -
+                            currentBatch.discount * currentBatch.inboundPrice,
+                        )} đ
                     </strong>
                   </h1>
                   {currentBatch.discount > 0 && (
                     <h6>
                       <s>
-                        {formatCurrency(
-                          currentBatch.inboundPrice -
-                            currentBatch.discount * currentBatch.inboundPrice,
-                        )}{' '}
+                        {formatCurrency(currentBatch.inboundPrice)}{' '}
                         đ
                       </s>
                     </h6>

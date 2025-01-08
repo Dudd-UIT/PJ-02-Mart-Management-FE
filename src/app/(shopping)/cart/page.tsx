@@ -25,7 +25,6 @@ function ProductSamplePage() {
     setSelectedItems((prev) =>
       isChecked ? [...prev, item] : prev.filter((i) => i.id !== item.id)
     );
-    console.log('selected Items: ', selectedItems)
   };
 
   const [searchParams, setSearchParams] = useState({ name: '', id: 1 });
@@ -43,6 +42,8 @@ function ProductSamplePage() {
       ),
   );
   console.log('cartDetailData', cartDetailData);
+  console.log('selected Items: ', selectedItems)
+
 
   return (
     <div>
