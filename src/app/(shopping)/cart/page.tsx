@@ -11,13 +11,12 @@ import { formatCurrency } from '@/utils/format';
 import { CartDetailItem } from '@/types/cart';
 import CheckOutModal from '@/components/shoppingComponent/checkOutModal.create';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
-import useSWR, { mutate } from 'swr';
 import { OrderDetailTransform } from '@/types/order';
 import { ProductUnitTransform } from '@/types/productUnit';
 import { toast } from 'react-toastify';
 import { handleCreatedOrderAction, handleCreatedOrderOnlineAction } from '@/services/orderServices';
 import DeleteCartDetailModal from '@/components/cartComponent/cart.delete';
-import { CartDetail } from '@/types/cart';
+// import { CartDetail } from '@/types/cart';
 
 interface Item {
   id: number;
@@ -37,8 +36,6 @@ type FormDataOrder = {
 
 function ProductSamplePage() {
 
-  const [selectedItems, setSelectedItems] = useState<any[]>([]);
-
   const initialOrder = {
     staffId: 0,
     customerId: 0,
@@ -49,9 +46,9 @@ function ProductSamplePage() {
     isPaid: 0,
     orderType: 'Trực tiếp',
   };
-
+ const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [selectedCartDetail, setSelectedCartDetail] = useState<CartDetail | undefined>();
+  const [selectedCartDetail, setSelectedCartDetail] = useState<CartDetailItem | undefined>();
 
   const [formDataOrder, setFormDataOrder] = useState<FormDataOrder>(initialOrder);
   const handleOrderInfoChange = (
@@ -68,25 +65,25 @@ function ProductSamplePage() {
   //   console.log('selected Items: ', selectedItems)
   // };
 
-  const handleCheckbox = (item: any, isChecked: boolean) => {
-    setSelectedItems((prevSelectedItems) => {
-      if (isChecked) {
-        // Thêm sản phẩm vào danh sách được chọn
-        return [...prevSelectedItems, item];
-      } else {
-        // Loại bỏ sản phẩm khỏi danh sách được chọn
-        return prevSelectedItems.filter((selectedItem) => selectedItem.id !== item.id);
-      }
-    });
-  };
+  // const handleCheckbox = (item: any, isChecked: boolean) => {
+  //   setSelectedItems((prevSelectedItems) => {
+  //     if (isChecked) {
+  //       // Thêm sản phẩm vào danh sách được chọn
+  //       return [...prevSelectedItems, item];
+  //     } else {
+  //       // Loại bỏ sản phẩm khỏi danh sách được chọn
+  //       return prevSelectedItems.filter((selectedItem) => selectedItem.id !== item.id);
+  //     }
+  //   });
+  // };
 
-  const handleQuantityChange = (itemId: number, newQuantity: number) => {
-    setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
+  // const handleQuantityChange = (itemId: number, newQuantity: number) => {
+  //   setSelectedItems((prevSelectedItems) =>
+  //     prevSelectedItems.map((item) =>
+  //       item.id === itemId ? { ...item, quantity: newQuantity } : item
+  //     )
+  //   );
+  // };
 
   const [searchParams, setSearchParams] = useState({ name: '', id: 1 });
   const [current, setCurrent] = useState(1);
@@ -160,9 +157,9 @@ function ProductSamplePage() {
     return <p>Có lỗi xảy ra: {cartDetailError.message}</p>;
   }
 
-  const onMutate = () => {
-    mutate(['']);
-  };
+  // const onMutate = () => {
+  //   mutate(['']);
+  // };
 
   const handleRemoveItem = (itemId: number) => {
     //api xóa chô này
@@ -189,13 +186,13 @@ function ProductSamplePage() {
   console.log('cartItems', cartItems);
   console.log('cartDetailData', cartDetailData);
   console.log('selected Items: ', selectedItems);
-      fetchCartDetails(
-        current,
-        pageSize,
-        searchParams.name,
-        searchParams.id,
-      ),
-  );
+  //     fetchCartDetails(
+  //       current,
+  //       pageSize,
+  //       searchParams.name,
+  //       searchParams.id,
+  //     ),
+  // );
 
   const handlePurchase = async () => {
     console.log("selected Item 2", selectedItems)
@@ -250,7 +247,12 @@ function ProductSamplePage() {
     }
   }; 
 
-  const handleDeleteCartDetail = (cartDetail: CartDetail) => {
+  // const handleDeleteCartDetail = (cartDetail: CartDetail) => {
+  //    console.log('cartDetail::', cartDetail);
+  //     setSelectedCartDetail(cartDetail);
+  //     setIsDeleteModalOpen(true);
+  // };
+  const handleDeleteCartDetail = (cartDetail: CartDetailItem) => {
      console.log('cartDetail::', cartDetail);
       setSelectedCartDetail(cartDetail);
       setIsDeleteModalOpen(true);
