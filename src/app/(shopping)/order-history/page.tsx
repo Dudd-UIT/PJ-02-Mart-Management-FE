@@ -13,13 +13,11 @@ import useSWR, { mutate } from 'swr';
 
 const columns: Column<OrderTransform>[] = [
   { title: '#', key: 'id' },
-  { title: 'Tên nhân viên', key: 'staffName' },
-  { title: 'Tên khách hàng', key: 'customerName' },
+  { title: 'Ngày tạo', key: 'createdAt' },
   { title: 'Tổng tiền', key: 'totalPrice' },
   { title: 'PTTT', key: 'paymentMethod' },
   { title: 'TDTT', key: 'paymentTime' },
   { title: 'Loại hóa đơn', key: 'orderType' },
-  { title: 'Ngày tạo', key: 'createdAt' },
   { title: 'TT thanh toán', key: 'isPaid' },
   { title: 'TT nhận hàng', key: 'isReceived' },
 ];
@@ -70,10 +68,6 @@ const OrdersPage = () => {
 
   const orders = data.results.map((item: Order) => ({
     id: item.id,
-    staffId: item.staff?.id,
-    staffName: item.staff?.name,
-    customerId: item.customer?.id,
-    customerName: item.customer?.name,
     totalPrice: item.totalPrice,
     paymentTime: item.paymentTime,
     paymentMethod: item.paymentMethod,
@@ -110,33 +104,14 @@ const OrdersPage = () => {
   };
 
   const onMutate = () =>
-    mutate([url, current, pageSize, searchParams.staffName, searchParams.customerName, searchParams.startDate, searchParams.endDate]);
+    mutate([url, current, pageSize, searchParams.startDate, searchParams.endDate]);
 
   return (
     <>
-      <h2>Quản lý đơn hàng</h2>
+      <h2>Đơn hàng của tôi</h2>
       {/* Thanh tìm kiếm gộp */}
       <div className="row">
-        <SelectInput
-          size={2}
-          label="Chọn loại tìm kiếm"
-          value={searchType}
-          options={[
-            { label: 'Tên nhân viên', value: 'staffName' },
-            { label: 'Tên khách hàng', value: 'customerName' },
-          ]}
-          onChange={(value) => setSearchType(value as typeof searchType)}
-        />
-        <Input
-          title="Tìm kiếm"
-          size={4}
-          value={searchValue}
-          placeholder={`Nhập ${searchType === 'staffName' ? 'tên nhân viên' : 'tên khách hàng'}`}
-          type="text"
-          onChange={(value) => setSearchValue(value)}
-          onClickIcon={handleSearchClick}
-          icon={<FaSearch />}
-        />
+        
         <Input
           title="Từ ngày"
           size={3}
@@ -154,16 +129,6 @@ const OrdersPage = () => {
           onChange={(value) => setEndDate(value)}
         />
       </div>
-
-      {/* button Thêm hóa đơn */}
-      <ProtectedComponent requiredRoles={['c_order']}>
-        <div className="d-flex justify-content-end mx-3">
-          <Link href="/order/sale" className="btn d-flex align-items-center btn-primary">
-            <FaPlus />
-            <text>Thêm</text>
-          </Link>
-        </div>
-      </ProtectedComponent>
 
       {/* Quản lý Supplier */}
       <OrderTable orders={orders} columns={columns} onMutate={onMutate} />
