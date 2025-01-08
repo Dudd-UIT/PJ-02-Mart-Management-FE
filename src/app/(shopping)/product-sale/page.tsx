@@ -1,26 +1,14 @@
 'use client';
 
-import { Input, SelectInput } from '@/components/commonComponent/InputForm';
-import { fetchProductSamples } from '@/services/productSampleServices';
+import { Input } from '@/components/commonComponent/InputForm';
+import { fetchProductSamplesOnlineShopping } from '@/services/productSampleServices';
 import { useState } from 'react';
-import { FaPlus, FaMinus, FaTrash, FaSearch, FaFilter } from 'react-icons/fa';
+import { FaSearch, FaFilter } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
 import Image from 'next/image';
-import { OrderDetailTransform } from '@/types/order';
-import {
-  fetchCustomers,
-  handleUpdateCustomerAction,
-} from '@/services/customerServices';
 import { fetchParameters } from '@/services/parameterServices';
-import { toast } from 'react-toastify';
-import { Customer } from '@/types/customer';
-import { handleCreatedOrderAction } from '@/services/orderServices';
-import Link from 'next/link';
 import withRoleAuthorization from '@/hoc/withRoleAuthorization';
-import ProtectedComponent from '@/components/commonComponent/ProtectedComponent';
-import InfoProductSampleModal from '@/components/productSampleComponent/productSample.info';
 import ProductSaleModal from '@/components/shoppingComponent/productSale.create';
-import { ProductUnit } from '@/types/productUnit';
 import { ProductSample, ProductSampleShoping } from '@/types/productSample';
 import { FaArrowDown } from 'react-icons/fa6';
 import { formatCurrency } from '@/utils/format';
@@ -61,17 +49,19 @@ function SalePage() {
   const [formDataOrder, setFormDataOrder] =
     useState<FormDataOrder>(initialOrder);
 
-  const urlproductSample = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples`;
+  const urlproductSample = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples/online-shopping`;
   const { data: productSamplesData, error: productSamplesError } = useSWR(
     [urlproductSample, current, pageSize, searchParams.name, searchParams.id],
     () =>
-      fetchProductSamples(
+      fetchProductSamplesOnlineShopping(
         current,
         pageSize,
         searchParams.name,
         searchParams.id,
       ),
   );
+
+  console.log('productSamplesData', productSamplesData)
 
   const onMutate = () => {
     mutate(['']);
@@ -236,7 +226,7 @@ function SalePage() {
     setIsModalOpen(true);
   };
 
-  // console.log(productSamples);
+  console.log(productSamples);
   return (
     <div>
       <div className="col-md-12">

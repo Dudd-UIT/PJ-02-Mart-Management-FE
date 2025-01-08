@@ -2,6 +2,7 @@
 
 import { Input } from '@/components/commonComponent/InputForm';
 import { preventOverflow } from '@popperjs/core';
+import { fetchCartDetails } from '@/services/cartServices';
 import Image from 'next/image';
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
@@ -160,19 +161,6 @@ interface CartProps {
 }
 
 function ProductSamplePage() {
-  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
-
-  const handleCheckbox = (item: Item, isChecked: boolean) => {
-    if (isChecked) {
-      setSelectedItems((prev: any) => [...prev, item]);
-    } else {
-      setSelectedItems((prev: any) =>
-        prev.filter((i: any) => i.id !== item.id),
-      );
-    }
-  };
-
-  console.log('selectedItems', selectedItems);
   return (
     <div>
       <div>
