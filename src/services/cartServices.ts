@@ -65,3 +65,16 @@ export const handleDeleteProductSampleAction = async (id: any) => {
   return res;
 };
 
+export const handleDeleteCartDetailAction = async (id: any) => {
+  const session = await auth();
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/cart-details/${id}`,
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`
+    },
+  });
+  return res;
+}
+
