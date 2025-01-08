@@ -4,49 +4,61 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import useSWR from 'swr';
 import { Input } from '../commonComponent/InputForm';
-import { ProductSampleUnitModalProps, Unit } from '@/types/unit';
+import {
+  ProductSampleUnitModalProps,
+  Unit,
+  UpdateProductSampleUnitModalProps,
+} from '@/types/unit';
 import { fetchUnits } from '@/services/unitServices';
 import Image from 'next/image';
 
 type FormData = {
+  id: number;
   unitId: number;
   unitName: string;
   sellPrice: number;
   conversionRate: number;
   compareUnitId: number;
-  volumne: number;
+  volumne: string;
   image: string | File;
 };
 
-function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
+function UpdateProductSampleUnitModal(
+  props: UpdateProductSampleUnitModalProps,
+) {
   const {
     isProductSampleUnitsModalOpen,
     setIsProductSampleUnitsModalOpen,
     productSampleData,
-    onAddUnit,
+    productUnitData,
+    onUpdateUnit,
+    setData,
   } = props;
   const initalFormData = {
+    id: 0,
     unitId: 0,
     sellPrice: 0,
     conversionRate: 1,
     compareUnitId: 0,
-    volumne: 0,
+    volumne: '',
     unitName: '',
-    image: 'image.url',
+    image: '/images/warehousePH.png',
   };
 
   const [formData, setFormData] = useState<FormData>(initalFormData);
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/units`;
   const { data: unitsData, error } = useSWR([url], () => fetchUnits(1, 100));
+
   const handleCloseProductUnitListModal = () => {
     setIsProductSampleUnitsModalOpen(false);
     setFormData(initalFormData);
+    setData?.(undefined);
   };
 
   const handleUnitChange = (value: number) => {
     handleFormDataChange('unitId', value);
-    const unit = unitsData.results.find((unit: Unit) => unit.id === value);
-    handleFormDataChange('unitName', unit.name);
+    const unit = unitsData?.results?.find((unit: Unit) => unit.id === value);
+    handleFormDataChange('unitName', unit?.name || '');
   };
 
   const handleFormDataChange = useCallback(
@@ -57,14 +69,36 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
   );
 
   useEffect(() => {
-    handleFormDataChange('compareUnitId', productSampleData?.minUnitId);
-  }, [productSampleData, handleFormDataChange]);
+    if (productUnitData) {
+      setFormData({
+        id: productUnitData.id || 0,
+        unitId: productUnitData.unitId || 0,
+        unitName: productUnitData.unitName || '',
+        volumne: productUnitData.volumne || '',
+        conversionRate: productUnitData.conversionRate || 1,
+        sellPrice: productUnitData.sellPrice || 0,
+        compareUnitId: productSampleData?.minUnitId || 0,
+        image: productUnitData.image || '/images/warehousePH.png',
+      });
+    }
+  }, [productUnitData, productSampleData]);
 
   const handleSave = async () => {
-    onAddUnit(formData);
+    onUpdateUnit(formData);
     handleCloseProductUnitListModal();
     setIsProductSampleUnitsModalOpen(false);
   };
+
+  const getImageSrc = () => {
+    if (formData.image instanceof File) {
+      return URL.createObjectURL(formData.image); // Tạo URL tạm thời cho File
+    }
+    return typeof formData.image === 'string'
+      ? formData.image
+      : '/images/warehousePH.png'; // Sử dụng URL hoặc ảnh mặc định
+  };
+
+  console.log('------productUnitData', productUnitData);
 
   return (
     <Modal
@@ -84,17 +118,13 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
                 className="border rounded bg-light d-flex align-items-center justify-content-center"
                 style={{ width: '100%', height: '200px' }}
               >
-                {formData.image instanceof File ? (
-                  <Image
-                    src={URL.createObjectURL(formData.image)}
-                    alt="Preview"
-                    layout="intrinsic"
-                    width={200} // Kích thước tùy chỉnh
-                    height={200}
-                  />
-                ) : (
-                  <span className="text-muted">Ảnh sản phẩm</span>
-                )}
+                <Image
+                  src={getImageSrc()}
+                  alt="Preview"
+                  width={200}
+                  height={200}
+                  className="img-fluid img-thumbnail"
+                />
               </div>
             </div>
             <div className="mt-3">
@@ -119,6 +149,7 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
                   options={unitsData?.results}
                   keyObj="id"
                   showObj="name"
+                  readOnly={true}
                   onSelectedChange={(value) => handleUnitChange(value)}
                 />
               </div>
@@ -145,13 +176,18 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
                     size={6}
                     value={productSampleData?.minUnitName}
                     disabled
-                    // placeholder="Chọn đơn vị tính"
-                    // options={unitsData?.results}
-                    // keyObj="id"
-                    // showObj="name"
-                    // onSelectedChange={(value) =>
-                    //   handleFormDataChange('compareUnitId', value)
-                    // }
+                    readOnly={true}
+                  />
+                </div>
+              )}
+
+              {productUnitData?.batches?.[0] && (
+                <div className="mb-3">
+                  <Input
+                    title="Giá nhập trên 1 đơn vị trong lô hàng gần nhất"
+                    size={12}
+                    value={productUnitData?.batches?.[0].inboundPrice}
+                    readOnly={true}
                   />
                 </div>
               )}
@@ -180,4 +216,4 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
   );
 }
 
-export default ProductSampleUnitModal;
+export default UpdateProductSampleUnitModal;

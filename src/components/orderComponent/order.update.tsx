@@ -1,10 +1,6 @@
 import { Modal, Button, Table } from 'react-bootstrap';
 import { Input } from '../commonComponent/InputForm';
-import {
-  OrderDetail,
-  OrderDetailTransform,
-  OrderTransform,
-} from '@/types/order';
+import { OrderDetailTransform, OrderTransform } from '@/types/order';
 import { formatDate } from '@/utils/format';
 import { renderStatusBadge } from '../commonComponent/Status';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
@@ -27,12 +23,12 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
   } = props;
 
   const orderDetiailsTranform: Partial<OrderDetailTransform>[] =
-    selectedOrder?.orderDetails.map((orderDetail) => ({
-      id: orderDetail.id,
-      productSampleName: orderDetail.productUnit.productSample?.name,
-      quantity: orderDetail.quantity,
-      unitName: orderDetail.productUnit.unit?.name,
-      currentPrice: orderDetail.currentPrice,
+    selectedOrder?.orderDetails?.map((orderDetail) => ({
+      id: orderDetail?.id,
+      productSampleName: orderDetail?.productUnit?.productSample?.name,
+      quantity: orderDetail?.quantity,
+      unitName: orderDetail?.productUnit?.unit?.name,
+      currentPrice: orderDetail?.currentPrice,
     })) || [];
 
   const handleCloseModal = () => {

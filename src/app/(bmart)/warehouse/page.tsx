@@ -61,7 +61,13 @@ function WarehousePage() {
       showOption,
     ],
     () =>
-      fetchBatches(current, pageSize, showOption, searchQuantity, searchExpDate),
+      fetchBatches(
+        current,
+        pageSize,
+        showOption,
+        searchQuantity,
+        searchExpDate,
+      ),
   );
 
   const urlFetchProductUnits = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
@@ -377,22 +383,22 @@ function groupProductData(data: Product[]): GroupedProductData {
 
 function groupBatch(results: Batch[]): BatchGrouped[] {
   return results.map((item) => ({
-    id: item.id,
-    inboundPrice: item.inboundPrice,
-    sellPrice: item.productUnit.sellPrice ?? 0,
-    discount: item.discount,
-    inventQuantity: item.inventQuantity,
-    inboundQuantity: item.inboundQuantity,
-    expiredAt: new Date(item.expiredAt).toISOString(),
-    createdAt: new Date(item.createdAt).toISOString(),
-    inboundReceiptId: item.inboundReceipt?.id ?? 0,
-    unit: item.productUnit.unit?.name || '',
-    unitId: item.productUnit.unit?.id || 0,
-    image: item.productUnit.image,
-    supplierName: item.inboundReceipt?.supplier?.name || '',
-    productSampleId: item.productUnit.productSample?.id || 0,
-    productSample: item.productUnit.productSample?.name || '',
-    uniqueUnitKey: `${item.productUnit.productSample?.id}_${item.productUnit.unit?.name}`,
+    id: item?.id,
+    inboundPrice: item?.inboundPrice,
+    sellPrice: item?.productUnit?.sellPrice ?? 0,
+    discount: item?.discount,
+    inventQuantity: item?.inventQuantity,
+    inboundQuantity: item?.inboundQuantity,
+    expiredAt: new Date(item?.expiredAt).toISOString(),
+    createdAt: new Date(item?.createdAt).toISOString(),
+    inboundReceiptId: item?.inboundReceipt?.id ?? 0,
+    unit: item?.productUnit?.unit?.name || '',
+    unitId: item?.productUnit?.unit?.id || 0,
+    image: item?.productUnit?.image,
+    supplierName: item?.inboundReceipt?.supplier?.name || '',
+    productSampleId: item?.productUnit?.productSample?.id || 0,
+    productSample: item?.productUnit?.productSample?.name || '',
+    uniqueUnitKey: `${item?.productUnit?.productSample?.id}_${item.productUnit?.unit?.name}`,
   }));
 }
 

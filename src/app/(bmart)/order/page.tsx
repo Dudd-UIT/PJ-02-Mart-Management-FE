@@ -28,7 +28,9 @@ const OrdersPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  const [searchType, setSearchType] = useState<'staffName' | 'customerName'>('staffName');
+  const [searchType, setSearchType] = useState<'staffName' | 'customerName'>(
+    'staffName',
+  );
   const [searchValue, setSearchValue] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -41,15 +43,23 @@ const OrdersPage = () => {
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/orders`;
   const { data, error } = useSWR(
-    [url, current, pageSize, searchParams.staffName, searchParams.customerName, searchParams.startDate, searchParams.endDate],
+    [
+      url,
+      current,
+      pageSize,
+      searchParams.staffName,
+      searchParams.customerName,
+      startDate,
+      endDate,
+    ],
     () =>
       fetchOrders(
         current,
         pageSize,
         searchParams.staffName,
         searchParams.customerName,
-        searchParams.startDate,
-        searchParams.endDate,
+        startDate,
+        endDate,
       ),
   );
 
@@ -110,7 +120,15 @@ const OrdersPage = () => {
   };
 
   const onMutate = () =>
-    mutate([url, current, pageSize, searchParams.staffName, searchParams.customerName, searchParams.startDate, searchParams.endDate]);
+    mutate([
+      url,
+      current,
+      pageSize,
+      searchParams.staffName,
+      searchParams.customerName,
+      startDate,
+      endDate,
+    ]);
 
   return (
     <>
@@ -131,7 +149,9 @@ const OrdersPage = () => {
           title="Tìm kiếm"
           size={4}
           value={searchValue}
-          placeholder={`Nhập ${searchType === 'staffName' ? 'tên nhân viên' : 'tên khách hàng'}`}
+          placeholder={`Nhập ${
+            searchType === 'staffName' ? 'tên nhân viên' : 'tên khách hàng'
+          }`}
           type="text"
           onChange={(value) => setSearchValue(value)}
           onClickIcon={handleSearchClick}
@@ -158,7 +178,10 @@ const OrdersPage = () => {
       {/* button Thêm hóa đơn */}
       <ProtectedComponent requiredRoles={['c_order']}>
         <div className="d-flex justify-content-end mx-3">
-          <Link href="/order/sale" className="btn d-flex align-items-center btn-primary">
+          <Link
+            href="/order/sale"
+            className="btn d-flex align-items-center btn-primary"
+          >
             <FaPlus />
             <text>Thêm</text>
           </Link>
@@ -177,13 +200,21 @@ const OrdersPage = () => {
             </button>
           </li>
           {Array.from({ length: meta.pages }, (_, index) => (
-            <li key={index} className={`page-item ${current === index + 1 ? 'active' : ''}`}>
-              <button className="page-link" onClick={() => setCurrent(index + 1)}>
+            <li
+              key={index}
+              className={`page-item ${current === index + 1 ? 'active' : ''}`}
+            >
+              <button
+                className="page-link"
+                onClick={() => setCurrent(index + 1)}
+              >
                 {index + 1}
               </button>
             </li>
           ))}
-          <li className={`page-item ${current === meta.pages ? 'disabled' : ''}`}>
+          <li
+            className={`page-item ${current === meta.pages ? 'disabled' : ''}`}
+          >
             <button className="page-link" onClick={handleNextPage}>
               Next
             </button>

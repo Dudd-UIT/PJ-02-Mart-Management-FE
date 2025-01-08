@@ -11,6 +11,7 @@ import withRoleAuthorization from '@/hoc/withRoleAuthorization';
 
 function BestSalePage() {
   const [level, setLevel] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -31,7 +32,15 @@ function BestSalePage() {
   );
 
   const { data: topSales, error } = useSWR(
-    [url, level, startDate, endDate, searchProductTypeId, searchProductLineId],
+    [
+      url,
+      level,
+      startDate,
+      endDate,
+      searchProductTypeId,
+      searchProductLineId,
+      limit,
+    ],
     () =>
       fetchBestSeller(
         level.toString(),
@@ -39,6 +48,7 @@ function BestSalePage() {
         searchProductLineId,
         startDate,
         endDate,
+        limit,
       ),
   );
 
@@ -125,11 +135,23 @@ function BestSalePage() {
         </div>
       </div>
 
-      <h3 className="mt-3">
-        <span className="badge bg-secondary px-3">
-          Các mẫu sản phẩm bán nhiều nhất
-        </span>
-      </h3>
+      <div className="d-flex align-items-center justify-content-between mt-3">
+        <h3>
+          <span className="badge bg-secondary px-3">
+            Các mẫu sản phẩm bán nhiều nhất
+          </span>
+        </h3>
+        <div className="mb-0">
+          <Input
+            title="Số lượng hiển thị"
+            type="number"
+            size={12}
+            value={limit}
+            onChange={(value) => setLimit(parseInt(value, 10))}
+            placeholder="Nhập số lượng"
+          />
+        </div>
+      </div>
 
       <table className="table">
         <thead>
@@ -148,7 +170,7 @@ function BestSalePage() {
               <td>{row.productSampleName}</td>
               <td>{row.unitName}</td>
               <td>{row.totalSold}</td>
-              <td>{row.inventQuantity}</td>
+              <td>{row.totalInventQuantity}</td>
             </tr>
           ))}
         </tbody>
