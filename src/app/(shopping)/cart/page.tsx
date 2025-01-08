@@ -126,8 +126,8 @@ function ProductSamplePage() {
         ),
         paymentMethod: formDataOrder.paymentMethod,
         paymentTime: new Date(),
-        isReceived: 1,
-        isPaid: formDataOrder.paymentMethod === 'Tiền mặt' ? 1 : 0,
+        isReceived: 0,
+        isPaid: 0,
         orderType: 'Online',
       };
   
