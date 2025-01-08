@@ -56,7 +56,6 @@ function SelectBatchModal(props: SelectBatchModalProps) {
                         column.key === 'discount' &&
                         typeof cellData === 'string'
                       ) {
-                        console.log('cellData', typeof cellData);
                         return <td key={colIndex}>{`${+cellData * 100} %`}</td>;
                       }
 

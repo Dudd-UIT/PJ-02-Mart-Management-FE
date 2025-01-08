@@ -88,7 +88,6 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
     }
   }, [productSampleData]);
 
-  console.log('productSampleData', productSampleData);
 
   const handleDeleteUnit = (productUnitId: number) => {
     const newProductunits = productUnits?.filter(
@@ -148,7 +147,7 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
       unitId: productUnit.unitId,
     }));
     const payload = { productSampleDto: rest, productUnitsDto };
-    console.log('payload', payload);
+
     const res = await handleUpdateProductSampleAction({
       id: formData.id,
       ...payload,
@@ -226,7 +225,6 @@ function UpdateProductSampleModal(props: UpdateModalProps<ProductSample>) {
             productSampleUnits={productUnits}
             onDeleteUnit={handleDeleteUnit}
             onUpdateUnit={(updatedUnit: ProductUnitTransform) => {
-              console.log('updatedUnit', updatedUnit);
               const updatedUnits = productUnits.map((unit) =>
                 unit.id === updatedUnit.id ? updatedUnit : unit,
               );

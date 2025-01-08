@@ -28,7 +28,6 @@ function UpdateWarehouseModal(props: UpdateModalProps<BatchGrouped>) {
     discount: 0,
   };
 
-  console.log('warehouseData', warehouseData);
   const [formData, setFormData] = useState<FormData>(initalFormData);
 
   useEffect(() => {

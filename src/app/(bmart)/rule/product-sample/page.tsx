@@ -63,8 +63,6 @@ function ProductSamplePage() {
       ),
   );
 
-  console.log('>>>>>productSamplesData', productSamplesData);
-
   const transformedProductSamplesData = {
     ...productSamplesData,
     results: productSamplesData?.results?.map((sample: ProductSample) => {

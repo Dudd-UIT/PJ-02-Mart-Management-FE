@@ -98,8 +98,6 @@ function UpdateProductSampleUnitModal(
       : '/images/warehousePH.png'; // Sử dụng URL hoặc ảnh mặc định
   };
 
-  console.log('------productUnitData', productUnitData);
-
   return (
     <Modal
       backdrop="static"

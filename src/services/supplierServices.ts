@@ -57,7 +57,6 @@ export const handleCreateSupplierAction = async (data: any) => {
 export const handleUpdateSupplierAction = async (data: any) => {
   const { id, ...rest } = data;
   const session = await auth();
-  console.log('rest', rest);
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/suppliers/${id}`,
     method: 'PATCH',

@@ -57,7 +57,6 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
 
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  console.log('productUnitIds', productUnitIds);
   useEffect(() => {
     if (supplierData) {
       setFormData({
@@ -77,10 +76,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     setSupplierData?.(undefined);
     setProductUnitIds([]);
   };
-  console.log('formData', formData);
   const handleUpdateSupplier = async () => {
-    console.log('>>>formData', formData);
-
     const res = await handleUpdateSupplierAction(formData);
     if (res?.data) {
       handleCloseUpdateModal();

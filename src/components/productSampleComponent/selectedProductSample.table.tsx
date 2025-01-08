@@ -26,8 +26,6 @@ function SelectedProductSampleUnitTable(
     return cellData;
   };
 
-  console.log('productSampleUnits', productSampleUnits);
-
   const handleUpdateProductUnit = (productUnit: ProductUnitTransform) => {
     setSelectedProductUnit(productUnit);
     setIsUpdateModalOpen(true);
