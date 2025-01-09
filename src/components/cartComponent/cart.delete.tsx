@@ -17,7 +17,6 @@ const DeleteCartDetailModal = (props: DeleteModalProps<CartDetailItem>) => {
 
   const handleDeleteCartDetail = async () => {
     const res = await handleDeleteCartDetailAction(cartDetailData?.id);
-    console.log('res', res);
     if (res?.data) {
       toast.success(res.message);
       onMutate();
