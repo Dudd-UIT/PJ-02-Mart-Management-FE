@@ -65,7 +65,6 @@ export const handleDeleteProductSampleAction = async (id: any) => {
 
 export const handleDeleteCartDetailAction = async (id: any) => {
   const session = await auth();
-  console.log('----id------', id);
   const res = await sendRequest<IBackendRes<any>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/cart-details/${id}`,
     method: 'DELETE',

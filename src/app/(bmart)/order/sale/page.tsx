@@ -22,6 +22,11 @@ import ProtectedComponent from '@/components/commonComponent/ProtectedComponent'
 import { formatCurrencyLong } from '@/utils/format';
 import { Batch } from '@/types/batch';
 import SelectBatchModal from '@/components/saleComponent/selectBatch.modal';
+import jsPDF from 'jspdf';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { getSession } from 'next-auth/react';
+pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
 
 const columns: Column<OrderDetailTransform>[] = [
   { title: '#', key: 'id' },
@@ -64,6 +69,7 @@ function SalePage() {
   const [searchValue, setSearchValue] = useState('');
   const [searchType, setSearchType] = useState<'name' | 'id'>('name');
   const [searchParams, setSearchParams] = useState({ name: '', id: '' });
+  const [initialTotalPrice, setInitialTotalPrice] = useState<number>(0);
 
   const [customerPhone, setCustomerPhone] = useState('');
   const [customer, setCustomer] = useState<Customer>();
@@ -296,11 +302,175 @@ function SalePage() {
       orderDetailsDto,
     };
 
+    const productUnitsMap = new Map(
+      productUnits.map((unit) => [unit.id, unit.productSampleName]),
+    );
+
+    const payloadOrder = {
+      orderDto: {
+        ...orderDto,
+        customerName: customer?.name || 'Không xác định', // Thêm tên khách hàng
+      },
+      orderDetailsDto: orderDetailsDto.map((detail) => ({
+        ...detail,
+        productName:
+          productUnitsMap.get(detail.productUnitId) || 'Không xác định', // Lấy tên sản phẩm từ Map
+      })),
+    };
+    const session = await getSession();
+
     const res = await handleCreatedOrderAction(payload);
     if (res?.data) {
       // Cập nhật điểm trong cơ sở dữ liệu
-      const newScore = initialCustomerScore - pointsUsed;
+      const newScore =
+        initialCustomerScore -
+        pointsUsed +
+        initialTotalPrice / parameterData?.results[1].value;
       await handleUpdateCustomerAction({ id: customer?.id, score: newScore });
+
+      const { orderDto, orderDetailsDto } = payloadOrder;
+
+      const docDefinition: any = {
+        pageSize: 'A4', // Kích thước trang
+        pageMargins: [40, 60, 40, 60], // Lề trang
+        content: [
+          {
+            text: 'SIÊU THỊ BMart',
+            style: 'header',
+            alignment: 'center',
+          },
+          {
+            text: 'HÓA ĐƠN BÁN HÀNG',
+            style: 'subheader',
+            alignment: 'center',
+            margin: [0, 5, 0, 15],
+          },
+          {
+            text: `Địa chỉ: 123 Đường ABC, Quận 1, TP. Hồ Chí Minh`,
+            alignment: 'center',
+          },
+          {
+            text: `Hotline: 0123 456 789 | Email: support@bmart.vn`,
+            alignment: 'center',
+            margin: [0, 0, 0, 15],
+          },
+          {
+            text: '---------------------------------------------',
+            alignment: 'center',
+            margin: [0, 0, 0, 10],
+          },
+          {
+            columns: [
+              [
+                {
+                  text: `Mã khách hàng: ${orderDto.customerId}`,
+                  margin: [0, 0, 0, 5],
+                },
+                {
+                  text: `Tên khách hàng: ${orderDto.customerName}`,
+                  margin: [0, 0, 0, 5],
+                },
+                {
+                  text: `Thời gian: ${new Date(
+                    orderDto.paymentTime,
+                  ).toLocaleString('vi-VN')}`,
+                  margin: [0, 0, 0, 5],
+                },
+              ],
+              [
+                {
+                  text: `Mã hóa đơn: HD-${new Date().getTime()}`,
+                  alignment: 'right',
+                },
+                {
+                  text: `Nhân viên: ${session?.user?.name || 'Đoàn Danh Dự'}`,
+                  alignment: 'right',
+                },
+              ],
+            ],
+          },
+          {
+            text: '---------------------------------------------',
+            alignment: 'center',
+            margin: [0, 10, 0, 10],
+          },
+          {
+            text: 'Chi tiết đơn hàng:',
+            style: 'subheader',
+            margin: [0, 10, 0, 5],
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: ['auto', '*', 'auto', 'auto', 'auto'],
+              body: [
+                ['#', 'Tên sản phẩm', 'SL', 'Đơn giá', 'Thành tiền'],
+                ...orderDetailsDto.map((detail: any, index: any) => [
+                  index + 1,
+                  `${detail.productName}`,
+                  detail.quantity,
+                  `${detail.currentPrice.toLocaleString('vi-VN')} đ`,
+                  `${(
+                    detail.currentPrice * (detail.quantity || 0)
+                  ).toLocaleString('vi-VN')} đ`,
+                ]),
+              ],
+            },
+            layout: 'lightHorizontalLines',
+          },
+          {
+            text: '---------------------------------------------',
+            alignment: 'center',
+            margin: [0, 10, 0, 10],
+          },
+          {
+            columns: [
+              {
+                text: `Tổng tiền: ${initialTotalPrice.toLocaleString(
+                  'vi-VN',
+                )} đ`,
+                bold: true,
+              },
+              {
+                text: `Giảm giá: ${(
+                  initialTotalPrice / parameterData?.results[1]?.value
+                ).toLocaleString('vi-VN')} đ`,
+                bold: true,
+              },
+              {
+                text: `Thành tiền: ${orderDto.totalPrice.toLocaleString(
+                  'vi-VN',
+                )} đ`,
+                bold: true,
+                alignment: 'right',
+              },
+            ],
+          },
+          {
+            text: '\nCảm ơn quý khách đã mua sắm tại BMart!',
+            alignment: 'center',
+            margin: [0, 15, 0, 0],
+            italics: true,
+          },
+        ],
+        footer: (currentPage: number, pageCount: number) => {
+          return {
+            text: `Trang ${currentPage} / ${pageCount}`,
+            alignment: 'center',
+            margin: [0, 10, 0, 0],
+            fontSize: 10,
+          };
+        },
+        styles: {
+          header: { fontSize: 22, bold: true, color: '#0056b3' },
+          subheader: { fontSize: 16, bold: true, color: '#333333' },
+          text: { fontSize: 12 },
+        },
+      };
+
+      pdfMake
+        .createPdf(docDefinition)
+        .download(`HoaDon_${new Date().getTime()}.pdf`);
 
       toast.success(res.message);
 
@@ -316,6 +486,7 @@ function SalePage() {
       setCart([]);
       setPointsToUse(0); // Reset điểm muốn sử dụng
       setPointsUsed(0); // Reset điểm đã sử dụng
+      setInitialTotalPrice(0);
     } else {
       toast.error(res.message);
 
@@ -420,6 +591,7 @@ function SalePage() {
         0,
       );
       handleOrderInfoChange('totalPrice', parseFloat(newTotal.toFixed(2)));
+      setInitialTotalPrice(newTotal);
       return prevCart;
     });
 
@@ -763,7 +935,7 @@ function SalePage() {
             <Input
               size={3}
               title="Tích điểm"
-              value={formDataOrder.totalPrice / parameterData?.results[1].value}
+              value={initialTotalPrice / parameterData?.results[1].value}
               readOnly
             />
             <Input
@@ -825,7 +997,7 @@ function SalePage() {
               </h3>
             </div>
 
-            <div className='d-flex gap-3'>
+            <div className="d-flex gap-3">
               <button
                 className="btn btn-danger btn-lg"
                 onClick={handleCancelOrder}
