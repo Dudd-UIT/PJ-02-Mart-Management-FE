@@ -6,6 +6,7 @@ function WarehouseTable({
   batches,
   columnsBatch,
   level = 1,
+  onMutate,
 }: WarehouseTableType) {
   return (
     <div className="accordion" id="productTypeLevel">
@@ -159,7 +160,7 @@ function WarehouseTable({
           const relatedBatches = batches.filter(
             (batch) => batch.uniqueUnitKey === `${unit.id}_${unit.name}`,
           );
-          console.log('`${unit.id}_${unit.name}`', `${unit.id}_${unit.name}`)
+          console.log('`${unit.id}_${unit.name}`', `${unit.id}_${unit.name}`);
 
           return (
             <div
@@ -189,7 +190,7 @@ function WarehouseTable({
                     <BatchTable
                       batches={relatedBatches}
                       columns={columnsBatch}
-                      onMutate={() => {}}
+                      onMutate={onMutate}
                     />
                   ) : (
                     <table className="table">

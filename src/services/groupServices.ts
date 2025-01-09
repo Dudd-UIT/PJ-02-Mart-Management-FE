@@ -71,8 +71,6 @@ export const fetchEmployees = async (
   }
 };
 
-
-
 export const handleCreateGroupAction = async (data: any) => {
   const session = await auth();
   const res = await sendRequest<IBackendRes<any>>({

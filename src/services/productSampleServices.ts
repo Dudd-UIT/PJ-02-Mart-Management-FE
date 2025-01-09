@@ -85,7 +85,7 @@ export const fetchProductSamplesOnlineShopping = async (
         Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
-    console.log('>> res', res)
+    console.log('>> res', res);
 
     if (res?.data) {
       return res.data;
@@ -126,7 +126,7 @@ export const fetchProductSamplesOnlineShoppingWithRecommend = async (
   }
 
   if (session?.user?.id) {
-    queryParams.customerId = 4;
+    queryParams.customerId = session?.user?.id;
   }
 
   console.log('queryParams:::', queryParams);
@@ -140,7 +140,7 @@ export const fetchProductSamplesOnlineShoppingWithRecommend = async (
         Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
-    console.log('>> res', res)
+    console.log('>> res', res);
 
     if (res?.data) {
       return res.data;
