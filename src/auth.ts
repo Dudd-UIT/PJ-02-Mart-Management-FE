@@ -27,8 +27,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: credentials.password,
           },
         });
+
         if (res.statusCode === 201) {
           const user = res.data?.user;
+
           if (user) {
             return {
               id: user.id.toString(),
@@ -44,7 +46,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             };
           }
         } else if (+res.statusCode === 401 || +res.statusCode === 404) {
-
           throw new InvalidEmailPasswordError();
         } else if (+res.statusCode === 400) {
           throw new InvalidActiveAccountError();

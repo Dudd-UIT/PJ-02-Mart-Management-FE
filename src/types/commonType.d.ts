@@ -82,6 +82,8 @@ declare global {
     data?: T;
     setData?: (v: T | undefined) => void;
     onMutate: () => void;
+    isCustomer?: boolean;
+    onConfirm?: () => void;
   }
 
   export interface DeleteModalProps<T> {
@@ -111,7 +113,6 @@ export type GroupedProductData = {
     };
   };
 };
-
 
 export type StatisticsCardProps = {
   title: string;

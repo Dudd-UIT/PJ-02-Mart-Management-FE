@@ -1,7 +1,7 @@
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
-import { formatDateDMY } from '@/utils/format';
+import { formatCurrencyLong, formatDateDMY } from '@/utils/format';
 import { OrderTableModalProps, OrderTransform } from '@/types/order';
 import UpdateOrderModal from './order.update';
 import DeleteOrderModal from './order.delete';
@@ -9,7 +9,7 @@ import { renderStatusBadge } from '../commonComponent/Status';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const OrderTable = (props: OrderTableModalProps) => {
-  const { orders, columns, onMutate } = props;
+  const { orders, columns, onMutate, isCustomer } = props;
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
@@ -63,6 +63,16 @@ const OrderTable = (props: OrderTableModalProps) => {
                     );
                   }
 
+                  if (
+                    column.key === 'totalPrice' 
+                  ) {
+                    return (
+                      <td key={colIndex}>
+                        {formatCurrencyLong(+cellData)}
+                      </td>
+                    );
+                  }
+
                   if (column.key === 'isReceived') {
                     return (
                       <td key={colIndex}>
@@ -112,6 +122,7 @@ const OrderTable = (props: OrderTableModalProps) => {
         data={selectedOrder}
         setData={setSelectedOrder}
         onMutate={onMutate}
+        isCustomer={isCustomer}
       />
       <DeleteOrderModal
         isDeleteModalOpen={isDeleteModalOpen}

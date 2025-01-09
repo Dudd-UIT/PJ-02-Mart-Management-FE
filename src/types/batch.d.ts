@@ -33,7 +33,7 @@ export type Batch = {
 export type BatchGrouped = {
   id: number;
   inboundPrice: number;
-  sellPrice: number;
+  sellPrice?: number;
   discount: number;
   inventQuantity: number;
   inboundQuantity: number;
