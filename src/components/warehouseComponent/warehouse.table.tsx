@@ -1,5 +1,6 @@
 import { WarehouseTableType } from '@/types/warehouse';
 import BatchTable from './batches.table';
+import { formatCurrencyLong } from '@/utils/format';
 
 function WarehouseTable({
   product,
@@ -176,7 +177,7 @@ function WarehouseTable({
                   aria-expanded="true"
                   aria-controls={`collapseUnit${unitIndex}`}
                 >
-                  <strong>{unit.name}</strong> - {unit.sellPrice} VND
+                  <strong>{unit.name}</strong> - {formatCurrencyLong(unit.sellPrice)} VND
                 </button>
               </h2>
               <div

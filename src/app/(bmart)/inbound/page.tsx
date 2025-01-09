@@ -88,7 +88,7 @@ const InboundReceiptPage = () => {
     staffName: item.staff?.name,
     supplierId: item.supplier?.id,
     supplierName: item.supplier?.name,
-    totalPrice: formatCurrency(item.totalPrice),
+    totalPrice: item.totalPrice,
     isReceived: item.isReceived,
     isPaid: item.isPaid,
     createdAt: item.createdAt,

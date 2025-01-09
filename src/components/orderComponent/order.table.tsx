@@ -1,7 +1,7 @@
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useState } from 'react';
-import { formatDateDMY } from '@/utils/format';
+import { formatCurrencyLong, formatDateDMY } from '@/utils/format';
 import { OrderTableModalProps, OrderTransform } from '@/types/order';
 import UpdateOrderModal from './order.update';
 import DeleteOrderModal from './order.delete';
@@ -59,6 +59,16 @@ const OrderTable = (props: OrderTableModalProps) => {
                     return (
                       <td key={colIndex}>
                         {renderStatusBadge(+cellData, 'payment')}
+                      </td>
+                    );
+                  }
+
+                  if (
+                    column.key === 'totalPrice' 
+                  ) {
+                    return (
+                      <td key={colIndex}>
+                        {formatCurrencyLong(+cellData)}
                       </td>
                     );
                   }
