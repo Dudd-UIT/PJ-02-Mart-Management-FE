@@ -12202,4 +12202,16 @@ li.active a {
 .disabled {
   pointer-events: none;
   transform: none !important;
+}
+
+.form-control:disabled {
+  background-color: rgba(51, 51, 51, 0.031372549);
+}
+
+.form-control {
+  background-color: white;
+}
+
+.form-control:focus {
+  background-color: white;
 }/*# sourceMappingURL=custom.min.css.map */

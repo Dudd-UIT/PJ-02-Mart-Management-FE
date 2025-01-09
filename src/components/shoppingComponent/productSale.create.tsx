@@ -9,6 +9,8 @@ import Image from 'next/image';
 import { Batch, BatchGrouped } from '@/types/batch';
 import { formatCurrency } from '@/utils/format';
 import { handleAddCartDetailAction } from '@/services/cartServices';
+import { FaMinus, FaPlug, FaPlus } from 'react-icons/fa6';
+import { Input } from '../commonComponent/InputForm';
 
 function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
   const {
@@ -53,13 +55,14 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
       const firstUnit = productSampleData.productUnits[0];
       if (firstUnit) {
         const firstBatch = firstUnit.batches && firstUnit.batches[0];
+        console.log('firstBatch', firstBatch)
         setCurrentBatch({
           unitId: firstUnit?.id,
           batchId: firstBatch?.id,
           image: firstUnit.image,
           inventQuantity: 1,
           discount: firstBatch?.discount || 0,
-          inboundPrice: firstBatch?.inboundPrice || 0,
+          inboundPrice: firstUnit.sellPrice || 0,
         });
       }
     }
@@ -68,6 +71,7 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
   const handleCloseCreateModal = () => {
     setIsUpdateModalOpen(false);
     setData?.(undefined);
+    setQuantity(1);
   };
 
   const handleUpdateCart = async () => {
@@ -78,7 +82,7 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
     const cartDetailsDto = [
       {
         productUnitId: currentBatch.unitId,
-        quantity: currentBatch.inventQuantity,
+        quantity: quantity,
         batch: [{ id: currentBatch.batchId }],
       },
     ];
@@ -91,28 +95,37 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
       handleCloseCreateModal();
       toast.success(res.message);
       onMutate();
+      setQuantity(1);
     } else {
       console.log(res);
       toast.error(res.message);
+      setQuantity(1);
     }
   };
 
-  console.log(productSampleData);
-
+  console.log('productSampleData', productSampleData);
+  const [quantity, setQuantity] = useState(1);
   const ProductSampleButtons = ({
     productSampleData,
   }: {
     productSampleData: ProductSampleShoping | undefined;
   }) => {
     const handleButtonClick = (unit: any, batch: any) => {
+      console.log('currentBatch', currentBatch)
+
       setCurrentBatch({
         unitId: unit.id,
         batchId: batch.id,
         image: unit.image,
         inventQuantity: 1,
         discount: batch?.discount || 0,
-        inboundPrice: batch?.inboundPrice || 0,
+        inboundPrice: unit.sellPrice || 0,
       });
+    };
+
+    const handleQuantityChange = (newQuantity: number) => {
+      if (newQuantity < 1) return;
+      setQuantity(newQuantity);
     };
 
     return (
@@ -125,12 +138,10 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
                 const buttonLabel = `${unit.unit?.name} ${
                   unit.volumne
                 } ${new Date(batch.expiredAt).toLocaleDateString('vi-VN')}`;
+                console.log('unit', unit);
                 const isActive =
                   currentBatch &&
-                  currentBatch.image === unit.image &&
-                  // currentBatch.inventQuantity === batch.inventQuantity &&
-                  currentBatch.discount === batch.discount &&
-                  currentBatch.inboundPrice === batch.inboundPrice;
+                  currentBatch.batchId == batch.id
                 return (
                   <button
                     key={`${unit.id}-${batch.id}-${index}`}
@@ -191,27 +202,55 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
                 <div className="d-flex align-items-baseline gap-3">
                   <h1 className="text-danger">
                     <strong>
-                      {formatCurrency(currentBatch.inboundPrice)} đ
+                      {formatCurrency(
+                        currentBatch.inboundPrice -
+                          currentBatch.discount * currentBatch.inboundPrice,
+                      )}{' '}
+                      đ
                     </strong>
                   </h1>
                   {currentBatch.discount > 0 && (
                     <h6>
-                      <s>
-                        {formatCurrency(
-                          currentBatch.inboundPrice -
-                            currentBatch.discount * currentBatch.inboundPrice,
-                        )}{' '}
-                        đ
-                      </s>
+                      <s>{formatCurrency(currentBatch.inboundPrice)} đ</s>
                     </h6>
                   )}
                 </div>
                 <ProductSampleButtons productSampleData={productSampleData} />
+                <div className="d-flex flex-column">
+                  <div className="d-flex align-items-center gap-2 mt-3">
+                    <button
+                      onClick={() => setQuantity(quantity - 1)}
+                      className="btn btn-secondary mt-3"
+                    >
+                      <FaMinus />
+                    </button>
+                    <Input
+                      title="Số lượng"
+                      value={quantity}
+                      onChange={(value) => setQuantity(Number(value))}
+                      size={6}
+                    />
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="btn btn-secondary mt-3"
+                    >
+                      <FaPlus />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
         </Modal.Body>
         <Modal.Footer>
+          <p>
+            Tạm tính:{' '}
+            {formatCurrency(
+              quantity *
+                (currentBatch.inboundPrice -
+                  currentBatch.discount * currentBatch.inboundPrice),
+            )}
+          </p>
           <Button variant="secondary" onClick={handleCloseCreateModal}>
             Thoát
           </Button>

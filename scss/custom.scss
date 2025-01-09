@@ -4,6 +4,8 @@ $body-color: #333333;
 $body-bg: #fdf8f8;
 $border-width: 2px;
 
+$disable: #33333308;
+
 $onPrimary: #ffffff;
 $onSecondary: #f2f0e8;
 $primaryContainer: #fadadd;
@@ -239,4 +241,15 @@ li.active a {
 .disabled {
   pointer-events: none; 
   transform: none !important; 
+}
+
+.form-control:disabled {
+  background-color: $disable;
+}
+
+.form-control {
+  background-color: white;
+}
+.form-control:focus {
+  background-color: white;
 }
