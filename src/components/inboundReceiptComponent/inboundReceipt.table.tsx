@@ -8,7 +8,7 @@ import {
 import UpdateInboundReceiptModal from './inboundReceipt.update';
 import DeleteInboundReceiptModal from './inboundReceipt.delete';
 import { renderStatusBadge } from '../commonComponent/Status';
-import { formatDateDMY } from '@/utils/format';
+import { formatCurrencyLong, formatDateDMY } from '@/utils/format';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
@@ -79,6 +79,11 @@ const InboundReceiptTable = (props: InboundReceiptTableModalProps) => {
                   }
 
                   // Format 'createdAt' to dd-mm-yyyy
+                  if (
+                    column.key === 'totalPrice' 
+                  ) {
+                    return <td key={colIndex}>{formatCurrencyLong(+cellData)}</td>;
+                  }
                   if (
                     column.key === 'createdAt' &&
                     typeof cellData === 'string'

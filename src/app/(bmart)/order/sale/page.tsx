@@ -654,11 +654,10 @@ function SalePage() {
                     }
 
                     if (
-                      column.key === 'sellPrice' &&
-                      typeof cellData === 'number'
+                      column.key === 'sellPrice' && cellData
                     ) {
                       return (
-                        <td key={colIndex}>{formatCurrencyLong(cellData)} đ</td>
+                        <td key={colIndex}>{formatCurrencyLong(+cellData)} đ</td>
                       );
                     }
 

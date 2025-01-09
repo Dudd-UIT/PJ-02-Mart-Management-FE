@@ -39,10 +39,10 @@ function SelectedProductUnitModal(props: SelectedProductUnitTableProps) {
                 }
 
                 if (column.key==='sellPrice' && typeof value === 'number') {
-                  content = formatCurrencyLong(value)
+                  content = formatCurrencyLong(value) + ' ' + 'đ'
                 }
 
-                return <td key={colIndex}>{content}</td>;
+                return <td key={colIndex}>{content} </td>;
               })}
             </tr>
           ))}
