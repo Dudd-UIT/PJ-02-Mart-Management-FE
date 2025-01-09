@@ -25,7 +25,9 @@ const OrdersPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  const [searchType, setSearchType] = useState<'staffName' | 'customerName'>('staffName');
+  const [searchType, setSearchType] = useState<'staffName' | 'customerName'>(
+    'staffName',
+  );
   const [searchValue, setSearchValue] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -38,7 +40,15 @@ const OrdersPage = () => {
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/orders`;
   const { data, error } = useSWR(
-    [url, current, pageSize, searchParams.staffName, searchParams.customerName, searchParams.startDate, searchParams.endDate],
+    [
+      url,
+      current,
+      pageSize,
+      searchParams.staffName,
+      searchParams.customerName,
+      searchParams.startDate,
+      searchParams.endDate,
+    ],
     () =>
       fetchOrders(
         current,
@@ -75,6 +85,7 @@ const OrdersPage = () => {
     createdAt: item.createdAt,
     orderType: item.orderType,
     orderDetails: item.orderDetails,
+    customerName: item.customer?.name,
   }));
 
   const meta: MetaData = {
@@ -103,14 +114,21 @@ const OrdersPage = () => {
   };
 
   const onMutate = () =>
-    mutate([url, current, pageSize, searchParams.startDate, searchParams.endDate]);
+    mutate([
+      url,
+      current,
+      pageSize,
+      searchParams.staffName,
+      searchParams.customerName,
+      searchParams.startDate,
+      searchParams.endDate,
+    ]);
 
   return (
     <>
       <h2>Đơn hàng của tôi</h2>
       {/* Thanh tìm kiếm gộp */}
       <div className="row">
-        
         <Input
           title="Từ ngày"
           size={3}
@@ -130,7 +148,12 @@ const OrdersPage = () => {
       </div>
 
       {/* Quản lý Supplier */}
-      <OrderTable orders={orders} columns={columns} onMutate={onMutate} />
+      <OrderTable
+        orders={orders}
+        columns={columns}
+        onMutate={onMutate}
+        isCustomer={true}
+      />
 
       {/* Navigate control */}
       <nav aria-label="Page navigation example">
@@ -141,13 +164,21 @@ const OrdersPage = () => {
             </button>
           </li>
           {Array.from({ length: meta.pages }, (_, index) => (
-            <li key={index} className={`page-item ${current === index + 1 ? 'active' : ''}`}>
-              <button className="page-link" onClick={() => setCurrent(index + 1)}>
+            <li
+              key={index}
+              className={`page-item ${current === index + 1 ? 'active' : ''}`}
+            >
+              <button
+                className="page-link"
+                onClick={() => setCurrent(index + 1)}
+              >
                 {index + 1}
               </button>
             </li>
           ))}
-          <li className={`page-item ${current === meta.pages ? 'disabled' : ''}`}>
+          <li
+            className={`page-item ${current === meta.pages ? 'disabled' : ''}`}
+          >
             <button className="page-link" onClick={handleNextPage}>
               Next
             </button>

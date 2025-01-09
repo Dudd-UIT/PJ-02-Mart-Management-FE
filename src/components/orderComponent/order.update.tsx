@@ -4,6 +4,9 @@ import { OrderDetailTransform, OrderTransform } from '@/types/order';
 import { formatDate } from '@/utils/format';
 import { renderStatusBadge } from '../commonComponent/Status';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
+import { handleUpdateOrderAction } from '@/services/orderServices';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const columns: Column<OrderDetailTransform>[] = [
   { title: '#', key: 'id' },
@@ -13,6 +16,12 @@ const columns: Column<OrderDetailTransform>[] = [
   { title: 'Giá', key: 'currentPrice' },
 ];
 
+type FormData = {
+  id: number;
+  isPaid: number;
+  isReceived: number;
+};
+
 const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
   const {
     isUpdateModalOpen,
@@ -20,7 +29,16 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
     data: selectedOrder,
     setData: setSelectedOrder,
     onMutate,
+    isCustomer,
   } = props;
+
+  const initalFormData = {
+    id: 0,
+    isPaid: 0,
+    isReceived: 0,
+  };
+
+  const [formData, setFormData] = useState<FormData>(initalFormData);
 
   const orderDetiailsTranform: Partial<OrderDetailTransform>[] =
     selectedOrder?.orderDetails?.map((orderDetail) => ({
@@ -31,6 +49,18 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
       currentPrice: orderDetail?.currentPrice,
     })) || [];
 
+  console.log('selectedOrder', selectedOrder);
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setFormData({
+        id: selectedOrder.id,
+        isPaid: selectedOrder.isPaid || 0,
+        isReceived: selectedOrder.isReceived || 0,
+      });
+    }
+  }, [selectedOrder]);
+
   const handleCloseModal = () => {
     setIsUpdateModalOpen(false);
     setSelectedOrder?.(undefined);
@@ -39,6 +69,28 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
   const handleSaveChanges = () => {
     onMutate();
     handleCloseModal();
+  };
+
+  const handleUpdatePaidStatus = async () => {
+    const res = await handleUpdateOrderAction({ ...formData, isPaid: 1 });
+    if (res?.data) {
+      handleCloseModal();
+      onMutate();
+      toast.success(res.message);
+    } else {
+      toast.error(res.message);
+    }
+  };
+
+  const handleUpdateReceivedStatus = async () => {
+    const res = await handleUpdateOrderAction({ ...formData, isReceived: 1 });
+    if (res?.data) {
+      handleCloseModal();
+      onMutate();
+      toast.success(res.message);
+    } else {
+      toast.error(res.message);
+    }
   };
 
   return (
@@ -89,10 +141,10 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
                 disabled
               />
               <div className="col-md-3 mb-3">
-                {renderStatusBadge(+selectedOrder.isReceived, 'payment', true)}
+                {renderStatusBadge(+selectedOrder.isReceived, 'receipt', true)}
               </div>
               <div className="col-md-3 mb-3">
-                {renderStatusBadge(+selectedOrder.isPaid, 'receipt', true)}
+                {renderStatusBadge(+selectedOrder.isPaid, 'payment', true)}
               </div>
             </div>
             <div className="row">
@@ -160,6 +212,20 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
             Lưu
           </Button>
         </ProtectedComponent>
+        {!isCustomer && (
+          <ProtectedComponent requiredRoles={['u_order']}>
+            <Button variant="primary" onClick={handleUpdatePaidStatus}>
+              Đã thanh toán
+            </Button>
+          </ProtectedComponent>
+        )}
+        {isCustomer && (
+          <ProtectedComponent requiredRoles={['u_order']}>
+            <Button variant="primary" onClick={handleUpdateReceivedStatus}>
+              Đã nhận hàng
+            </Button>
+          </ProtectedComponent>
+        )}
       </Modal.Footer>
     </Modal>
   );
