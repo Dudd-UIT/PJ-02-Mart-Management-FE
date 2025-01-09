@@ -10,6 +10,7 @@ import {
   InboundReceipt,
   InboundReceiptTransform,
 } from '@/types/inboundReceipt';
+import { formatCurrency } from '@/utils/format';
 import { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import useSWR, { mutate } from 'swr';
@@ -50,8 +51,8 @@ const InboundReceiptPage = () => {
       pageSize,
       searchParams.staffName,
       searchParams.supplierName,
-      searchParams.startDate,
-      searchParams.endDate,
+      startDate,
+      endDate,
     ],
     () =>
       fetchInboundReceipts(
@@ -59,8 +60,8 @@ const InboundReceiptPage = () => {
         pageSize,
         searchParams.staffName,
         searchParams.supplierName,
-        searchParams.startDate,
-        searchParams.endDate,
+        startDate,
+        endDate,
       ),
   );
 
@@ -79,19 +80,21 @@ const InboundReceiptPage = () => {
       </div>
     );
 
+  // const x = formatCurrency(x)
+
   const inboundReceipts = data.results.map((item: InboundReceipt) => ({
     id: item.id,
     staffId: item.staff?.id,
     staffName: item.staff?.name,
     supplierId: item.supplier?.id,
     supplierName: item.supplier?.name,
-    totalPrice: item.totalPrice,
+    totalPrice: formatCurrency(item.totalPrice),
     isReceived: item.isReceived,
     isPaid: item.isPaid,
     createdAt: item.createdAt,
     discount: item.discount,
     vat: item.vat,
-    batchs: item.batchs,
+    batches: item.batches,
   }));
 
   const meta: MetaData = {
@@ -126,8 +129,8 @@ const InboundReceiptPage = () => {
       pageSize,
       searchParams.staffName,
       searchParams.supplierName,
-      searchParams.startDate,
-      searchParams.endDate,
+      startDate,
+      endDate,
     ]);
 
   return (
@@ -149,7 +152,9 @@ const InboundReceiptPage = () => {
           title="Tìm kiếm"
           size={4}
           value={searchValue}
-          placeholder={`Nhập ${searchType === 'staffName' ? 'Tên nhân viên' : 'Tên nhà cung cấp'}`}
+          placeholder={`Nhập ${
+            searchType === 'staffName' ? 'tên nhân viên' : 'tên nhà cung cấp'
+          }`}
           type="text"
           onChange={(value) => setSearchValue(value)}
           onClickIcon={handleSearchClick}

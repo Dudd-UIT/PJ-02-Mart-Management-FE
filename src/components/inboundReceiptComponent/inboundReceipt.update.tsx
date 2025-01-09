@@ -13,7 +13,7 @@ import { Input } from '../commonComponent/InputForm';
 import { fetchSuppliers } from '@/services/supplierServices';
 import { useSelectedProductUnits } from '@/context/selectedProductUnitsContext';
 import { InboundReceiptTransform } from '@/types/inboundReceipt';
-import { formatDate } from '@/utils/format';
+import { formatCurrency, formatCurrencyLong, formatDate } from '@/utils/format';
 import {
   handleUpdatedInboundReceiptAction,
   handleUpdatedStatusInboundReceiptAction,
@@ -114,23 +114,23 @@ function UpdateInboundReceiptModal(
       });
 
       // Populate formBatchData from batches
-      const updatedBatchData = inboundReceiptData.batchs.map(
+      const updatedBatchData = inboundReceiptData.batches.map(
         (batch: Batch) => ({
           id: batch?.id,
-          inboundPrice: batch.inboundPrice,
-          discount: batch.discount,
-          inventQuantity: batch.inventQuantity,
-          inboundQuantity: batch.inboundQuantity,
-          expiredAt: batch.expiredAt,
-          productUnitId: batch.productUnit.id,
-          productSampleName: batch.productUnit?.productSample?.name,
-          unitName: batch.productUnit?.unit?.name,
-          total: batch.inboundPrice * batch.inboundQuantity,
+          inboundPrice: batch?.inboundPrice,
+          discount: batch?.discount,
+          inventQuantity: batch?.inventQuantity,
+          inboundQuantity: batch?.inboundQuantity,
+          expiredAt: batch?.expiredAt,
+          productUnitId: batch?.productUnit?.id,
+          productSampleName: batch?.productUnit?.productSample?.name,
+          unitName: batch?.productUnit?.unit?.name,
+          total: batch?.inboundPrice * batch?.inboundQuantity,
         }),
       );
       setFormBatchData(updatedBatchData);
 
-      const productUnitInitial = inboundReceiptData.batchs
+      const productUnitInitial = inboundReceiptData.batches
         .map((batch) => batch.productUnit?.id)
         .filter((id) => id !== undefined);
 
@@ -242,7 +242,7 @@ function UpdateInboundReceiptModal(
       createdAt: inboundReceiptInfo.createdAt,
     };
 
-    const batchsDto = formBatchData.map((item) => ({
+    const batchesDto = formBatchData.map((item) => ({
       id: item?.id,
       inboundPrice: item.inboundPrice,
       discount: item.discount,
@@ -255,7 +255,7 @@ function UpdateInboundReceiptModal(
     const payload = {
       inboundReceiptId,
       inboundReceiptDto,
-      batchsDto,
+      batchesDto,
     };
 
     const res = await handleUpdatedInboundReceiptAction(payload);
@@ -331,8 +331,8 @@ function UpdateInboundReceiptModal(
                 keyObj="id"
                 showObj="name"
                 onSelectedChange={handleSupplierChange}
-                readOnly={+inboundReceiptInfo.isPaid === 1}
-                disabled={+inboundReceiptInfo.isPaid === 1}
+                readOnly={true}
+                disabled={true}
               />
             </div>
           </div>
@@ -416,7 +416,7 @@ function UpdateInboundReceiptModal(
                           className="form-control input-table"
                         />
                       </td>
-                      <td>{item.total.toFixed(2)}</td>
+                      <td>{formatCurrencyLong(item.total)}</td>
                       <td>
                         <input
                           type="date"
@@ -462,8 +462,8 @@ function UpdateInboundReceiptModal(
                 <Form.Label>Tổng tiền hàng</Form.Label>
                 <Form.Control
                   disabled={+inboundReceiptInfo.isPaid === 1}
-                  type="number"
-                  value={inboundReceiptInfo.totalPrice}
+                  type="string"
+                  value={formatCurrencyLong(inboundReceiptInfo.totalPrice)}
                   readOnly
                 />
               </Form.Group>
@@ -498,9 +498,9 @@ function UpdateInboundReceiptModal(
               <Form.Group>
                 <Form.Label>Tổng tiền thanh toán</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="string"
                   disabled={+inboundReceiptInfo.isPaid === 1}
-                  value={inboundReceiptInfo.paymentTotal}
+                  value={formatCurrencyLong(inboundReceiptInfo.paymentTotal)}
                   readOnly
                 />
               </Form.Group>

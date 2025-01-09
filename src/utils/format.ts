@@ -29,3 +29,10 @@ export const formatCurrency = (value: number): string => {
 
   return value < 0 ? `-${formattedValue}` : formattedValue;
 };
+
+export const formatCurrencyLong = (value: number): string => {
+  const absValue = Math.abs(value); // Lấy giá trị tuyệt đối của số
+  let formattedValue: string;
+    formattedValue = absValue.toLocaleString('vi-VN');
+  return value < 0 ? `-${formattedValue}` : formattedValue;
+};

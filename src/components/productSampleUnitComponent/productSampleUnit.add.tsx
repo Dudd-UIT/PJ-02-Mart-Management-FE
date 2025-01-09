@@ -37,8 +37,7 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
 
   const [formData, setFormData] = useState<FormData>(initalFormData);
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/units`;
-  const { data: unitsData, error } = useSWR([url], () => fetchUnits());
-  
+  const { data: unitsData, error } = useSWR([url], () => fetchUnits(1, 100));
   const handleCloseProductUnitListModal = () => {
     setIsProductSampleUnitsModalOpen(false);
     setFormData(initalFormData);
@@ -166,14 +165,6 @@ function ProductSampleUnitModal(props: ProductSampleUnitModalProps) {
                   onChange={(value) => handleFormDataChange('sellPrice', value)}
                 />
               </div>
-              {productSampleData && (
-                <div className="mb-3">
-                  <Input
-                    title="Giá nhập trên 1 đơn vị trong lô hàng gần nhất"
-                    size={12}
-                  />
-                </div>
-              )}
             </div>
           </div>
         </div>

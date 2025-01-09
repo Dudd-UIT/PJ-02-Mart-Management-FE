@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchBatchs } from '@/services/batchServices';
+import { fetchBatches } from '@/services/batchServices';
 import { useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import WarehouseTable from '@/components/warehouseComponent/warehouse.table';
@@ -61,8 +61,24 @@ function WarehousePage() {
       showOption,
     ],
     () =>
-      fetchBatchs(showOption, current, pageSize, searchQuantity, searchExpDate),
+      fetchBatches(
+        current,
+        pageSize,
+        showOption,
+        searchQuantity,
+        searchExpDate,
+      ),
   );
+
+  const onMutate = () =>
+    mutate([
+      urlFetchBatches,
+      current,
+      pageSize,
+      searchBatchParams.quantity,
+      searchBatchParams.expDate,
+      showOption,
+    ]);
 
   const urlFetchProductUnits = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
   const { data: productUnitsData, error: productUnitsError } = useSWR(
@@ -118,8 +134,6 @@ function WarehousePage() {
   const groupedBatchData = groupBatch(batchesData?.results);
 
   const totalValue = getWarehouseValue(groupedBatchData);
-
-  console.log('Tổng giá trị kho hàng:', totalValue);
 
   const handleSearchClick = () => {
     setSearchProductUnitParams({
@@ -335,6 +349,7 @@ function WarehousePage() {
           product={groupedProductData}
           batches={groupedBatchData}
           columnsBatch={columnsBatch}
+          onMutate={onMutate}
         />
       )}
     </>
@@ -379,19 +394,22 @@ function groupProductData(data: Product[]): GroupedProductData {
 
 function groupBatch(results: Batch[]): BatchGrouped[] {
   return results.map((item) => ({
-    id: item.id,
-    inboundPrice: item.inboundPrice,
-    sellPrice: item.productUnit.sellPrice ?? 0,
-    discount: item.discount,
-    inventQuantity: item.inventQuantity,
-    inboundQuantity: item.inboundQuantity,
-    expiredAt: new Date(item.expiredAt).toISOString(),
-    inboundReceiptId: item.inboundReceipt?.id ?? 0,
-    unit: item.productUnit.unit?.name || '',
-    unitId: item.productUnit.unit?.id || 0,
-    productSampleId: item.productUnit.productSample?.id || 0,
-    productSample: item.productUnit.productSample?.name || '',
-    uniqueUnitKey: `${item.productUnit.productSample?.id}_${item.productUnit.unit?.name}`,
+    id: item?.id,
+    inboundPrice: item?.inboundPrice,
+    sellPrice: item?.productUnit?.sellPrice ?? 0,
+    discount: item?.discount,
+    inventQuantity: item?.inventQuantity,
+    inboundQuantity: item?.inboundQuantity,
+    expiredAt: new Date(item?.expiredAt).toISOString(),
+    createdAt: new Date(item?.createdAt).toISOString(),
+    inboundReceiptId: item?.inboundReceipt?.id ?? 0,
+    unit: item?.productUnit?.unit?.name || '',
+    unitId: item?.productUnit?.unit?.id || 0,
+    image: item?.productUnit?.image,
+    supplierName: item?.inboundReceipt?.supplier?.name || '',
+    productSampleId: item?.productUnit?.productSample?.id || 0,
+    productSample: item?.productUnit?.productSample?.name || '',
+    uniqueUnitKey: `${item?.productUnit?.id}_${item.productUnit?.unit?.name}`,
   }));
 }
 

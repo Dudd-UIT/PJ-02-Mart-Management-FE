@@ -10,5 +10,5 @@ export interface WarehouseTableType {
   batches: BatchGrouped[];
   columnsBatch: Column<BatchGrouped>[];
   level: number;
-  onMutate?: () => void;
+  onMutate: () => void;
 }

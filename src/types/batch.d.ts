@@ -1,4 +1,5 @@
 import { Column, MetaData } from './commonType';
+import { InboundReceipt } from './inboundReceipt';
 import { ProductUnit } from './productUnit';
 
 export type InboundReceiptCreate = {
@@ -25,24 +26,25 @@ export type Batch = {
   inboundQuantity: number;
   expiredAt: string;
   createdAt: string;
-  inboundReceipt?: {
-    id: number;
-  };
+  inboundReceipt?: InboundReceipt;
   productUnit: ProductUnit;
 };
 
 export type BatchGrouped = {
   id: number;
   inboundPrice: number;
-  sellPrice: number;
+  sellPrice?: number;
   discount: number;
   inventQuantity: number;
   inboundQuantity: number;
   expiredAt: string;
+  createdAt: string;
   inboundReceiptId: number;
   unit: string;
   unitId: number;
+  image: string;
   productSample: string;
+  supplierName: string;
   uniqueUnitKey: string;
 };
 
@@ -52,34 +54,10 @@ export interface BatchTableType {
   onMutate: () => void;
 }
 
-// export type InboundReceipt = {
-//   id: number;
-//   staff?: {
-//     name: string;
-//   };
-//   supplier?: {
-//     name: string;
-//   };
-//   totalPrice: number;
-//   isReceived: number;
-//   isPaid: string;
-//   createdAt: string;
-// };
-
-// export interface InboundReceiptTableModalProps {
-//   inboundReceipts: InboundReceiptTransform[];
-//   columns: Column<InboundReceiptTransform>[];
-//   onMutate: () => void;
-// }
-
-// export interface ProductSupplierModalProps {
-//   isProductSupplierModalOpen: boolean;
-//   setIsProductSupplierModalOpen: (v: boolean) => void;
-//   onSelectedInboundReceiptsChange: (v: number[]) => void;
-// }
-
-// export interface SelectedInboundReceiptTableModalProps {
-//   InboundReceipts: InboundReceiptTransform[];
-//   columns: Column<InboundReceiptTransform>[];
-//   // meta: MetaData;
-// }
+export interface SelectBatchModalProps {
+  isModalOpen: boolean;
+  onCloseModal: () => void;
+  onSelectBatch: (batch: Batch) => void;
+  batches: Batch[];
+  columns: Column<Batch>[];
+}

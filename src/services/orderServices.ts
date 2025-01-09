@@ -48,6 +48,7 @@ export const fetchOrders = async (
 export const handleCreatedOrderAction = async (data: any) => {
   const session = await auth();
   const { orderDto, orderDetailsDto } = data;
+
   const { staffId, ...rest } = orderDto;
   const updatedOrderDto = { staffId: session?.user.id, ...rest };
   const updatedData = {
@@ -64,6 +65,44 @@ export const handleCreatedOrderAction = async (data: any) => {
     body: { ...updatedData },
   });
 
+  return res;
+};
+
+export const handleCreatedOrderOnlineAction = async (data: any) => {
+  const session = await auth();
+  const { orderDto, orderDetailsDto } = data;
+
+  const { customerId, ...rest } = orderDto;
+  const updatedOrderDto = { customerId: session?.user.id, ...rest };
+  const updatedData = {
+    orderDto: updatedOrderDto,
+    orderDetailsDto,
+  };
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/orders/order-details`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+    body: { ...updatedData },
+  });
+
+  return res;
+};
+
+export const handleUpdateOrderAction = async (data: any) => {
+  const { id, ...rest } = data;
+  const session = await auth();
+
+  const res = await sendRequest<IBackendRes<any>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/orders/${id}`,
+    method: 'PATCH',
+    body: { ...rest },
+    headers: {
+      Authorization: `Bearer ${session?.user?.access_token}`,
+    },
+  });
   return res;
 };
 

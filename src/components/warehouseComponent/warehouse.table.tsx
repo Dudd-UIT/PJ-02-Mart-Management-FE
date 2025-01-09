@@ -6,6 +6,7 @@ function WarehouseTable({
   batches,
   columnsBatch,
   level = 1,
+  onMutate,
 }: WarehouseTableType) {
   return (
     <div className="accordion" id="productTypeLevel">
@@ -188,7 +189,7 @@ function WarehouseTable({
                     <BatchTable
                       batches={relatedBatches}
                       columns={columnsBatch}
-                      onMutate={() => {}}
+                      onMutate={onMutate}
                     />
                   ) : (
                     <table className="table">
@@ -199,7 +200,7 @@ function WarehouseTable({
                             className="text-center"
                             style={{ borderRadius: '0.375rem' }}
                           >
-                            Đơn vị sản phẩm này đã hết hàng.
+                            Không có dữ liệu
                           </td>
                         </tr>
                       </tbody>

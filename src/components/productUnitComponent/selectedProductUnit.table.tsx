@@ -2,6 +2,7 @@ import {
   ProductUnitTransform,
   SelectedProductUnitTableProps,
 } from '@/types/productUnit';
+import { formatCurrencyLong } from '@/utils/format';
 import React from 'react';
 
 function SelectedProductUnitModal(props: SelectedProductUnitTableProps) {
@@ -27,7 +28,6 @@ function SelectedProductUnitModal(props: SelectedProductUnitTableProps) {
 
                 // Kiểm tra kiểu dữ liệu trước khi hiển thị
                 let content: React.ReactNode;
-
                 if (typeof value === 'string' || typeof value === 'number') {
                   content = value; // Render trực tiếp nếu là string hoặc number
                 } else if (value instanceof File) {
@@ -36,6 +36,10 @@ function SelectedProductUnitModal(props: SelectedProductUnitTableProps) {
                   content = ''; // Xử lý nếu giá trị undefined hoặc null
                 } else {
                   content = JSON.stringify(value); // Render chuỗi JSON nếu không rõ kiểu
+                }
+
+                if (column.key==='sellPrice' && typeof value === 'number') {
+                  content = formatCurrencyLong(value)
                 }
 
                 return <td key={colIndex}>{content}</td>;

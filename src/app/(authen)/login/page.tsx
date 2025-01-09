@@ -27,16 +27,13 @@ function LoginPage() {
   };
 
   const handleLogin = async () => {
-    console.log(
-      '${process.env.NEXT_PUBLIC_BACKEND_URL}',
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
-    );
     try {
       const res = await authenticate(formLogin);
       if (res?.message) {
-        // if (res?.code === 2) {
-        //   return;
-        // }
+        if (res?.code === 2) {
+          toast.error(res.message);
+          return;
+        }
         toast.error(res.message);
       } else {
         router.replace('/statistics');
@@ -114,14 +111,14 @@ function LoginPage() {
         </form>
 
         {/* Register Link */}
-        <div className="mt-3 text-center">
+        {/* <div className="mt-3 text-center">
           <span>
             Chưa có tài khoản?{' '}
             <a href="#" className="text-primary fw-bold">
               Đăng ký ngay!
             </a>
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

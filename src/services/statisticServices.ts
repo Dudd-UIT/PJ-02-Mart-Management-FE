@@ -202,6 +202,7 @@ export const fetchBestSeller = async (
   searchProductLineId?: number,
   startDate?: string,
   endDate?: string,
+  limit?: number,
 ) => {
   const session = await auth();
 
@@ -211,6 +212,7 @@ export const fetchBestSeller = async (
     searchProductLineId,
     startDate,
     endDate,
+    limit,
   };
 
   try {

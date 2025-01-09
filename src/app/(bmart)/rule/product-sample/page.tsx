@@ -63,8 +63,6 @@ function ProductSamplePage() {
       ),
   );
 
-  console.log('productSamplesData', productSamplesData);
-
   const transformedProductSamplesData = {
     ...productSamplesData,
     results: productSamplesData?.results?.map((sample: ProductSample) => {
@@ -83,7 +81,14 @@ function ProductSamplePage() {
   };
 
   const onMutate = () => {
-    mutate([urlProductSample, current, pageSize, '', searchProductLineId]);
+    mutate([
+      urlProductSample,
+      current,
+      pageSize,
+      searchParams.name,
+      searchProductLineId,
+      searchProductTypeId,
+    ]);
   };
 
   const meta: MetaData = {

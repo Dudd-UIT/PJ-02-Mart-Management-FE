@@ -57,7 +57,6 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
 
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-
   useEffect(() => {
     if (supplierData) {
       setFormData({
@@ -77,7 +76,6 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
     setSupplierData?.(undefined);
     setProductUnitIds([]);
   };
-
   const handleUpdateSupplier = async () => {
     const res = await handleUpdateSupplierAction(formData);
     if (res?.data) {
@@ -141,6 +139,10 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
 
   const handleNextPage = () => {
     if (current < meta.pages) setCurrent(current + 1);
+  };
+
+  const handleSelectedProductUnit = () => {
+    handleFormDataChange('productUnitIds', productUnitIds);
   };
 
   return (
@@ -267,7 +269,7 @@ function UpdateSupplierModal(props: UpdateModalProps<Supplier>) {
         isProductSupplierModalOpen={isProductSupplierModalOpen}
         setIsProductSupplierModalOpen={setIsProductSupplierModalOpen}
         // selectedProductUnitIds={selectedProductUnitIds}
-        // onSelectedProductUnitsChange={setSelectedProductUnitIds}
+        onSelectedProductUnitsChange={handleSelectedProductUnit}
       />
     </>
   );

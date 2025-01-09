@@ -46,12 +46,12 @@ export const fetchInboundReceipts = async (
 
 export const handleSendEmailAction = async (data: any) => {
   const session = await auth();
-  const { inboundReceiptDto, batchsDto } = data;
+  const { inboundReceiptDto, batchesDto } = data;
   const { staffName, ...rest } = inboundReceiptDto;
   const updatedInboundReceiptDto = { staffName: session?.user.name, ...rest };
   const updatedData = {
     inboundReceiptDto: updatedInboundReceiptDto,
-    batchsDto,
+    batchesDto,
   };
 
   const res = await sendRequest<IBackendRes<any>>({
@@ -68,12 +68,12 @@ export const handleSendEmailAction = async (data: any) => {
 
 export const handleCreatedInboundReceiptAction = async (data: any) => {
   const session = await auth();
-  const { inboundReceiptDto, batchsDto } = data;
+  const { inboundReceiptDto, batchesDto } = data;
   const { staffId, ...rest } = inboundReceiptDto;
   const updatedInboundReceiptDto = { staffId: session?.user.id, ...rest };
   const updatedData = {
     inboundReceiptDto: updatedInboundReceiptDto,
-    batchsDto,
+    batchesDto,
   };
 
   const res = await sendRequest<IBackendRes<any>>({
