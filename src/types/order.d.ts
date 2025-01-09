@@ -58,6 +58,7 @@ export interface OrderTableModalProps {
   orders: OrderTransform[];
   columns: Column<OrderTransform>[];
   onMutate: () => void;
+  isCustomer?: boolean;
 }
 
 // export interface ProductSupplierModalProps {

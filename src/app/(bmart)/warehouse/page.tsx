@@ -72,6 +72,16 @@ function WarehousePage() {
 
   console.log('batchesData', batchesData);
 
+  const onMutate = () =>
+    mutate([
+      urlFetchBatches,
+      current,
+      pageSize,
+      searchBatchParams.quantity,
+      searchBatchParams.expDate,
+      showOption,
+    ]);
+
   const urlFetchProductUnits = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-units`;
   const { data: productUnitsData, error: productUnitsError } = useSWR(
     [
@@ -345,6 +355,7 @@ function WarehousePage() {
           product={groupedProductData}
           batches={groupedBatchData}
           columnsBatch={columnsBatch}
+          onMutate={onMutate}
         />
       )}
     </>

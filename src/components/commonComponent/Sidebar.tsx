@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { IoStatsChart, IoPeople } from 'react-icons/io5';
+import { IoStatsChart, IoPeople, IoCart } from 'react-icons/io5';
 import {
   FaShoppingCart,
   FaWarehouse,
@@ -353,6 +353,21 @@ export default function Sidebar() {
                 </ProtectedComponent>
               </ul>
             )}
+          </li>
+        </ProtectedComponent>
+        <ProtectedComponent requiredRoles={['v_cus']}>
+          <li className={pathname == '/product-sale' ? 'active' : ''}>
+            <a
+              href="/product-sale"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-sc"
+            >
+              <div style={{ padding: '0.2rem 0' }}>
+                <IoCart />
+              </div>
+              {isPinned && <text>Mua hàng</text>}
+            </a>
           </li>
         </ProtectedComponent>
       </ul>

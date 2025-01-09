@@ -9,7 +9,7 @@ import { renderStatusBadge } from '../commonComponent/Status';
 import ProtectedComponent from '../commonComponent/ProtectedComponent';
 
 const OrderTable = (props: OrderTableModalProps) => {
-  const { orders, columns, onMutate } = props;
+  const { orders, columns, onMutate, isCustomer } = props;
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
@@ -26,6 +26,9 @@ const OrderTable = (props: OrderTableModalProps) => {
     setSelectedOrder(order);
     setIsDeleteModalOpen(true);
   };
+
+  console.log('selectedOrder', selectedOrder);
+  console.log('orders', orders);
 
   return (
     <>
@@ -112,6 +115,7 @@ const OrderTable = (props: OrderTableModalProps) => {
         data={selectedOrder}
         setData={setSelectedOrder}
         onMutate={onMutate}
+        isCustomer={isCustomer}
       />
       <DeleteOrderModal
         isDeleteModalOpen={isDeleteModalOpen}
