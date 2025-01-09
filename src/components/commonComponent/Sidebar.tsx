@@ -355,21 +355,19 @@ export default function Sidebar() {
             )}
           </li>
         </ProtectedComponent>
-        <ProtectedComponent requiredRoles={['v_cus']}>
-          <li className={pathname == '/product-sale' ? 'active' : ''}>
-            <a
-              href="/product-sale"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-sc"
-            >
-              <div style={{ padding: '0.2rem 0' }}>
-                <IoCart />
-              </div>
-              {isPinned && <text>Mua hàng</text>}
-            </a>
-          </li>
-        </ProtectedComponent>
+        <li className={pathname == '/product-sale' ? 'active' : ''}>
+          <a
+            href="/product-sale"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-sc"
+          >
+            <div style={{ padding: '0.2rem 0' }}>
+              <IoCart />
+            </div>
+            {isPinned && <text>Mua hàng</text>}
+          </a>
+        </li>
       </ul>
 
       <hr className="h-color mx-2" />

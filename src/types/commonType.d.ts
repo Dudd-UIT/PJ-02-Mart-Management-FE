@@ -83,6 +83,7 @@ declare global {
     setData?: (v: T | undefined) => void;
     onMutate: () => void;
     isCustomer?: boolean;
+    onConfirm?: () => void;
   }
 
   export interface DeleteModalProps<T> {

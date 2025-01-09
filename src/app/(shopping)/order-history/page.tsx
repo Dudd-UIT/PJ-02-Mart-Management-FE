@@ -21,7 +21,7 @@ const columns: Column<OrderTransform>[] = [
   { title: 'TT nhận hàng', key: 'isReceived' },
 ];
 
-const OrdersPage = () => {
+const OrdersHistoryPage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
@@ -189,4 +189,4 @@ const OrdersPage = () => {
   );
 };
 
-export default withRoleAuthorization(OrdersPage, ['v_orders']);
+export default OrdersHistoryPage;

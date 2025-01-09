@@ -85,7 +85,6 @@ export const fetchProductSamplesOnlineShopping = async (
         Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
-    console.log('>> res', res);
 
     if (res?.data) {
       return res.data;
@@ -129,8 +128,6 @@ export const fetchProductSamplesOnlineShoppingWithRecommend = async (
     queryParams.customerId = session?.user?.id;
   }
 
-  console.log('queryParams:::', queryParams);
-
   try {
     const res = await sendRequest<IBackendRes<any>>({
       url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-samples/online-shopping-recommend`,
@@ -140,7 +137,6 @@ export const fetchProductSamplesOnlineShoppingWithRecommend = async (
         Authorization: `Bearer ${session?.user?.access_token}`,
       },
     });
-    console.log('>> res', res);
 
     if (res?.data) {
       return res.data;

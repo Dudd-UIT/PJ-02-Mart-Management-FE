@@ -29,7 +29,6 @@ function LoginPage() {
   const handleLogin = async () => {
     try {
       const res = await authenticate(formLogin);
-      console.log('>>> res', res);
       if (res?.message) {
         if (res?.code === 2) {
           toast.error(res.message);

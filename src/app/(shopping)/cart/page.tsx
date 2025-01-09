@@ -1,11 +1,7 @@
 'use client';
 
 import { Input } from '@/components/commonComponent/InputForm';
-import { preventOverflow } from '@popperjs/core';
-import {
-  fetchCartDetails,
-  handleDeleteCartDetailAction,
-} from '@/services/cartServices';
+import { fetchCartDetails } from '@/services/cartServices';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
@@ -14,13 +10,8 @@ import { formatCurrency } from '@/utils/format';
 import { CartDetailItem } from '@/types/cart';
 import CheckOutModal from '@/components/shoppingComponent/checkOutModal.create';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
-import { OrderDetailTransform } from '@/types/order';
-import { ProductUnitTransform } from '@/types/productUnit';
 import { toast } from 'react-toastify';
-import {
-  handleCreatedOrderAction,
-  handleCreatedOrderOnlineAction,
-} from '@/services/orderServices';
+import { handleCreatedOrderOnlineAction } from '@/services/orderServices';
 import DeleteCartDetailModal from '@/components/cartComponent/cart.delete';
 // import { CartDetail } from '@/types/cart';
 
@@ -40,7 +31,7 @@ type FormDataOrder = {
   orderType: string;
 };
 
-function ProductSamplePage() {
+function CartPage() {
   const initialOrder = {
     staffId: 0,
     customerId: 0,
@@ -191,9 +182,6 @@ function ProductSamplePage() {
     }
   };
 
-  console.log('cartItems', cartItems);
-  console.log('cartDetailData', cartDetailData);
-  console.log('selected Items: ', selectedItems);
   //     fetchCartDetails(
   //       current,
   //       pageSize,
@@ -203,7 +191,6 @@ function ProductSamplePage() {
   // );
 
   const handlePurchase = async () => {
-    console.log('selected Item 2', selectedItems);
     if (selectedItems.length === 0) {
       toast.warning('Vui lòng chọn ít nhất một sản phẩm!');
       return;
@@ -218,8 +205,6 @@ function ProductSamplePage() {
         batchId: item.batchId,
         cartDetailId: item.id,
       }));
-
-      console.log('selectedItems', selectedItems);
 
       const orderDto = {
         // staffId: formDataOrder.staffId,
@@ -239,10 +224,8 @@ function ProductSamplePage() {
         orderDto,
         orderDetailsDto,
       };
-      console.log('payload', payload);
       // Gửi yêu cầu tạo đơn hàng
       const res = await handleCreatedOrderOnlineAction(payload);
-      console.log('>>>res<<<', res);
       if (res?.data) {
         toast.success('Đơn hàng được tạo thành công!');
         setSelectedItems([]); // Reset danh sách đã chọn
@@ -261,7 +244,6 @@ function ProductSamplePage() {
   //     setIsDeleteModalOpen(true);
   // };
   const handleDeleteCartDetail = (cartDetail: CartDetailItem) => {
-    console.log('cartDetail::', cartDetail);
     setSelectedCartDetail(cartDetail);
     setIsDeleteModalOpen(true);
   };
@@ -287,14 +269,11 @@ function ProductSamplePage() {
       <div>
         <div className="mx-5 mt-3 d-flex justify-content-between gap-3">
           <h2>Giỏ hàng của bạn</h2>
-          <div className='gap-3 d-flex'>
+          <div className="gap-3 d-flex">
             <button className="btn btn-primary" onClick={handleSelectAll}>
               Chọn tất cả ({cartItems.length} SP)
             </button>
-            <button
-              className="btn btn-outline"
-              onClick={handleUnselectAll}
-            >
+            <button className="btn btn-outline" onClick={handleUnselectAll}>
               Bỏ chọn tất cả
             </button>
           </div>
@@ -305,7 +284,7 @@ function ProductSamplePage() {
               item.productUnit.sellPrice -
               item.productUnit.sellPrice * item.productUnit.batches[0].discount;
             return (
-              <div className="row border rounded p-3 mx-5 my-3">
+              <div className="row border rounded p-3 mx-5 my-3" key={item.id}>
                 <div className="col col-md-2 p-0">
                   <Image
                     src={
@@ -339,7 +318,7 @@ function ProductSamplePage() {
                       )}
                     </div>
                     <Input
-                    readOnly={true}
+                      readOnly={true}
                       title={'Mẫu mã'}
                       value={`${item.productUnit.unit.name} ${
                         item.productUnit.volumne
@@ -391,7 +370,9 @@ function ProductSamplePage() {
                         type="checkbox"
                         value=""
                         id={`checkbox-${item.id}`}
-                        checked={selectedItems.some((check) => check.id === item.id)}
+                        checked={selectedItems.some(
+                          (check) => check.id === item.id,
+                        )}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleCheckbox(item, e.target.checked)
                         }
@@ -435,6 +416,7 @@ function ProductSamplePage() {
           onMutate={onMutate}
           data={selectedItems}
           setData={setDataBridge}
+          onConfirm={handlePurchase}
         />
       </div>
       <DeleteCartDetailModal
@@ -447,5 +429,4 @@ function ProductSamplePage() {
   );
 }
 
-// export default withRoleAuthorization(Cart, ['v_pdsams']);
-export default ProductSamplePage;
+export default CartPage;

@@ -160,7 +160,6 @@ function WarehouseTable({
           const relatedBatches = batches.filter(
             (batch) => batch.uniqueUnitKey === `${unit.id}_${unit.name}`,
           );
-          console.log('`${unit.id}_${unit.name}`', `${unit.id}_${unit.name}`);
 
           return (
             <div

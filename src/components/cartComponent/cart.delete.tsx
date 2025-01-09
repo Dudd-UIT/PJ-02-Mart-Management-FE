@@ -1,14 +1,14 @@
 import { handleDeleteCartDetailAction } from '@/services/cartServices';
-import { CartDetail } from '@/types/cart';
+import { CartDetailItem } from '@/types/cart';
 import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
-const DeleteCartDetailModal = (props: DeleteModalProps<CartDetail>) => {
+const DeleteCartDetailModal = (props: DeleteModalProps<CartDetailItem>) => {
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     data: cartDetailData,
-    onMutate
+    onMutate,
   } = props;
 
   const handleCloseDeleteModal = () => {
@@ -16,7 +16,8 @@ const DeleteCartDetailModal = (props: DeleteModalProps<CartDetail>) => {
   };
 
   const handleDeleteCartDetail = async () => {
-    const res = await handleDeleteCartDetailAction(cartDetailData);
+    const res = await handleDeleteCartDetailAction(cartDetailData?.id);
+    console.log('res', res);
     if (res?.data) {
       toast.success(res.message);
       onMutate();

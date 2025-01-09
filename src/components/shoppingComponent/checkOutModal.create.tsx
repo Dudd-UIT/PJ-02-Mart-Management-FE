@@ -13,6 +13,7 @@ function CheckOutModal(props: UpdateModalProps<CartDetailItem[]>) {
     data: selectedItems,
     setData,
     onMutate,
+    onConfirm,
   } = props;
 
   const [address, setAddress] = useState<string>('');
@@ -64,11 +65,10 @@ function CheckOutModal(props: UpdateModalProps<CartDetailItem[]>) {
     setData?.(undefined);
   };
   const handleConfirmPayment = () => {
-    //api gì đó
+    onConfirm?.();
 
     handleCloseCreateModal();
   };
-  console.log('selectedItems', selectedItems);
 
   return (
     <>
@@ -218,8 +218,8 @@ function CheckOutModal(props: UpdateModalProps<CartDetailItem[]>) {
             disabled={
               // Không cho thanh toán nếu:
               selectedItems?.length === 0 || // Không có hàng
-              address.trim() === '' ||      // Chưa có địa chỉ
-              !isShippingCostValid          // Chưa tính phí ship hoặc phí ship cũ
+              address.trim() === '' || // Chưa có địa chỉ
+              !isShippingCostValid // Chưa tính phí ship hoặc phí ship cũ
             }
           >
             Xác nhận thanh toán

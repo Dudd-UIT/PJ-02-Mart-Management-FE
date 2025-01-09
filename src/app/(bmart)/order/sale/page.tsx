@@ -812,31 +812,44 @@ function SalePage() {
               </button>
             </div>
           </div>
+          <div
+            style={{ width: '-webkit-fill-available' }}
+            className="position-fixed bottom-0 z-3 d-flex align-items-center justify-content-between p-3 bg-white shadow-lg"
+          >
+            <div className="mt-3">
+              <h3>
+                Tổng tiền:{' '}
+                <span className="text-danger">
+                  {`${formatCurrencyLong(formDataOrder.totalPrice)} đ`}
+                </span>
+              </h3>
+            </div>
 
-          <div className="row align-items-end">
+            <div className='d-flex gap-3'>
+              <button
+                className="btn btn-danger btn-lg"
+                onClick={handleCancelOrder}
+              >
+                Hủy
+              </button>
+              <button
+                className="btn btn-primary btn-lg px-5"
+                onClick={handleCreateOrder}
+              >
+                Tạo đơn hàng
+              </button>
+            </div>
+          </div>
+
+          {/* <div className="row align-items-end">
             <Input
               size={6}
               title="Thành tiền"
               value={`${formatCurrencyLong(formDataOrder.totalPrice)} đ`}
               readOnly
             />
-            <div className="col-md-4 mb-2">
-              <button
-                className="btn btn-primary w-100"
-                onClick={handleCreateOrder}
-              >
-                Tạo đơn hàng
-              </button>
-            </div>
-            <div className="col-md-2 mb-2">
-              <button
-                className="btn btn-danger w-100"
-                onClick={handleCancelOrder}
-              >
-                Hủy
-              </button>
-            </div>
-          </div>
+            
+          </div> */}
         </div>
       </div>
 

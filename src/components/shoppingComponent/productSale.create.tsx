@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { ProductSampleShoping } from '@/types/productSample';
 import { ProductUnit, ProductUnitTransform } from '@/types/productUnit';
-import ProtectedComponent from '../commonComponent/ProtectedComponent';
 import Image from 'next/image';
 import { Batch, BatchGrouped } from '@/types/batch';
 import { formatCurrency } from '@/utils/format';
@@ -55,7 +54,6 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
       const firstUnit = productSampleData.productUnits[0];
       if (firstUnit) {
         const firstBatch = firstUnit.batches && firstUnit.batches[0];
-        console.log('firstBatch', firstBatch)
         setCurrentBatch({
           unitId: firstUnit?.id,
           batchId: firstBatch?.id,
@@ -75,8 +73,6 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
   };
 
   const handleUpdateCart = async () => {
-    console.log(currentBatch);
-
     const cartDto = { customerId: 1 };
 
     const cartDetailsDto = [
@@ -88,7 +84,6 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
     ];
 
     const payload = { cartDto, cartDetailsDto };
-    console.log(payload);
     const res = await handleAddCartDetailAction(payload);
 
     if (res?.data) {
@@ -97,13 +92,11 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
       onMutate();
       setQuantity(1);
     } else {
-      console.log(res);
       toast.error(res.message);
       setQuantity(1);
     }
   };
 
-  console.log('productSampleData', productSampleData);
   const [quantity, setQuantity] = useState(1);
   const ProductSampleButtons = ({
     productSampleData,
@@ -111,8 +104,6 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
     productSampleData: ProductSampleShoping | undefined;
   }) => {
     const handleButtonClick = (unit: any, batch: any) => {
-      console.log('currentBatch', currentBatch)
-
       setCurrentBatch({
         unitId: unit.id,
         batchId: batch.id,
@@ -138,10 +129,8 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
                 const buttonLabel = `${unit.unit?.name} ${
                   unit.volumne
                 } ${new Date(batch.expiredAt).toLocaleDateString('vi-VN')}`;
-                console.log('unit', unit);
                 const isActive =
-                  currentBatch &&
-                  currentBatch.batchId == batch.id
+                  currentBatch && currentBatch.batchId == batch.id;
                 return (
                   <button
                     key={`${unit.id}-${batch.id}-${index}`}
@@ -254,11 +243,9 @@ function ProductSaleModal(props: UpdateModalProps<ProductSampleShoping>) {
           <Button variant="secondary" onClick={handleCloseCreateModal}>
             Thoát
           </Button>
-          <ProtectedComponent requiredRoles={['u_pdsam']}>
-            <Button variant="danger" onClick={handleUpdateCart}>
-              Thêm vào giỏ
-            </Button>
-          </ProtectedComponent>
+          <Button variant="danger" onClick={handleUpdateCart}>
+            Thêm vào giỏ
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

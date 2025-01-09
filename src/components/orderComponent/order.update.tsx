@@ -49,8 +49,6 @@ const UpdateOrderModal = (props: UpdateModalProps<OrderTransform>) => {
       currentPrice: orderDetail?.currentPrice,
     })) || [];
 
-  console.log('selectedOrder', selectedOrder);
-
   useEffect(() => {
     if (selectedOrder) {
       setFormData({

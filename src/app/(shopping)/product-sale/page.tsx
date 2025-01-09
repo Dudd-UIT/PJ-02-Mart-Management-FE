@@ -27,7 +27,7 @@ type FormDataOrder = {
   orderType: string;
 };
 
-function SalePage() {
+function ShoppingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedproductSample, setSelectedproductSample] = useState<
     ProductSampleShoping | undefined
@@ -63,8 +63,6 @@ function SalePage() {
         searchParams.id,
       ),
   );
-
-  console.log('productSamplesData', productSamplesData);
 
   const onMutate = () => {
     mutate(['']);
@@ -229,7 +227,6 @@ function SalePage() {
     setIsModalOpen(true);
   };
 
-  console.log(productSamples);
   return (
     <div>
       <div className="col-md-12">
@@ -386,4 +383,4 @@ function SalePage() {
   );
 }
 
-export default withRoleAuthorization(SalePage, ['c_order']);
+export default ShoppingPage;

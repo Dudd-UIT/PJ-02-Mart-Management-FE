@@ -73,7 +73,6 @@ export function HeaderCustomerSide(props: any) {
   const { session } = props;
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const { currentSession, setCurrentSession } = useSessionContext();
-  console.log('currentSession', currentSession);
   setCurrentSession(session);
   const pathname = usePathname();
 

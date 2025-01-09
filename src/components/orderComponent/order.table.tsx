@@ -27,9 +27,6 @@ const OrderTable = (props: OrderTableModalProps) => {
     setIsDeleteModalOpen(true);
   };
 
-  console.log('selectedOrder', selectedOrder);
-  console.log('orders', orders);
-
   return (
     <>
       <div className="container">

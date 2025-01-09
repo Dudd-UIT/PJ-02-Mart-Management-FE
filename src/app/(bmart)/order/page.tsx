@@ -63,6 +63,8 @@ const OrdersPage = () => {
       ),
   );
 
+  console.log('data', data);
+
   if (error)
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -81,9 +83,9 @@ const OrdersPage = () => {
   const orders = data.results.map((item: Order) => ({
     id: item.id,
     staffId: item.staff?.id,
-    staffName: item.staff?.name,
+    staffName: item.staff?.name || 'Hệ thống',
     customerId: item.customer?.id,
-    customerName: item.customer?.name,
+    customerName: item.customer?.name || 'Khách vãng lai',
     totalPrice: item.totalPrice,
     paymentTime: item.paymentTime,
     paymentMethod: item.paymentMethod,

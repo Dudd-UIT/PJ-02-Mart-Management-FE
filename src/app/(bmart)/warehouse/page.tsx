@@ -70,8 +70,6 @@ function WarehousePage() {
       ),
   );
 
-  console.log('batchesData', batchesData);
-
   const onMutate = () =>
     mutate([
       urlFetchBatches,
@@ -105,8 +103,6 @@ function WarehousePage() {
       ),
   );
 
-  console.log('productUnitsData', productUnitsData);
-
   const urlProductType = `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/api/product-types`;
   const { data: productTypesData, error: productTypesError } = useSWR(
     [urlProductType],
@@ -136,8 +132,6 @@ function WarehousePage() {
 
   const groupedProductData = groupProductData(productUnitsData?.results);
   const groupedBatchData = groupBatch(batchesData?.results);
-  console.log('groupedProductData', groupedProductData);
-  console.log('groupedBatchData', groupedBatchData);
 
   const totalValue = getWarehouseValue(groupedBatchData);
 
